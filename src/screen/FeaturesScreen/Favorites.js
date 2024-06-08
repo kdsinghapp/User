@@ -17,7 +17,7 @@ import Pin from '../../assets/sgv/Pin.svg';
 import Clock from '../../assets/sgv/Clock.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { get_FavoriteList } from '../../redux/feature/featuresSlice';
+import { delete_favorite_restaurant, get_FavoriteList } from '../../redux/feature/featuresSlice';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import FavAdd from '../../assets/sgv/addFav.svg';
 import Fav from '../../assets/sgv/Favorites.svg';
@@ -36,6 +36,26 @@ export default function Favorites() {
   useEffect(() => {
     dispatch(get_FavoriteList(params));
   }, [isFocuss, user]);
+
+
+  const delete_favorite =(id)=>{
+
+    console.log('=>>>>>>>>>>>>>',id);
+    // const data = new FormData();
+    // data.append('resfav_id', id);
+ 
+    // const params ={
+    //   data:data,
+    //   token:user?.token
+    // }
+
+    // dispatch(delete_favorite_restaurant(params)).then(res=>{
+    //   const params = {
+    //     token: user.token
+    //   }
+    //   dispatch(get_FavoriteList(params));
+    // })
+  }
 
   const Restaurant = ({ item }) => (
     <TouchableOpacity
@@ -59,7 +79,9 @@ export default function Favorites() {
       ]}>
       
          <TouchableOpacity 
-            
+             onPress={()=>{
+              delete_favorite(item.resfav_id)
+            }}
             style={{ width: '15%',alignSelf:'flex-end',right:-23,top:5,position:'absolute' }}>
              <FavAdd />
             </TouchableOpacity>
@@ -237,7 +259,9 @@ export default function Favorites() {
               {item.dish_data?.restaurant_dish_price}
             </Text>
             <TouchableOpacity 
-            
+            onPress={()=>{
+              delete_favorite(item.resfav_id)
+            }}
             style={{ width: '15%' }}>
              <FavAdd />
             </TouchableOpacity>

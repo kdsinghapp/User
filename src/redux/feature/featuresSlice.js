@@ -1,7 +1,7 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {API, base_url} from '../Api';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API, base_url } from '../Api';
 
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import { errorToast, successToast } from '../../configs/customToast';
 import ScreenNameEnum from '../../routes/screenName.enum';
 const initialState = {
@@ -14,12 +14,12 @@ const initialState = {
   TermsCondition: null,
   getProfile: null,
   FavoriteList: null,
-  cartItem:null,
-  addresList:null,
-  OrderDetails:null,
-  generalInfo:null,
-  coupon_list:null,
-  CouponCodeData:null
+  cartItem: null,
+  addresList: null,
+  OrderDetails: null,
+  generalInfo: null,
+  coupon_list: null,
+  CouponCodeData: null
 };
 
 export const get_HomeDashBoard = createAsyncThunk(
@@ -154,7 +154,7 @@ export const get_FavoriteList = createAsyncThunk(
 export const Add_FavoriteList = createAsyncThunk(
   'Add_FavoriteList',
   async (params, thunkApi) => {
- 
+
 
     try {
       const myHeaders = new Headers();
@@ -164,7 +164,7 @@ export const Add_FavoriteList = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('fav_id', params.fav_id);
       formdata.append('fav_type', params.fav_type);
-     
+
       const requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -173,18 +173,18 @@ export const Add_FavoriteList = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/favorite/add-favorite-restaurant',requestOptions
+        base_url.url + '/favorite/add-favorite-restaurant', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
+
             successToast(response.message)
-           // params.navigation.goBack()
-            console.log('=>>>>>>>Add_FavoriteList cart ',response.message);
-          
+            // params.navigation.goBack()
+            console.log('=>>>>>>>Add_FavoriteList cart ', response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -232,7 +232,7 @@ export const get_cart = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_cart=>>>>',params);
+      console.log('get_cart=>>>>', params);
       const formdata = new FormData();
 
       formdata.append("user_id", params.data.user_id);
@@ -263,10 +263,10 @@ export const get_cart = createAsyncThunk(
 
 
       if (responseData.success) {
-        console.log('restaurant/get-order-data-by-id',responseData.message);
+        console.log('restaurant/get-order-data-by-id', responseData.message);
       } else {
         //errorToast(responseData.message); 
-       console.log('restaurant/get-order-data-by-id',responseData.message);
+        console.log('restaurant/get-order-data-by-id', responseData.message);
       }
 
 
@@ -285,8 +285,8 @@ export const get_coupon_list = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_coupon_list=>>>>',params);
-    
+      console.log('get_coupon_list=>>>>', params);
+
 
       // Configure request headers
       const myHeaders = new Headers();
@@ -314,10 +314,10 @@ export const get_coupon_list = createAsyncThunk(
 
 
       if (responseData.success) {
-        console.log('get_coupon_list',responseData.message);
+        console.log('get_coupon_list', responseData.message);
       } else {
         //errorToast(responseData.message); 
-       console.log('get_coupon_list',responseData.message);
+        console.log('get_coupon_list', responseData.message);
       }
 
 
@@ -336,7 +336,7 @@ export const addres_list = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('addres_list=>>>>',params);
+      console.log('addres_list=>>>>', params);
       const formdata = new FormData();
 
       formdata.append("user_id", params.user_id);
@@ -367,10 +367,10 @@ export const addres_list = createAsyncThunk(
 
 
       if (responseData.success) {
-        console.log('addres_list ',responseData.message);
+        console.log('addres_list ', responseData.message);
       } else {
         //errorToast(responseData.message); 
-       console.log('addres_list ',responseData.message);
+        console.log('addres_list ', responseData.message);
       }
 
 
@@ -409,18 +409,18 @@ export const add_cart = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/cart/item-add',requestOptions
+        base_url.url + '/user/cart/item-add', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
+
             successToast(response.message)
-           // params.navigation.goBack()
-            console.log('=>>>>>>>update cart ',response.message);
-          
+            // params.navigation.goBack()
+            console.log('=>>>>>>>update cart ', response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -451,7 +451,7 @@ export const apply_coupon = createAsyncThunk(
 
       const formdata = new FormData();
       formdata.append('coupon_code', params.coupon_code);
-    
+
 
       const requestOptions = {
         method: 'POST',
@@ -461,18 +461,18 @@ export const apply_coupon = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/apply-coupon',requestOptions
+        base_url.url + '/user/apply-coupon', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
+
             successToast("Coupon Apply Successfuly")
-           // params.navigation.goBack()
-            console.log('=>>>>>>>apply_coupon cart ',response.message);
-          
+            // params.navigation.goBack()
+            console.log('=>>>>>>>apply_coupon cart ', response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -493,8 +493,8 @@ export const apply_coupon = createAsyncThunk(
 export const add_address = createAsyncThunk(
   'add_address',
   async (params, thunkApi) => {
-    console.log('===============add_address=====================',params.token);
-   
+    console.log('===============add_address=====================', params.token);
+
 
     try {
       const myHeaders = new Headers();
@@ -510,18 +510,18 @@ export const add_address = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/addres/create',requestOptions
+        base_url.url + '/user/addres/create', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
+
             successToast(response.message)
-           // params.navigation.goBack()
-            console.log('=>>>>>>>update cart ',response.message);
-          
+            // params.navigation.goBack()
+            console.log('=>>>>>>>update cart ', response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -542,8 +542,8 @@ export const add_address = createAsyncThunk(
 export const create_order = createAsyncThunk(
   'create_order',
   async (params, thunkApi) => {
-    console.log('===============create_order=====================',params.data);
-   
+    console.log('===============create_order=====================', params.data);
+
 
     try {
       const myHeaders = new Headers();
@@ -559,18 +559,18 @@ export const create_order = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/order/create-restaurant-order',requestOptions
+        base_url.url + '/user/order/create-restaurant-order', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log('/user/order/create-restaurant-order',response);
+          console.log('/user/order/create-restaurant-order', response);
           if (response.success) {
-           
+
             successToast("Your Order Successfuly Create")
-           params.navigation.navigate(ScreenNameEnum.BOOKING_SCREEN)
-          
-          
+            params.navigation.navigate(ScreenNameEnum.BOOKING_SCREEN)
+
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -591,8 +591,8 @@ export const create_order = createAsyncThunk(
 export const update_address = createAsyncThunk(
   'update_address',
   async (params, thunkApi) => {
- 
-   console.log('=>>>>>>>>>>>>>>>.',params.data,);
+
+    console.log('=>>>>>>>>>>>>>>>.', params.data,);
 
     try {
       const myHeaders = new Headers();
@@ -608,7 +608,7 @@ export const update_address = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/addres/update',requestOptions
+        base_url.url + '/user/addres/update', requestOptions
       )
         .then(response => response.text())
         .then(res => {
@@ -616,14 +616,14 @@ export const update_address = createAsyncThunk(
           const response = JSON.parse(res);
           console.log(response);
           if (response.success) {
-            if(params.isSelectes){
+            if (params.isSelectes) {
 
               successToast('Address Update Successfuly')
             }
-           
-           // params.navigation.goBack()
-            console.log('=>>>>>>>update_address cart ',response);
-          
+
+            // params.navigation.goBack()
+            console.log('=>>>>>>>update_address cart ', response);
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -655,7 +655,7 @@ export const remove_cart = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('user_id', params.data.user_id);
       formdata.append('cart_id', params.data.cart_id);
-     
+
 
       const requestOptions = {
         method: 'POST',
@@ -665,23 +665,23 @@ export const remove_cart = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/cart/item-delete',requestOptions
+        base_url.url + '/user/cart/item-delete', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
-            
-       
-           successToast(response.message);
-          
+
+
+
+            successToast(response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
-console.log('=============response.message=======================');
-console.log(response.message);
+            console.log('=============response.message=======================');
+            console.log(response.message);
 
             return response.data;
           }
@@ -709,8 +709,8 @@ export const addres_delete = createAsyncThunk(
 
       const formdata = new FormData();
       formdata.append('address_id', params.address_id);
-   
-     
+
+
 
       const requestOptions = {
         method: 'POST',
@@ -720,23 +720,23 @@ export const addres_delete = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/addres/delete',requestOptions
+        base_url.url + '/user/addres/delete', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
-            
-       
-           successToast(response.message);
-          
+
+
+
+            successToast(response.message);
+
             return response.data;
           } else {
             errorToast(response.message);
-console.log('=============address_id.message=======================');
-console.log(response.message);
+            console.log('=============address_id.message=======================');
+            console.log(response.message);
 
             return response.data;
           }
@@ -756,9 +756,9 @@ export const get_order_data_by_id = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
-console.log('============get_order_data_by_id========================');
-console.log(params.data);
-console.log('====================================');
+      console.log('============get_order_data_by_id========================');
+      console.log(params.data);
+      console.log('====================================');
       const formdata = new FormData();
 
       formdata.append("user_id", params.data.user_id);
@@ -795,7 +795,7 @@ console.log('====================================');
         //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
       } else {
         //errorToast(responseData.message); 
-       console.log('restaurant/get-order-data-by-id',responseData.message);
+        console.log('restaurant/get-order-data-by-id', responseData.message);
       }
 
       // Return response data
@@ -813,9 +813,9 @@ export const general_setting = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
-console.log('============general_setting========================');
-console.log(params.data);
-console.log('====================================');
+      console.log('============general_setting========================');
+      console.log(params.data);
+      console.log('====================================');
       const formdata = new FormData();
 
 
@@ -850,7 +850,7 @@ console.log('====================================');
         //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
       } else {
         //errorToast(responseData.message); 
-       console.log('general_setting',responseData.message);
+        console.log('general_setting', responseData.message);
       }
 
       // Return response data
@@ -887,16 +887,16 @@ export const update_cart = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/cart/item-update',requestOptions
+        base_url.url + '/user/cart/item-update', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
           console.log(response.message);
           if (response.success) {
-           
-            
-          //  successToast(response.message);
+
+
+            //  successToast(response.message);
             params.navigation.goBack()
             return response.data;
           } else {
@@ -920,15 +920,15 @@ export const update_profile = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
- 
-   
-     
+
+
+
       // Configure request headers
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
       myHeaders.append('Authorization', `Bearer ${params.token}`);
 
-console.log('data=>>>>>>>>>>>>>>',params.data);
+      console.log('data=>>>>>>>>>>>>>>', params.data);
       // Create request options
       const requestOptions = {
         method: 'POST',
@@ -950,11 +950,11 @@ console.log('data=>>>>>>>>>>>>>>',params.data);
 
       // Handle successful response
       if (responseData.success) {
-       successToast(responseData.message);
-       
-       
+        successToast(responseData.message);
+
+
       } else {
-        errorToast(responseData.message); 
+        errorToast(responseData.message);
         console.log('==============update_profile======================');
         console.log(responseData.message);
         console.log('====================================');
@@ -963,7 +963,63 @@ console.log('data=>>>>>>>>>>>>>>',params.data);
       // Return response data
       return responseData.data;
     } catch (error) {
-      console.log('==========update_profile==========================',error);
+      console.log('==========update_profile==========================', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
+
+export const delete_favorite_restaurant = createAsyncThunk(
+  'delete_favorite_restaurant',
+  async (params, thunkApi) => {
+    try {
+      // Create form data with identity and otp
+
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      console.log('delete_favorite_restaurant=>>>>>>>>>>>>>>', params.data);
+      // Create request options
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: params.data,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/favorite/delete-favorite-restaurant`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('delete_favorite_restaurant=>>>>>>>>>>>>> :', responseData.success);
+
+      // Handle successful response
+      if (responseData.success) {
+        successToast(responseData.message);
+
+
+      } else {
+        errorToast(responseData.message);
+        console.log('==============delete_favorite_restaurant======================');
+        console.log(responseData.message);
+        console.log('====================================');
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.log('==========update_profile==========================', error);
       errorToast('Network error');
       // Reject with error
       throw error;
@@ -975,14 +1031,14 @@ export const create_new_password = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
- 
-   
+
+
       const data = new FormData();
-    
+
       data.append('password', params.password);
       data.append('c_password', params.c_password);
       data.append('old_password', params.old_password);
-     
+
       // Configure request headers
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
@@ -1010,11 +1066,11 @@ export const create_new_password = createAsyncThunk(
 
       // Handle successful response
       if (responseData.success) {
-       successToast(responseData.message);
-       
-       
+        successToast(responseData.message);
+
+
       } else {
-        errorToast(responseData.message); 
+        errorToast(responseData.message);
         console.log('==============create_new_password======================');
         console.log(responseData.message);
         console.log('====================================');
@@ -1023,13 +1079,14 @@ export const create_new_password = createAsyncThunk(
       // Return response data
       return responseData.data;
     } catch (error) {
-      console.log('==========create_new_password==========================',error);
+      console.log('==========create_new_password==========================', error);
       errorToast('Network error');
       // Reject with error
       throw error;
     }
   },
 );
+
 
 const FeatureSlice = createSlice({
   name: 'featureSlice',
@@ -1050,6 +1107,20 @@ const FeatureSlice = createSlice({
       state.isError = true;
       state.isSuccess = false;
     });
+    builder.addCase(delete_favorite_restaurant.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(delete_favorite_restaurant.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+
+    });
+    builder.addCase(delete_favorite_restaurant.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
     builder.addCase(Add_FavoriteList.pending, state => {
       state.isLoading = true;
     });
@@ -1057,7 +1128,7 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-     
+
     });
     builder.addCase(Add_FavoriteList.rejected, (state, action) => {
       state.isLoading = false;
@@ -1071,7 +1142,7 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-     
+
     });
     builder.addCase(update_profile.rejected, (state, action) => {
       state.isLoading = false;
@@ -1085,7 +1156,7 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-     
+
     });
     builder.addCase(create_new_password.rejected, (state, action) => {
       state.isLoading = false;
@@ -1099,8 +1170,8 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-      state.CouponCodeData=[]
-     
+      state.CouponCodeData = []
+
     });
     builder.addCase(create_order.rejected, (state, action) => {
       state.isLoading = false;
@@ -1115,7 +1186,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = true;
       state.isError = false;
       state.CouponCodeData = action.payload
-    
+
     });
     builder.addCase(apply_coupon.rejected, (state, action) => {
       state.isLoading = false;
@@ -1144,8 +1215,8 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-      state.coupon_list=action.payload
-     
+      state.coupon_list = action.payload
+
     });
     builder.addCase(get_coupon_list.rejected, (state, action) => {
       state.isLoading = false;
@@ -1202,7 +1273,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = true;
       state.isError = false;
       state.cartItem = action.payload
-    
+
     });
     builder.addCase(get_cart.rejected, (state, action) => {
       state.isLoading = false;
