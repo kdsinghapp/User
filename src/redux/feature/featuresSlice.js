@@ -922,25 +922,18 @@ export const update_profile = createAsyncThunk(
       // Create form data with identity and otp
  
    
-      const data = new FormData();
-    
-      data.append('full_name', params.full_name);
-      data.append('date_of_birth', params.date_of_birth);
-      data.append('home_town', params.home_town);
-      data.append('email', params.email);
-      data.append('mobile_number', params.mobile_number);
-      data.append('images', params.images);
+     
       // Configure request headers
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
       myHeaders.append('Authorization', `Bearer ${params.token}`);
 
-
+console.log('data=>>>>>>>>>>>>>>',params.data);
       // Create request options
       const requestOptions = {
         method: 'POST',
         headers: myHeaders,
-        body: data,
+        body: params.data,
         redirect: 'follow',
       };
 

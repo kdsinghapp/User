@@ -60,29 +60,37 @@ export default function EditProfile() {
   };
 
   const handleSave = () => {
+
+    const data = new FormData();
+    
+    data.append('full_name', FullName);
+    data.append('date_of_birth', Dob.toISOString().split('T')[0],);
+    data.append('home_town', address);
+    data.append('email', params.email);
+    data.append('mobile_number', Mobile);
+    data.append('images', profile?.path
+    ? {
+      uri:
+        Platform.OS === 'android'
+          ? profile.path
+          : profile?.path?.replace('file://', ''),
+      type: profile.mime,
+      name: `image${user?.user_data.useres_id}.png`,
+    }
+    : {
+      uri: imageUrl,
+      type: 'image/jpeg',
+      name: `image${user?.user_data.useres_id}.png`,
+    },);
+
     const params = {
    
-      full_name: FullName,
-      email: email,
-      home_town: address,
-      mobile_number: Mobile,
-      date_of_birth: Dob.toISOString().split('T')[0],
-      images: profile?.path
-        ? {
-          uri:
-            Platform.OS === 'android'
-              ? profile.path
-              : profile?.path?.replace('file://', ''),
-          type: profile.mime,
-          name: `image${user?.user_data.useres_id}.png`,
-        }
-        : {
-          uri: imageUrl,
-          type: 'image/jpeg',
-          name: `image${user?.user_data.useres_id}.png`,
-        },
+      data:data,
       token: user?.token,
     };
+
+
+
     dispatch(update_profile(params)).then(err => {
       const params = {
         token: user.token,

@@ -105,11 +105,11 @@ const Notification: React.FC = () => {
     console.log(key, newValue ? '1' : '0');
     
     const data = new FormData();
-    data.append('user_id', user?.user_data?.useres_id);
+    //data.append('user_id', user?.user_data?.useres_id);
     data.append(key, newValue ? '1' : '0');
     const params = {
       token: user.token,
-      data,
+      data:data,
       Notification: true,
     };
 
