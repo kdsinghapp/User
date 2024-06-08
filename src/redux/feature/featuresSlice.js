@@ -1006,7 +1006,7 @@ export const delete_favorite_restaurant = createAsyncThunk(
 
       // Handle successful response
       if (responseData.success) {
-        successToast(responseData.message);
+        successToast("Item Remove successfuly");
 
 
       } else {
