@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { get_order_data_by_id } from '../../redux/feature/featuresSlice';
+import { get_order_data_by_id, user_order_status } from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
 import { useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
@@ -47,7 +48,37 @@ export default function MyOrders() {
       console.error(err);
     }
   };
+  const order_canceld = (order_id) => {
 
+    Alert.alert(
+      'Cancel Order',
+      'Are you sure you want to cancel this order?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () => cancelOrder(order_id),
+        },
+      ],
+      { cancelable: false }
+    );
+
+  }
+
+
+  const cancelOrder = (order_id) => {
+    const params = {
+      order_id: order_id,
+      token: user?.token
+    }
+
+    dispatch(user_order_status(params)).then(res => {
+      get_order(status);
+    });
+  };
 
   const TopRateRestaurant = ({ item, index }) => {
 
@@ -70,7 +101,7 @@ export default function MyOrders() {
       item.status === 'Complete'
         ? 'rgba(0, 195, 102, 0.2)'
         : item.status === 'Cancel'
-          ? 'rgba(244, 67, 54, 0.2)'
+          ? '#FFDADA'
           : 'rgba(255, 165, 0, 0.2)';
 
     const totalPrice = item.order_details.reduce(
@@ -81,25 +112,26 @@ export default function MyOrders() {
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const date = new Date(dateTimeString);
-      
+
       // Get day of the week, month, and year
       const dayOfWeek = daysOfWeek[date.getDay()];
       const month = monthsOfYear[date.getMonth()];
       const year = date.getFullYear();
-      
+
       // Get hours and minutes
       let hours = date.getHours();
       const minutes = ('0' + date.getMinutes()).slice(-2);
-      
+
       // Convert hours to 12-hour format
       const ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12 || 12;
-      
-      return `${dayOfWeek} ${month} ${date.getDate()}, ${year} ${hours}:${minutes} ${ampm}`;
-  };
-  
 
-  
+      return `${dayOfWeek} ${month} ${date.getDate()}, ${year} ${hours}:${minutes} ${ampm}`;
+    };
+
+
+
+
     return (
       <TouchableOpacity
         // disabled={item.status === 'Pending'}
@@ -114,7 +146,7 @@ export default function MyOrders() {
             Order ID- {item.resord_id}
           </Text>
           <Text style={{ fontSize: 12, fontWeight: '500' }}>
-          Order Time {formatTime(item.created_at)}
+            Order Time {formatTime(item.created_at)}
           </Text>
         </View>
 
@@ -137,7 +169,7 @@ export default function MyOrders() {
             <Text style={{ fontSize: 12, color: "#777777", fontWeight: '600' }}>{item.restaurant_data?.res_address}</Text>
           </View>
         </View>
-        {!isExpand && <View style={{ marginTop:20 }}>
+        {!isExpand && <View style={{ marginTop: 20 }}>
           <View style={styles.detailsRow}>
             <Text style={styles.totalPriceText}>Total Bill:</Text>
             <Text style={{ width: '20%' }}>-</Text>
@@ -173,13 +205,25 @@ export default function MyOrders() {
               }}
             >
               {item.status === 'Complete' && 'Yeay, you have completed it!'}
-              {item.status === 'Cancel' && 'You canceled this booking!'}
-              {item.status === 'Pending' && 'Your booking is Pending!'}
-              {item.status === 'Accepted' && 'your order under  prescription'}
+{item.status === 'Cancel' && 
+  (item.user_order_status === 'Cancel By User' 
+    ? 'You canceled this booking!' 
+    : 'Your order was canceled by the restaurant!')}
+{item.status === 'Pending' && 'Your booking is pending!'}
+{item.status === 'Accepted' && 'Your order is under prescription!'}
+
 
             </Text>
             {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
           </View>
+
+       {item.status === 'Pending' ||item.status === 'Accepted' &&   <TouchableOpacity
+            onPress={() => {
+              order_canceld(item.resord_id)
+            }}
+            style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancel Order</Text>
+          </TouchableOpacity>}
         </View>
         }
 
@@ -231,62 +275,74 @@ export default function MyOrders() {
                 }}
               >
                 {item.status === 'Complete' && 'Yeay, you have completed it!'}
-                {item.status === 'Cancel' && 'You canceled this booking!'}
-                {item.status === 'Pending' && 'Your booking is Pending!'}
-                {item.status === 'Accepted' && 'your order under  prescription'}
+{item.status === 'Cancel' && 
+  (item.user_order_status === 'Cancel By User' 
+    ? 'You canceled this booking!' 
+    : 'Your order was canceled by the restaurant!')}
+{item.status === 'Pending' && 'Your booking is pending!'}
+{item.status === 'Accepted' && 'Your order is under prescription!'}
+
 
               </Text>
               {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
             </View>
             <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 10 }]}>
-            <Text style={styles.totalPriceText}>Tax Amount :</Text>
-            <Text style={{ width: '20%' }}>-</Text>
+              <Text style={styles.totalPriceText}>Tax Amount :</Text>
+              <Text style={{ width: '20%' }}>-</Text>
 
-            <Text
-              style={{
+              <Text
+                style={{
 
-                ...{ color: '#000', fontWeight: '600', marginRight: 20, },
-              }}
-            >
-              {item.tax_amount}.00
-            </Text>
-          </View>
-          <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
-            <Text style={styles.totalPriceText}>Delivery charge :</Text>
-            <Text style={{ width: '20%' }}>-</Text>
-            <Text
-              style={{
+                  ...{ color: '#000', fontWeight: '600', marginRight: 20, },
+                }}
+              >
+                {item.tax_amount}.00
+              </Text>
+            </View>
+            <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
+              <Text style={styles.totalPriceText}>Delivery charge :</Text>
+              <Text style={{ width: '20%' }}>-</Text>
+              <Text
+                style={{
 
-                ...{ color: '#000', fontWeight: '600', marginRight: 20 },
-              }}
-            >
-              {item.delivery_charge}.00
-            </Text>
-          </View>
-          <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
-            <Text style={styles.totalPriceText}>Sub Total :</Text>
-            <Text style={{ width: '20%' }}>-</Text>
-            <Text
-              style={{
+                  ...{ color: '#000', fontWeight: '600', marginRight: 20 },
+                }}
+              >
+                {item.delivery_charge}.00
+              </Text>
+            </View>
+            <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
+              <Text style={styles.totalPriceText}>Sub Total :</Text>
+              <Text style={{ width: '20%' }}>-</Text>
+              <Text
+                style={{
 
-                ...{ color: '#000', fontWeight: '600', marginRight: 20 },
-              }}
-            >
-              {item.sub_total}.00
-            </Text>
-          </View>
-          <View style={styles.detailsRow}>
-            <Text style={[styles.totalPriceText,{fontSize:14}]}>Total Bill:</Text>
-            <Text style={{ width: '20%' }}>-</Text>
-            <Text
-              style={{
+                  ...{ color: '#000', fontWeight: '600', marginRight: 20 },
+                }}
+              >
+                {item.sub_total}.00
+              </Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={[styles.totalPriceText, { fontSize: 14 }]}>Total Bill:</Text>
+              <Text style={{ width: '20%' }}>-</Text>
+              <Text
+                style={{
 
-                ...{ color: '#000', fontWeight: '600', marginRight: 20, },
-              }}
-            >
-              {item.total_price.toFixed(2)}
-            </Text>
-          </View>
+                  ...{ color: '#000', fontWeight: '600', marginRight: 20, },
+                }}
+              >
+                {item.total_price.toFixed(2)}
+              </Text>
+            </View>
+            
+       {item.status === 'Pending' ||item.status === 'Accepted' &&   <TouchableOpacity
+            onPress={() => {
+              order_canceld(item.resord_id)
+            }}
+            style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancel Order</Text>
+          </TouchableOpacity>}
           </View>
           {/* {item.status === 'Accepted' && isExpand && (
             <View
@@ -483,6 +539,18 @@ export default function MyOrders() {
 }
 
 const styles = StyleSheet.create({
+  cancelButton: {
+    backgroundColor: '#FFDADA', // Light red background color
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10
+  },
+  cancelButtonText: {
+    color: '#FF0000', // Red text color
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   container: {
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -557,7 +625,7 @@ const styles = StyleSheet.create({
 
   },
   totalPriceText: {
-    fontSize:12,
+    fontSize: 12,
     color: '#000',
     fontWeight: '500',
 

@@ -192,6 +192,7 @@ export default function RestaurantDetails({route}) {
                 }}>
                 <FlatList
                   horizontal={true}
+                  showsHorizontalScrollIndicator={false}
                   data={StarData}
                   renderItem={({item, index}) => (
                     <>
@@ -307,6 +308,7 @@ export default function RestaurantDetails({route}) {
                        <FlatList
                             horizontal={true}
                             data={StarData}
+                            showsHorizontalScrollIndicator={false}
                             renderItem={({item, index}) => (
                               <>
                                 {index + 1 <

@@ -386,6 +386,60 @@ export const addres_list = createAsyncThunk(
     }
   },
 );
+export const user_order_status = createAsyncThunk(
+  'user_order_status',
+  async (params, thunkApi) => {
+    try {
+      // Create form data with identity and otp
+
+      console.log('user_order_status=>>>>', params);
+      const formdata = new FormData();
+
+      formdata.append("order_id", params.order_id);
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      // Create request options
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/user/order/user-order-status`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('user_order_status =>>>>>>>>>>>>> :', responseData.data);
+
+
+      if (responseData.success) {
+        console.log('user_order_status ', responseData.message);
+        successToast("Your order has been successfully canceled.")
+      } else {
+        //errorToast(responseData.message); 
+        console.log('user_order_status ', responseData.message);
+      }
+
+
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
 
 
 export const add_cart = createAsyncThunk(
@@ -1337,6 +1391,20 @@ const FeatureSlice = createSlice({
       state.getTopRated_restaurants = action.payload;
     });
     builder.addCase(get_top_rated_restaurants.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(user_order_status.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(user_order_status.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+     
+    });
+    builder.addCase(user_order_status.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;

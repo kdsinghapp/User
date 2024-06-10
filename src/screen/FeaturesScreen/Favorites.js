@@ -20,6 +20,7 @@ import ScreenNameEnum from '../../routes/screenName.enum';
 import FavAdd from '../../assets/sgv/addFav.svg';
 import Pin from '../../assets/sgv/Pin.svg';
 import Clock from '../../assets/sgv/Clock.svg';
+import Ratting from '../../configs/Ratting';
 
 export default function Favorites() {
   const [chooseBtn, setChooseBtn] = useState(true);
@@ -53,6 +54,8 @@ export default function Favorites() {
     });
   };
 
+
+  console.log();
   const Restaurant = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -68,10 +71,12 @@ export default function Favorites() {
           
         />
         <View style={styles.ratingContainer}>
-          <Star width={15} height={15} />
-          <Text style={styles.ratingText}>
-            {item.restorent_data?.res_average_rating} ({item.res_rating_count} Reviews)
-          </Text>
+      
+          <View style={{flexDirection:'row',marginVertical:5,alignItems:'center',marginLeft:-6}}>
+    
+    <Ratting  Ratting={item.restorent_data?.res_average_rating}/>
+    <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.restorent_data?.res_average_rating} ({item.restorent_data?.res_rating_count} )</Text>
+    </View>
         </View>
       </View>
       <View style={styles.restaurantInfoContainer}>
@@ -115,8 +120,15 @@ export default function Favorites() {
           <Text style={styles.foodName}>{item.dish_data?.restaurant_dish_name}</Text>
           <Text style={styles.foodDescription}>{item.dish_data?.restaurant_dish_description}</Text>
         </View>
+        <View style={{flexDirection:'row',
+        position:'absolute',alignSelf:'flex-end',
+        marginVertical:5,alignItems:'center',marginLeft:-6}}>
+    
+    <Ratting  Ratting={item.dish_data?.restaurant_dish_rating}/>
+    <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.dish_data?.restaurant_dish_rating}</Text>
+    </View>
         <View style={styles.foodPriceContainer}>
-          <Text style={styles.foodPrice}>{item.dish_data?.restaurant_dish_price}</Text>
+          <Text style={styles.foodPrice}>price :- {item.dish_data?.restaurant_dish_price}</Text>
           <TouchableOpacity 
             onPress={() => {
               delete_favorite(item.resfav_id);

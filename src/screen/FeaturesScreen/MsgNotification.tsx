@@ -91,11 +91,14 @@ import Loading from '../../configs/Loader';
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {isLoading?<Loading />:null}
-          <ProfileHeader name={'Notification'} width={26} />
+            <View style={{marginHorizontal:10}}>
+
+          <ProfileHeader name={'Notification'} />
+            </View>
     
           <View style={styles.notificationContainer}>
-          {Notification?.length >0 ? <FlatList
-                data={Notification}
+          {data?.length >0 ? <FlatList
+                data={data}
                 renderItem={({ item }) => <RecentListItem item={item} />}
                 keyExtractor={(item) => item.id}
                 ListFooterComponent={() => <View style={styles.footer} />}

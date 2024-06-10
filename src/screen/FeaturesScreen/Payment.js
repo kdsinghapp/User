@@ -237,6 +237,7 @@ console.log(Camount<totalBill);
         token: user?.token,
       };
       await dispatch(get_order_data_by_id(params));
+      
     } catch (err) {
       console.error(err);
     }
@@ -295,6 +296,7 @@ console.log(Camount<totalBill);
       await dispatch(create_order(params)).then(res => {
         // Call the get_order function after order creation
         get_order();
+        navigation.goBack()
       });
     } catch (err) {
       console.log(err);
