@@ -60,19 +60,12 @@ export default function Favorites() {
       }}
       style={[styles.shadow, styles.restaurantContainer]}
     >
-      <TouchableOpacity 
-        onPress={() => {
-          delete_favorite(item.resfav_id);
-        }}
-        style={styles.favoriteIconContainer}
-      >
-        <FavAdd />
-      </TouchableOpacity>
+      
       <View style={styles.restaurantImageContainer}>
         <Image
           source={{ uri: item.restorent_data?.res_image }}
           style={styles.restaurantImage}
-          resizeMode="contain"
+          
         />
         <View style={styles.ratingContainer}>
           <Star width={15} height={15} />
@@ -93,6 +86,14 @@ export default function Favorites() {
           <Text style={styles.iconText}>{item.restorent_data?.res_updated_at}</Text>
         </View>
       </View>
+      <TouchableOpacity 
+        onPress={() => {
+          delete_favorite(item.resfav_id);
+        }}
+        style={styles.favoriteIconContainer}
+      >
+        <FavAdd />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -236,14 +237,22 @@ const styles = StyleSheet.create({
     color: '#352C48',
   },
   shadow: {
-    // Add your shadow styles here if any
+    shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 2,
+},
+shadowOpacity: 0.25,
+shadowRadius: 3.84,
+
+elevation: 5,
   },
   restaurantContainer: {
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 5,
     width: wp(90),
-    height: hp(45),
+    height: hp(40),
     marginVertical: 10,
   },
   favoriteIconContainer: {
@@ -253,7 +262,7 @@ const styles = StyleSheet.create({
     top: 5,
   },
   restaurantImageContainer: {
-    height: '62%',
+    height: '55%',
     marginTop: 5,
     width: '100%',
     padding: 5,
@@ -271,7 +280,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     height: 25,
-    bottom: 35,
+    bottom:15,
     left: 20,
     flexDirection: 'row',
   },
@@ -285,6 +294,7 @@ const styles = StyleSheet.create({
   restaurantInfoContainer: {
     marginHorizontal: 10,
     marginTop: 10,
+
   },
   restaurantName: {
     fontSize: 14,
@@ -313,19 +323,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: 'center',
     backgroundColor: '#FFFFFF',
+    flexDirection:'row',
     marginVertical: 10,
     padding: 10,
-    width: '95%',
+    marginHorizontal:20,
+    paddingHorizontal:10,
     justifyContent: 'center',
   },
   foodImageContainer: {
-    height: 100,
-    marginLeft: 5,
-    width: 100,
+    height:90,
+    marginLeft:30,
+    width:90,
+
   },
   foodImage: {
-    height: '100%',
-    width: '100%',
+    height: '90%',
+    width: '90%',
     borderRadius: 15,
     borderColor: '#7756FC',
   },

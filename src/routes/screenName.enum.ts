@@ -26,6 +26,10 @@ DISH_INFORMATION = 'DISH_INFORMATION',
 SEARCH_RESTAURANT ='SEARCH_RESTAURANT',
 PAYMENT_SCREEN ='PAYMENT_SCREEN',
 CART_SCREEN ='CART_SCREEN',
+CATEGORY_DISHES ="CATEGORY_DISHES",
+AllPopularDishes='AllPopularDishes',
+MsgNotification='MsgNotification',
+getTopRatedRestaurants='getTopRatedRestaurants',
 
 //profile
 MY_ORDER = 'MY_ORDER',

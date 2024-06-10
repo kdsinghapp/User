@@ -127,7 +127,7 @@ export default function Cart() {
             {item.dish_data?.restaurant_dish_description}
           </Text>
           <Text style={styles.dishPrice}>
-            {item.dish_data?.restaurant_dish_price}
+            {item.dish_data?.restaurant_dish_price*item.quantity}
           </Text>
         </View>
         <View style={styles.quantityContainer}>

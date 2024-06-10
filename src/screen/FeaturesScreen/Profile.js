@@ -269,7 +269,7 @@ const Account = [
   {
     name: 'My Order',
    
-    screen: ScreenNameEnum.MY_ORDER
+    screen: ScreenNameEnum.BOOKING_SCREEN
   },
   {
     name: 'Addresses',

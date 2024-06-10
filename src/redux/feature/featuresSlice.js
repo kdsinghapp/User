@@ -19,7 +19,10 @@ const initialState = {
   OrderDetails: null,
   generalInfo: null,
   coupon_list: null,
-  CouponCodeData: null
+  CouponCodeData: null,
+  CategoryDish: null,
+  PopularDish: null,
+  getTopRated_restaurants:null,
 };
 
 export const get_HomeDashBoard = createAsyncThunk(
@@ -808,6 +811,223 @@ export const get_order_data_by_id = createAsyncThunk(
     }
   },
 );
+
+export const get_category_dish = createAsyncThunk(
+  'get_category_dish',
+  async (params, thunkApi) => {
+    console.log('================get_category_dish=APi===================', params);
+    try {
+      // Create form data with identity and otp
+      console.log('============get_order_data_by_id========================');
+      console.log(params.data);
+      console.log('====================================');
+      const formdata = new FormData();
+
+      formdata.append("category_id", params.category_id);
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      // Create request options
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/home/get-dish-by-category`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('restaurant/get-order-data-by-id=>>>>>>>>>>>>> :', responseData);
+
+      // Handle successful response
+      if (responseData.success) {
+        //successToast(responseData.message);
+        //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+      } else {
+        //errorToast(responseData.message); 
+        console.log('restaurant/get-order-data-by-id', responseData.message);
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
+export const add_review = createAsyncThunk(
+  'add_review',
+  async (params, thunkApi) => {
+    console.log('================add_review=APi===================', params);
+    try {
+      // Create form data with identity and otp
+
+      const formdata = new FormData();
+
+      formdata.append("resrev_restaurants_id", params.resrev_restaurants_id);
+      formdata.append("resrev_rating", params.resrev_rating);
+      formdata.append("resrev_review_text", params.resrev_review_text);
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      // Create request options
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/home/add-review`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('add_review>>>>>>>>>>>> :', responseData.data);
+
+
+      if (responseData.success) {
+        successToast(responseData.message);
+        //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+      } else {
+        //errorToast(responseData.message); 
+        console.log('radd_review', responseData.message);
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
+export const get_popular_dish = createAsyncThunk(
+  'get_popular_dish',
+  async (params, thunkApi) => {
+    console.log('================get_popular_dish=APi===================', params);
+    try {
+      // Create form data with identity and otp
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      // Create request options
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        body: null,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/home/get-popular-dish`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('get_popular_dish=>>>>>>>>>>>>> :', responseData);
+
+      // Handle successful response
+      if (responseData.success) {
+        //successToast(responseData.message);
+        //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+      } else {
+        //errorToast(responseData.message); 
+        console.log('get_popular_dish', responseData.message);
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
+export const get_top_rated_restaurants = createAsyncThunk(
+  'get_top_rated_restaurants',
+  async (params, thunkApi) => {
+    console.log('================get_top_rated_restaurants=APi===================', params);
+    try {
+      // Create form data with identity and otp
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+
+      // Create request options
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        body: null,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/home/get-top-rated-restaurants`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('get_top_rated_restaurants=>>>>>>>>>>>>> :', responseData);
+
+      // Handle successful response
+      if (responseData.success) {
+        //successToast(responseData.message);
+        //params.navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+      } else {
+        //errorToast(responseData.message); 
+        console.log('get_top_rated_restaurants', responseData.message);
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
 export const general_setting = createAsyncThunk(
   'general_setting',
   async (params, thunkApi) => {
@@ -866,8 +1086,8 @@ export const general_setting = createAsyncThunk(
 export const update_cart = createAsyncThunk(
   'update_cart',
   async (params, thunkApi) => {
-    console.log('===============update_cart=====================');
-    console.log(params.data);
+    console.log('===============update_cart=====================', params.data);
+
 
     try {
       const myHeaders = new Headers();
@@ -892,12 +1112,12 @@ export const update_cart = createAsyncThunk(
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log(response.message);
+
           if (response.success) {
 
-
+            console.log('update cart =>>>>>>>>>>>>>>>', respons);
             //  successToast(response.message);
-            params.navigation.goBack()
+
             return response.data;
           } else {
             errorToast(response.message);
@@ -1103,6 +1323,62 @@ const FeatureSlice = createSlice({
       state.OrderDetails = action.payload;
     });
     builder.addCase(get_order_data_by_id.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(get_top_rated_restaurants.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_top_rated_restaurants.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.getTopRated_restaurants = action.payload;
+    });
+    builder.addCase(get_top_rated_restaurants.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(add_review.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(add_review.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+
+    });
+    builder.addCase(add_review.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(get_category_dish.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_category_dish.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.CategoryDish = action.payload;
+    });
+    builder.addCase(get_category_dish.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(get_popular_dish.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_popular_dish.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.PopularDish = action.payload;
+    });
+    builder.addCase(get_popular_dish.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;

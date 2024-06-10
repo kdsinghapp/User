@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   TextInput,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {styles} from '../../configs/Styles';
+
 import Star from '../../assets/sgv/star.svg';
 import BStar from '../../assets/sgv/StarBlack.svg';
 import DarkStar from '../../assets/sgv/darkStar.svg';
@@ -22,6 +23,8 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {get_RestauRantDetails} from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
+import RestaurantTime from './RestaurantTime';
+import RestaurantReview from './Review';
 export default function RestaurantDetails({route}) {
   const [showData, setShowData] = useState('Products');
   const {res_id} = route.params;
@@ -109,7 +112,7 @@ export default function RestaurantDetails({route}) {
             lineHeight: 18,
           }}>
           {index == 0 && RestauRantDetails.restaurant.res_address}
-          {index == 1 && RestauRantDetails.restaurant.res_contanct}
+          {index == 1 && RestauRantDetails.restaurant.res_mobile}
           {index == 2 && RestauRantDetails.restaurant.res_email}
         </Text>
       </View>
@@ -245,7 +248,7 @@ export default function RestaurantDetails({route}) {
                     Popular Dishes
                   </Text>
 
-                  <TouchableOpacity style={{width: '15%'}}>
+                  {/* <TouchableOpacity style={{width: '15%'}}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -255,7 +258,7 @@ export default function RestaurantDetails({route}) {
                       }}>
                       See all
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <View style={{marginTop: 10}}>
                 {RestauRantDetails?.popular_items &&  <PopularDishList data={res_id}  home={false}/> }
@@ -273,7 +276,7 @@ export default function RestaurantDetails({route}) {
           
                
                 {showData == 'Review' && (
-                  
+                
                   <>
                     <View
                       style={{
@@ -322,7 +325,7 @@ export default function RestaurantDetails({route}) {
                           />  
 
                         </View>
-                        <View style={{justifyContent: 'center'}}>
+                        <View style={{justifyContent: 'center',marginLeft:10}}>
                           <Text
                             style={{
                               fontSize: 12,
@@ -331,21 +334,11 @@ export default function RestaurantDetails({route}) {
                               fontWeight: '700',
                               color: '#000',
                             }}>
-                            {`(${RestauRantDetails.restaurant.res_rating_count})`}
+                            {`(${RestauRantDetails?.review.length})`}
                           </Text>
                         </View>
                       </View>
-                      <TouchableOpacity style={{width: '15%'}}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '500',
-                            color: '#E79B3F',
-                            lineHeight: 27,
-                          }}>
-                          See all
-                        </Text>
-                      </TouchableOpacity>
+                      
                     </View>
 
                     <View
@@ -376,110 +369,13 @@ export default function RestaurantDetails({route}) {
                           stars, the better the experience.
                         </Text>
                       </View>
-                      <View style={{flexDirection: 'row', marginTop: 10}}>
-                        <View
-                          style={{
-                            borderWidth: 2,
-                            height: 30,
-                            borderRadius: 7,
-                            width: 30,
-                            borderColor: '#F6D060',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Star height={25} width={25} />
-                        </View>
-                        <View
-                          style={{
-                            borderWidth: 2,
-                            height: 30,
-                            marginLeft: 10,
-                            borderRadius: 7,
-                            width: 30,
-                            borderColor: '#F6D060',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Star height={25} width={25} />
-                        </View>
-                        <View
-                          style={{
-                            borderWidth: 2,
-                            height: 30,
-                            marginLeft: 10,
-                            borderRadius: 7,
-                            width: 30,
-                            borderColor: '#84888F',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <DarkStar height={25} width={25} fill="#84888F" />
-                        </View>
-                        <View
-                          style={{
-                            borderWidth: 2,
-                            height: 30,
-                            marginLeft: 10,
-                            borderRadius: 7,
-                            width: 30,
-                            borderColor: '#84888F',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <DarkStar height={25} width={25} fill="#84888F" />
-                        </View>
-                        <View
-                          style={{
-                            borderWidth: 2,
-                            height: 30,
-                            marginLeft: 10,
-                            borderRadius: 7,
-                            width: 30,
-                            borderColor: '#84888F',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <DarkStar height={25} width={25} fill="#84888F" />
-                        </View>
-                      </View>
+                    
                     </View>
-                    <View
-                      style={{
-                        marginVertical: hp(2),
-                        paddingHorizontal: 10,
-                        backgroundColor: '#F7F8F8',
-                        borderRadius: 10,
-                        height: hp(15),
-                        width: '100%',
-                      }}>
-                      <TextInput
-                        multiline={true}
-                        style={{fontSize: 16, fontStyle: '500', color: '#000'}}
-                        placeholderTextColor={'#ADA4A5'}
-                        placeholder="Comment your review."
-                      />
-                    </View>
+                    <RestaurantReview  restaurant={RestauRantDetails?.restaurant}/>
 
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: '#352C48',
 
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 30,
-                        height: 60,
-                      }}>
-                      <Text
-                        style={{
-                          color: '#FFF',
-                          fontSize: 17,
-                          fontWeight: '600',
-                          lineHeight: 25.5,
-                        }}>
-                        Submit
-                      </Text>
-                    </TouchableOpacity>
-                    <View style={{height: hp(20)}} />
+               
+                    <View style={{height: hp(40)}} />
                   </>
                 )}
           
@@ -490,7 +386,9 @@ export default function RestaurantDetails({route}) {
                     <View
                       style={{
                         paddingHorizontal: 15,
-                        paddingVertical: 15,
+                        paddingVertical:5,
+                      
+                        height:hp(10)
                       }}>
                       <Text
                         style={{
@@ -510,7 +408,27 @@ export default function RestaurantDetails({route}) {
                         }}>
                         {RestauRantDetails?.restaurant.res_description}
                       </Text>
+                      <Text style={styles.closedDay}>Closed on: {RestauRantDetails?.restaurant.res_weekly_closed}</Text>
                     </View>
+
+
+                    <View
+                      style={{                      
+                        justifyContent: 'center',
+                        paddingHorizontal: 15,
+                     
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          lineHeight: 30,
+                          fontWeight: '800',
+                          color: '#000',
+                        }}>
+                        Restaurant timing
+                      </Text>
+                    </View>
+<RestaurantTime   restaurant={RestauRantDetails?.restaurant} />
                     <View
                       style={{
                         marginVertical: 10,
@@ -557,7 +475,7 @@ export default function RestaurantDetails({route}) {
                           color: '#000',
                           marginLeft: 10,
                         }}>
-                        {RestauRantDetails.restaurant.res_address}
+                        Location
                       </Text>
                     </View>
                     <TouchableOpacity
@@ -584,6 +502,14 @@ export default function RestaurantDetails({route}) {
   );
 }
 
+
+const styles= StyleSheet.create({
+  closedDay: {
+    fontSize: 16,
+    color: '#E74C3C',
+    marginBottom: 20,
+  },
+})
 const data = [
   {id: 1, name: 'Products',},
   {id: 2, name: 'Review'},

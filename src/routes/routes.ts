@@ -6,8 +6,10 @@ import CartRoutes from "../navigators/Cart_Stack";
 import ProfileRoutes from "../navigators/Profile_Stack";
 import TabNavigator from "../navigators/TabNavigator";
 import AskLocation from "../screen/AskLocation";
+import CategoryDishes from "../screen/CategoryDishes";
 import AddNewCard from "../screen/FeaturesScreen/AddNewCard";
 import Address from "../screen/FeaturesScreen/Address";
+import AllPopularDishes from "../screen/FeaturesScreen/AllPopularDishes";
 
 import Cart from "../screen/FeaturesScreen/Cart";
 import ChangePassword from "../screen/FeaturesScreen/ChangePassword";
@@ -16,6 +18,7 @@ import DishInformation from "../screen/FeaturesScreen/DishInformation";
 import EditProfile from "../screen/FeaturesScreen/EditProfile";
 import Favorites from "../screen/FeaturesScreen/Favorites";
 import Home from "../screen/FeaturesScreen/Home";
+import MsgNotification from "../screen/FeaturesScreen/MsgNotification";
 import MyOrder from "../screen/FeaturesScreen/MyOrder";
 import MyOrders from "../screen/FeaturesScreen/Myorders";
 import Notification from "../screen/FeaturesScreen/Notification";
@@ -25,6 +28,7 @@ import Profile from "../screen/FeaturesScreen/Profile";
 import RestaurantDetails from "../screen/FeaturesScreen/RestaurantDetails";
 import Search_Restaurants from "../screen/FeaturesScreen/SearchRestaurant";
 import TrackOrder from "../screen/FeaturesScreen/TrackOrder";
+import getTopRatedRestaurants from "../screen/FeaturesScreen/getTopRatedRestaurants";
 import Location from "../screen/Location";
 import Login from "../screen/Login";
 import OtpScreen from "../screen/OtpScreen";
@@ -126,6 +130,23 @@ const _routes = {
     {
       name: ScreenNameEnum.NOTIFICATION_SCREEN,
       Component:Notification ,
+    },
+    
+    {
+      name: ScreenNameEnum.CATEGORY_DISHES,
+      Component:CategoryDishes ,
+    },
+    {
+      name: ScreenNameEnum.AllPopularDishes,
+      Component:AllPopularDishes ,
+    },
+    {
+      name: ScreenNameEnum.MsgNotification,
+      Component:MsgNotification ,
+    },
+    {
+      name: ScreenNameEnum.getTopRatedRestaurants,
+      Component:getTopRatedRestaurants ,
     },
     
   ],

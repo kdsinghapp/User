@@ -193,7 +193,7 @@ console.log(Camount<totalBill);
       }}
       style={{
         height: hp(8),
-        backgroundColor: '#fff',
+        backgroundColor:CouponCode==item.coupon_code?'#d0f5da': '#fff',
         paddingHorizontal: 10, marginTop: 10,
         borderRadius: 15, width: wp(90), marginLeft: 10, shadowColor: "#000",
         marginVertical: 10,
@@ -220,6 +220,10 @@ console.log(Camount<totalBill);
           USE {item.coupon_code}| ON SELECT ITEMS
         </Text>
       </View>
+      {CouponCode ==item.coupon_code&&
+      <Text style={{marginLeft:'15%',color:'#777777',fontWeight:'700'}}>Coupon Apply</Text>
+
+      }
     </TouchableOpacity>
   )
 

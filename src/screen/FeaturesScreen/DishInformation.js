@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,19 +9,20 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Star from '../../assets/sgv/star.svg';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
-import {add_cart} from '../../redux/feature/featuresSlice';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useDispatch, useSelector } from 'react-redux';
+import { add_cart } from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
+import ScreenNameEnum from '../../routes/screenName.enum';
 
 export default function DishInformation() {
   const route = useRoute();
-  const {item} = route.params;
+  const { item } = route.params;
   const navigation = useNavigation();
   const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false); // State to track if item is added to cart
   const dispatch = useDispatch();
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -29,10 +31,8 @@ export default function DishInformation() {
 
   const user = useSelector(state => state.auth.userData);
   const isLoading = useSelector(state => state.feature.isLoading);
-  console.log('==================item==================',item);
 
   const add_To_cart = async () => {
-   
     const params = {
       data: {
         user_id: user?.user_data.id,
@@ -40,10 +40,17 @@ export default function DishInformation() {
         quantity: quantity,
       },
       token: user?.token,
-      navigation:navigation
+      navigation: navigation,
     };
 
     dispatch(add_cart(params));
+
+    // Set addedToCart to true after adding to cart
+    setAddedToCart(true);
+  };
+
+  const goToCart = () => {
+    navigation.navigate(ScreenNameEnum.CART_STACK);
   };
 
   return (
@@ -51,8 +58,8 @@ export default function DishInformation() {
       {isLoading ? <Loading /> : null}
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
-          source={{uri: item.restaurant_dish_image}}
-          style={{height: hp(30)}}>
+          source={{ uri: item.restaurant_dish_image }}
+          style={{ height: hp(30) }}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Image
@@ -113,16 +120,23 @@ export default function DishInformation() {
       <TouchableOpacity onPress={add_To_cart} style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Add To Cart</Text>
       </TouchableOpacity>
+      {/* Render "Go To Cart" button if item is added to cart */}
+      {addedToCart && (
+        <TouchableOpacity onPress={goToCart} style={styles.goToCartButton}>
+          <Text style={styles.addToCartText}>Go To Cart</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#fff'
+    backgroundColor: '#fff',
   },
-
   header: {
     height: hp(15),
     justifyContent: 'center',
@@ -221,6 +235,18 @@ const styles = StyleSheet.create({
     bottom: 10,
     alignSelf: 'center',
     backgroundColor: '#7756FC',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 47,
+  },
+  goToCartButton: {
+    marginTop: hp(17),
+    width: '90%',
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+    backgroundColor: '#352C48',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',

@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { styles } from '../configs/Styles';
-import Star from '../assets/sgv/star.svg';
+
 import Plus from '../assets/sgv/Plus.svg';
 import Clock from '../assets/sgv/Clock.svg';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import FavAdd from '../assets/sgv/addFav.svg';
 import Fav from '../assets/sgv/Favorites.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { Add_FavoriteList, get_RestauRantDetails } from '../redux/feature/featuresSlice';
+import Ratting from './Ratting';
 export default function PopularDishList({ ...props }) {
   const user = useSelector(state => state.auth.userData);
   const navigation = useNavigation()
@@ -91,13 +92,22 @@ export default function PopularDishList({ ...props }) {
         {item.fav ? <FavAdd height={20} /> : <Fav height={20} />}
       </TouchableOpacity>
 
+
+
       <View
         style={{
-          marginTop: 5,
           flexDirection: 'row',
-        }}>
-        <Star width={15} height={15} />
+          alignItems: 'center',
+          marginLeft: 10,
+          borderWidth: 1,
 
+        }}>
+        
+      </View>
+      <View style={{flexDirection:'row',marginVertical:5,alignItems:'center',marginLeft:-6}}>
+
+      <Ratting  Ratting={item.restaurant_dish_rating}/>
+      <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.restaurant_dish_rating}</Text>
       </View>
 
       <View style={{ flexDirection: 'row' }}>
@@ -140,7 +150,7 @@ export default function PopularDishList({ ...props }) {
   return (
     <View>
       <FlatList
-        data={props.home?props.data:RestauRantDetails?.popular_items}
+        data={props.home ? props.data : RestauRantDetails?.popular_items}
         renderItem={PopularDishes}
 
         horizontal={true}
@@ -149,4 +159,5 @@ export default function PopularDishList({ ...props }) {
     </View>
   )
 }
+
 

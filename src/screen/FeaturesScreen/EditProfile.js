@@ -61,31 +61,32 @@ export default function EditProfile() {
 
   const handleSave = () => {
 
-    const data = new FormData();
-    
-    data.append('full_name', FullName);
-    data.append('date_of_birth', Dob.toISOString().split('T')[0],);
-    data.append('home_town', address);
-    data.append('email', params.email);
-    data.append('mobile_number', Mobile);
-    data.append('images', profile?.path
-    ? {
-      uri:
-        Platform.OS === 'android'
-          ? profile.path
-          : profile?.path?.replace('file://', ''),
-      type: profile.mime,
-      name: `image${user?.user_data.useres_id}.png`,
-    }
-    : {
-      uri: imageUrl,
-      type: 'image/jpeg',
-      name: `image${user?.user_data.useres_id}.png`,
-    },);
+    const formData = new FormData();
+
+    formData.append('full_name', FullName);
+    formData.append('date_of_birth', Dob.toISOString().split('T')[0],);
+    formData.append('home_town', address);
+    formData.append('mobile_number', Mobile);
+    formData.append('images', profile?.path
+      ? {
+        uri:
+          Platform.OS === 'android'
+            ? profile.path
+            : profile?.path?.replace('file://', ''),
+        type: profile.mime,
+        name: `image${user?.user_data.useres_id}.png`,
+      }
+      : {
+        uri: imageUrl,
+        type: 'image/jpeg',
+        name: `image${user?.user_data.useres_id}.png`,
+      },);
+
+
 
     const params = {
-   
-      data:data,
+
+      data: formData,
       token: user?.token,
     };
 
@@ -111,7 +112,7 @@ export default function EditProfile() {
             <Image source={{ uri: imageUrl }} style={styles.profileImage} />
           ) : (
             <Text style={styles.profileInitial}>
-            {FullName[0]?.toUpperCase()}
+              {FullName[0]?.toUpperCase()}
             </Text>
           )}
           <View style={styles.editIcon}>
@@ -138,26 +139,32 @@ export default function EditProfile() {
 
         <View>
           <View
-          style={{borderWidth:2,height:55,borderColor:'#EBEBEB',borderRadius:10,
-          flexDirection:'row',alignItems:'center',justifyContent:'space-between',
-          
-          paddingHorizontal:10}}
-      >
-            <View>
-            <Text style={{fontWeight: '500',
-                fontSize: 14,color:'#9DB2BF'}}>Date of Birth</Text>
-            <Text style={{ color: '#000000',marginTop:5,
-                fontWeight: '500',
-                fontSize: 14,}}>{Dob ? Dob.toISOString().split('T')[0] : 'DD/MM/YYYY'}</Text>
-                </View>
+            style={{
+              borderWidth: 2, height: 55, borderColor: '#EBEBEB', borderRadius: 10,
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
 
-                <TouchableOpacity
-                    onPress={() => setDatePickerVisible(true)}
-                >
-<Image  source={require('../../assets/croping/calendar.png')}
-style={{height:20,width:20}}
-/>
-                </TouchableOpacity>
+              paddingHorizontal: 10
+            }}
+          >
+            <View>
+              <Text style={{
+                fontWeight: '500',
+                fontSize: 14, color: '#9DB2BF'
+              }}>Date of Birth</Text>
+              <Text style={{
+                color: '#000000', marginTop: 5,
+                fontWeight: '500',
+                fontSize: 14,
+              }}>{Dob ? Dob.toISOString().split('T')[0] : 'DD/MM/YYYY'}</Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => setDatePickerVisible(true)}
+            >
+              <Image source={require('../../assets/croping/calendar.png')}
+                style={{ height: 20, width: 20 }}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -177,18 +184,29 @@ style={{height:20,width:20}}
             Private
           </Text>
         </View>
-
         <View>
-          <TextInputField
-            onChangeText={setEmail}
-            isFocus={isFocus}
-            name={'Email'}
-            placeholder={email || 'Email'}
-            firstLogo={false}
-            showEye={false}
-          />
-        </View>
+          <View
+            style={{
+              borderWidth: 2, height: 55, borderColor: '#EBEBEB', borderRadius: 10,
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+marginTop:10,
+              paddingHorizontal: 10
+            }}
+          >
+            <View>
+              <Text style={{
+                fontWeight: '500',
+                fontSize: 14, color: '#9DB2BF'
+              }}>Email</Text>
+              <Text style={{
+                color: '#000000', marginTop: 5,
+                fontWeight: '500',
+                fontSize: 14,
+              }}>{email}</Text>
+            </View>
 
+          </View>
+        </View>
         <View>
           <TextInputField
             onChangeText={setMobile}

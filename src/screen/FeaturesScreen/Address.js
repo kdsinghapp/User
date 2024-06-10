@@ -247,7 +247,7 @@ elevation: 5,
   },
   buttonText: {
     fontSize: 14,
-    color: '#fff',
+    color: '#000',
     fontWeight: '600',
   },
   addButton: {
@@ -257,6 +257,7 @@ elevation: 5,
     justifyContent: 'center',
     height: 50,
     borderRadius: 15,
+    borderWidth:1
   },
   listContainer: {
     flex: 1,
