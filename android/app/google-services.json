@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "373359738160",
-    "project_id": "love-eats-28fbc",
-    "storage_bucket": "love-eats-28fbc.appspot.com"
+    "project_number": "827899424269",
+    "project_id": "love-eats-f5034",
+    "storage_bucket": "love-eats-f5034.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:373359738160:android:949ce45100cbf6795ddcf5",
+        "mobilesdk_app_id": "1:827899424269:android:296d05eece536266ee2f44",
         "android_client_info": {
           "package_name": "com.food_user"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBaK5ueiNr8VRjKeBDul8yU2v8bRprHLEg"
+          "current_key": "AIzaSyB4wwCzPStOQmBVGFX8OXdxeRGkXne18BQ"
         }
       ],
       "services": {

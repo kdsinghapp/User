@@ -8,6 +8,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
 import { get_Profile } from '../../redux/feature/featuresSlice';
 import { useNavigation } from '@react-navigation/native';
+import { GOOGLE_MAPS_API_KEY } from '@env';
 
 const restaurantLocation = {
   latitude: 22.714501,
@@ -44,7 +45,7 @@ const TrackOrder = () => {
     const fetchDeliveryDetails = async () => {
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${driverLocation.latitude},${driverLocation.longitude}&destinations=${deliveryLocation.latitude},${deliveryLocation.longitude}&key=AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY`
+          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${driverLocation.latitude},${driverLocation.longitude}&destinations=${deliveryLocation.latitude},${deliveryLocation.longitude}&${GOOGLE_MAPS_API_KEY}`
         );
 
         if (!response.ok) {
@@ -118,14 +119,14 @@ const TrackOrder = () => {
           <Marker coordinate={driverLocation} title="Driver">
             <Image
               source={require('../../assets/croping/waiter.png')}
-              style={{ width: 50, height: 50 }}
+              style={{ width:50, height:50 }}
               resizeMode='contain'
             />
           </Marker>
           <MapViewDirections
             origin={driverLocation}
             destination={restaurantLocation}
-            apikey="AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY"
+            apikey={GOOGLE_MAPS_API_KEY}
             strokeWidth={4}
             strokeColor="hotpink"
             optimizeWaypoints={true}
@@ -188,11 +189,11 @@ const TrackOrder = () => {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.moreDetailsButton}>
+          {/* <TouchableOpacity style={styles.moreDetailsButton}>
             <Text style={styles.moreDetailsButtonText}>More Details</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           
-          <View style={styles.bottomSpacing} />
+          {/* <View style={styles.bottomSpacing} /> */}
         </View>
       </ImageBackground>
     </View>
