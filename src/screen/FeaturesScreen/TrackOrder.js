@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
@@ -20,7 +20,6 @@ const DriverLocation = {
   longitude: 75.887287,
   latitudeDelta: 0.01,
   longitudeDelta: 0.01,
-  
 };
 
 const deliveryLocation = {
@@ -28,10 +27,9 @@ const deliveryLocation = {
   longitude: 75.8577,
 };
 
-
-
 const TrackOrder = () => {
-const navigation =useNavigation()
+  const navigation = useNavigation();
+  const mapRef = useRef(null);
   
   const [driverLocation, setDriverLocation] = useState(DriverLocation);
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -40,14 +38,13 @@ const navigation =useNavigation()
   });
   const [Deliveryaddress, setDeliveryaddress] = useState("Delivery Location");
   const [Pickupaddress, setPickupaddress] = useState("Our Restaurant");
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchDeliveryDetails = async () => {
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${driverLocation.latitude},${driverLocation.longitude}&destinations=${deliveryLocation.latitude},${deliveryLocation.longitude}&key=AIzaSyBQDSvBppnW59UJ0ALOlGV5aMiJl6bgk70`
+          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${driverLocation.latitude},${driverLocation.longitude}&destinations=${deliveryLocation.latitude},${deliveryLocation.longitude}&key=AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY`
         );
 
         if (!response.ok) {
@@ -102,48 +99,52 @@ const navigation =useNavigation()
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           initialRegion={restaurantLocation}
-         
+          ref={mapRef}
         >
-          <Marker 
-          
-
-           
-          coordinate={restaurantLocation} title={Pickupaddress} >
-            <Image  
-            source={require('../../assets/croping/res.png')}
-            style={{ width:40, height: 40 }}
-            resizeMode='contain'
+          <Marker coordinate={restaurantLocation} title={Pickupaddress}>
+            <Image
+              source={require('../../assets/croping/res.png')}
+              style={{ width: 40, height: 40 }}
+              resizeMode='contain'
             />
           </Marker>
-          <Marker 
-   
-          coordinate={deliveryLocation} title={Deliveryaddress} 
-        
-          >
-              <Image  
-            source={require('../../assets/croping/table.png')}
-            style={{ width:40, height: 40 }}
-            resizeMode='contain'
+          <Marker coordinate={deliveryLocation} title={Deliveryaddress}>
+            <Image
+              source={require('../../assets/croping/table.png')}
+              style={{ width: 40, height: 40 }}
+              resizeMode='contain'
             />
           </Marker>
-          <Marker 
-           
-      
-          coordinate={driverLocation} title="Driver">
-             <Image  
-            source={require('../../assets/croping/waiter.png')}
-            style={{ width:50, height:50 }}
-            resizeMode='contain'
+          <Marker coordinate={driverLocation} title="Driver">
+            <Image
+              source={require('../../assets/croping/waiter.png')}
+              style={{ width: 50, height: 50 }}
+              resizeMode='contain'
             />
-
           </Marker>
-
           <MapViewDirections
             origin={driverLocation}
             destination={restaurantLocation}
-            apikey="AIzaSyBQDSvBppnW59UJ0ALOlGV5aMiJl6bgk70"
+            apikey="AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY"
             strokeWidth={4}
             strokeColor="hotpink"
+            optimizeWaypoints={true}
+            mode="DRIVING"
+            onReady={result => {
+              console.log(`Distance: ${result.distance} km`)
+              console.log(`Duration: ${result.duration} min.`)
+              mapRef.current.fitToCoordinates(result.coordinates, {
+                edgePadding: {
+                  right: 20,
+                  bottom: 20,
+                  left: 20,
+                  top: 20,
+                },
+              });
+            }}
+            onError={(errorMessage) => {
+              console.error('GOT AN ERROR', errorMessage);
+            }}
           />
         </MapView>
         <TouchableOpacity
@@ -292,12 +293,12 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top:20,
-    left:10,
+    top: 20,
+    left: 10,
     backgroundColor: 'skyblue',
     padding: 10,
-    borderRadius:5,
-    paddingHorizontal:15,
+    borderRadius: 5,
+    paddingHorizontal: 15,
     elevation: 5, // To create a shadow effect
   },
   backButtonText: {
@@ -305,8 +306,6 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   moreDetailsButton: {
-    
-
     backgroundColor: '#352C48',
     height: 60,
     alignItems: 'center',
