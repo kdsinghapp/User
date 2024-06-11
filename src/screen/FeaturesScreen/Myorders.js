@@ -387,7 +387,7 @@ export default function MyOrders() {
         </>
         )}
 
-        {item.status === 'Driver' && (
+        {item.status === 'Accepted' && (
           <View
             style={{
               flexDirection: 'row',
