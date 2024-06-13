@@ -19,6 +19,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../redux/feature/authSlice';
 import {CountryPicker} from 'react-native-country-codes-picker';
 import Loading from '../configs/Loader';
+import messaging from '@react-native-firebase/messaging';
+
 export default function Login() {
   const [identity, setIdentity] = useState();
   const [password, setPassword] = useState('');
@@ -117,7 +119,7 @@ if(identity == ''){
     }
   }
   };
-
+ 
 
   return (
     <View style={{flex: 1}}>

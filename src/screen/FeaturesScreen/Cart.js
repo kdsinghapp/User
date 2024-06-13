@@ -22,6 +22,7 @@ import {
   update_cart,
 } from '../../redux/feature/featuresSlice';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import { errorToast } from '../../configs/customToast';
 
 
 export default function Cart() {
@@ -77,6 +78,20 @@ export default function Cart() {
       get_cart_item(); // Refresh the cart items after updating
     });
   };
+
+  const checkCartItem =()=>{
+    const allSameRestaurant = cartItem.every(
+      dish => dish.dish_data.restaurant_dish_restaurant_id === cartItem[0].dish_data.restaurant_dish_restaurant_id
+    );
+  
+    if (!allSameRestaurant) {
+      return errorToast('All items must be from the same restaurant.');
+    }else{
+      navigation.navigate(ScreenNameEnum.PAYMENT_SCREEN);
+    }
+
+
+  }
 
   const handleDecrementQuantity = item => {
     if (item.quantity > 1) {
@@ -165,6 +180,17 @@ export default function Cart() {
           remove
         </Text>
       </TouchableOpacity>
+
+      <View style={{flexDirection:'row',alignItems:'center'}}>
+        <Image  
+        style={{height:60,width:60,borderRadius:30}}
+        source={{uri:item.restaurant_data?.res_image}}
+        />
+        <View style={{marginLeft:10}}>
+        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name}</Text>
+        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address}</Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
@@ -191,7 +217,8 @@ export default function Cart() {
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate(ScreenNameEnum.PAYMENT_SCREEN);
+                  checkCartItem()
+                 
                 }}
                 style={styles.checkoutButton}>
                 <Text style={styles.checkoutButtonText}>Check Out</Text>

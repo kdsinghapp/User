@@ -9,8 +9,12 @@ import {
   FlatList,
   PermissionsAndroid,
   StyleSheet,
+  Alert,
 } from 'react-native';
+
+
 import React, { useEffect, useState } from 'react';
+import messaging from '@react-native-firebase/messaging';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP,
@@ -36,6 +40,7 @@ import FavAdd from '../../assets/sgv/addFav.svg';
 import Fav from '../../assets/sgv/Favorites.svg';
 import Geolocation from 'react-native-geolocation-service';
 import Ratting from '../../configs/Ratting';
+
 export default function Home() {
   const [ShowSearch, setShowSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -46,7 +51,8 @@ export default function Home() {
   const [locationName, setLocationName] = useState('');
 
   useEffect(() => {
-    getLiveLocation()
+  getLiveLocation()
+
   }, [user])
   const add_favrate = (id) => {
 
@@ -73,6 +79,41 @@ export default function Home() {
     }
 
   }
+ 
+    useEffect(() => {
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
+        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.notification));
+        console.log(remoteMessage);
+      });
+  
+      return unsubscribe;
+    }, []);
+  
+
+  useEffect(()=>{
+    const requestUserPermission = async () => {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+     const authStatus = await messaging().requestPermission();
+     const enabled =
+       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+     if (enabled) {
+       console.log('Authorization status:', authStatus);
+       const token = await messaging().getToken()
+       console.log('FCM token=>>>>>>>>>>.:', token);
+     }
+   };
+
+   requestUserPermission();
+   },[])
+
+   useEffect(()=>{
+    const token =  messaging().getToken();
+    console.log('FCM token:', token);
+   },[])
+
+
   const getLiveLocation = () => {
     Geolocation.getCurrentPosition(
       async (position) => {
@@ -81,7 +122,7 @@ export default function Home() {
         setOrigin({ latitude, longitude });
 
         try {
-          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY`);
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
           const responseData = await response.json();
 
           console.log(responseData, 'responseData');

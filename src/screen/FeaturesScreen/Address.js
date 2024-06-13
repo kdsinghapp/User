@@ -11,13 +11,14 @@ import {
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'; // Importing RadioButton
 import { useDispatch, useSelector } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { addres_delete, addres_list, update_address } from '../../redux/feature/featuresSlice';
 import ProfileHeader from './ProfileHeader';
 import Loading from '../../configs/Loader';
 import AddressModal from './Modal/AddressModal';
 import UpdateAddressModal from './Modal/UpdateAddressModal';
 import { successToast } from '../../configs/customToast';
+import ScreenNameEnum from '../../routes/screenName.enum';
 
 
 export default function Address() {
@@ -28,7 +29,7 @@ export default function Address() {
   const [updateVisible, setUpdateVisible] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null); // State to keep track of selected address
-
+const navigation= useNavigation()
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
 
@@ -151,7 +152,11 @@ console.log(id);
             />
           )}
           <TouchableOpacity
-            onPress={() => setVisible(true)}
+             onPress={() => setVisible(true)}
+
+            // onPress={()=>{
+            //   navigation.navigate(ScreenNameEnum.AddressPicker)
+            // }}
             style={styles.addButton}
           >
             <Text style={styles.buttonText}>Add New Address</Text>

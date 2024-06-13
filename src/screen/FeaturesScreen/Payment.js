@@ -7,6 +7,8 @@ import {
   FlatList,
   StyleSheet,
   TextInput,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -23,6 +25,8 @@ import { addres_list, apply_coupon, create_order, general_setting, get_Profile, 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import { errorToast } from '../../configs/customToast';
+import { current } from '@reduxjs/toolkit';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function Payment() {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
@@ -34,12 +38,15 @@ export default function Payment() {
   const [totalBill, setTotalBill] = useState(0);
   const [CouponCode, setCouponCode] = useState(0);
   const [instruction, setInstruction] = useState('');
+
+  const [locationName, setLocationName] = useState('');
   const [Camount, setCamount] = useState('');
   const [selectedPayment, setselectedPayment] = useState('Cash on Delivery');
   const getProfile = useSelector(state => state.feature?.getProfile);
   const dispatch = useDispatch();
   const isFocuse = useIsFocused()
-
+  const [markerPosition, setMarkerPosition] = useState({ latitude: 22.701384, longitude: 75.867401 });
+  const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
 
 
   useEffect(() => {
@@ -242,17 +249,67 @@ console.log(Camount<totalBill);
       console.error(err);
     }
   };
+  useEffect(()=>{
+    const requestUserPermission = async () => {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+     const authStatus = await messaging().requestPermission();
+     const enabled =
+       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+     if (enabled) {
+       console.log('Authorization status:', authStatus);
+       const token = await messaging().getToken()
+       console.log('FCM token=>>>>>>>>>>.:', token);
+     }
+   };
+
+   requestUserPermission()
+   },[])
+
+  const getLiveLocation = () => {
+    Geolocation.getCurrentPosition(
+      async (position) => {
+        console.log(position);
+        const { latitude, longitude } = position.coords;
+        setOrigin({ latitude, longitude });
+
+        try {
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
+          const responseData = await response.json();
+
+          console.log(responseData, 'responseData');
+
+          if (responseData.results && responseData.results.length > 0) {
+            // Extracting the main location from the address components
+            const mainLocation = responseData.results[0].address_components.find(component =>
+              component.types.includes('locality') || component.types.includes('administrative_area_level_1')
+            );
+            setLocationName(mainLocation ? mainLocation.long_name : 'Unknown location');
+
+            // Extracting x-goog-maps-metro-area header
+            const metroArea = response.headers.map['x-goog-maps-metro-area'];
+            console.log('Metro Area:', metroArea);
+          } else {
+            setLocationName('Unknown location');
+          }
+        } catch (error) {
+          console.error('Geocoding error:', error.message);
+          setLocationName('Error retrieving location');
+        }
+      },
+      (error) => {
+        console.error(error);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  };
+
+console.log('locationName=>>>>>>',locationName);
 
   const book_order = async () => {
     // Check if all items in the cart are from the same restaurant
-    const allSameRestaurant = cartItem.every(
-      dish => dish.dish_data.restaurant_dish_restaurant_id === cartItem[0].dish_data.restaurant_dish_restaurant_id
-    );
-  
-    if (!allSameRestaurant) {
-      return errorToast('All items must be from the same restaurant.');
-    }
+    
   
     let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
   
@@ -444,7 +501,7 @@ console.log(Camount<totalBill);
             Deliver address{' '}
           </Text>
         </View>
-        {getProfile?.address_data ? <View
+        {getProfile?.address_data && locationName == '' ? <View
           style={{
             paddingHorizontal: 15,
             paddingBottom: 10,
@@ -476,6 +533,24 @@ console.log(Camount<totalBill);
             </View>
           </View>
 
+          <TouchableOpacity
+            onPress={() => {
+              getLiveLocation()
+            }}
+            style={{ marginTop: 20 }}>
+            <Text
+              style={{
+                fontSize: 12,
+                borderBottomWidth: 0.5,
+                width: '28%',
+                borderColor: '#7756FC',
+                fontWeight: '400',
+                color: '#7756FC',
+                lineHeight: 19.98,
+              }}>
+              Current Location
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate(ScreenNameEnum.ADDRESS_SCREEN)
@@ -515,6 +590,78 @@ console.log(Camount<totalBill);
             </Text>
           </TouchableOpacity>
         }
+        {/* {locationName != '' && <View
+          style={{
+            paddingHorizontal: 15,
+            paddingBottom: 10,
+            marginTop: 10,
+          }}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={Styles.add}>
+              <Address />
+            </View>
+
+            <View
+              style={{ justifyContent: 'center', marginLeft: 10, width: '90%' }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  lineHeight: 20,
+                  fontWeight: '500',
+                  color: '#000000',
+                  width: '80%'
+                }}>
+                {getProfile?.address_data.full_name} {' '}
+                House No- {getProfile?.address_data.house_no} {' '}
+                {getProfile?.address_data.landmark}{' '}
+                {getProfile?.address_data.city}{' '}
+                {getProfile?.address_data.pincode}{' '}
+                ({getProfile?.address_data.state}){' '}
+                Mobile {getProfile?.address_data.mobile_number}{' '}
+              </Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              getLiveLocation()
+            }}
+            style={{ marginTop: 20 }}>
+            <Text
+              style={{
+                fontSize: 12,
+                borderBottomWidth: 0.5,
+                width: '28%',
+                borderColor: '#7756FC',
+                fontWeight: '400',
+                color: '#7756FC',
+                lineHeight: 19.98,
+              }}>
+              Current Location
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(ScreenNameEnum.ADDRESS_SCREEN)
+            }}
+            style={{ marginTop: 20 }}>
+            <Text
+              style={{
+                fontSize: 12,
+                borderBottomWidth: 0.5,
+                width: '28%',
+                borderColor: '#7756FC',
+                fontWeight: '400',
+                color: '#7756FC',
+                lineHeight: 19.98,
+              }}>
+              Another Location
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+         
+        } */}
 
         <View style={{ marginTop: 20, marginHorizontal: 10 }}>
           <Text

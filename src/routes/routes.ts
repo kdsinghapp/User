@@ -8,6 +8,7 @@ import TabNavigator from "../navigators/TabNavigator";
 import AskLocation from "../screen/AskLocation";
 import CategoryDishes from "../screen/CategoryDishes";
 import AddNewCard from "../screen/FeaturesScreen/AddNewCard";
+import AddressPicker from "../screen/FeaturesScreen/Addaddressmap";
 import Address from "../screen/FeaturesScreen/Address";
 import AllPopularDishes from "../screen/FeaturesScreen/AllPopularDishes";
 
@@ -147,6 +148,10 @@ const _routes = {
     {
       name: ScreenNameEnum.getTopRatedRestaurants,
       Component:getTopRatedRestaurants ,
+    },
+    {
+      name: ScreenNameEnum.AddressPicker,
+      Component:AddressPicker ,
     },
     
   ],

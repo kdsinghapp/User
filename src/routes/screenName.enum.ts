@@ -30,6 +30,7 @@ CATEGORY_DISHES ="CATEGORY_DISHES",
 AllPopularDishes='AllPopularDishes',
 MsgNotification='MsgNotification',
 getTopRatedRestaurants='getTopRatedRestaurants',
+AddressPicker='AddressPicker',
 
 //profile
 MY_ORDER = 'MY_ORDER',
