@@ -104,10 +104,7 @@ export default function MyOrders() {
           ? '#FFDADA'
           : 'rgba(255, 165, 0, 0.2)';
 
-    const totalPrice = item.order_details.reduce(
-      (acc, curr) => acc + curr.quantity * curr.price_per_unit,
-      0,
-    );
+
     const formatTime = (dateTimeString) => {
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -336,58 +333,22 @@ export default function MyOrders() {
               </Text>
             </View>
             
-       {item.status === 'Pending' ||item.status === 'Accepted' &&   <TouchableOpacity
-            onPress={() => {
-              order_canceld(item.resord_id)
-            }}
-            style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>Cancel Order</Text>
-          </TouchableOpacity>}
+            {(item.status === 'Pending' || item.status === 'Accepted') && item.delivery_status != 'Pickuped' && (
+  <TouchableOpacity
+    onPress={() => {
+      order_canceld(item.resord_id)
+    }}
+    style={styles.cancelButton}>
+    <Text style={styles.cancelButtonText}>Cancel Order</Text>
+  </TouchableOpacity>
+)}
+
           </View>
-          {/* {item.status === 'Accepted' && isExpand && (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                height: 60, // adjust as per your requirements
-                marginTop: 20,
-              }}
-            >
-              <Image
-                source={require('../../assets/croping/Call3x.png')}
-                style={{ height: 60, width: 60 }}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate(ScreenNameEnum.TRACK_ORDER);
-                }}
-                style={{
-                  backgroundColor: '#352C48',
-                  alignItems: 'center',
-                  height: 40,
-                  borderRadius: 30,
-                  justifyContent: 'center',
-                  width: '80%',
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: '500',
-                    lineHeight: 22,
-                    color: '#FFFFFF',
-                  }}
-                >
-                  Track
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )} */}
+      
         </>
         )}
 
-        {item.status === 'Accepted' && (
+        {item.delivery_status == 'Pickuped' && (
           <View
             style={{
               flexDirection: 'row',
@@ -403,7 +364,8 @@ export default function MyOrders() {
             />
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(ScreenNameEnum.TRACK_ORDER);
+                navigation.navigate(ScreenNameEnum.TRACK_ORDER,{OrderId:item.resord_id});
+              
               }}
               style={{
                 backgroundColor: '#352C48',
