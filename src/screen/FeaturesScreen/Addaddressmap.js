@@ -86,6 +86,7 @@ const AddressPicker = ({ onSave }) => {
                 }}
                 nearbyPlacesAPI="GooglePlacesSearch"
                 debounce={200}
+                enablePoweredByContainer={false} 
             />
             <Button title="Use Current Location" onPress={() => setSelectedPosition(currentPosition)} />
             <MapView
