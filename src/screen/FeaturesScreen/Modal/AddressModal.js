@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { add_address } from '../../../redux/feature/featuresSlice';
 import { errorToast } from '../../../configs/customToast';
 import Loading from '../../../configs/Loader';
-
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 const AddressModal = ({ visible, onClose, }) => {
     const screenHeight = Dimensions.get('screen').height;
     const translateY = useRef(new Animated.Value(screenHeight)).current;
@@ -33,7 +33,14 @@ const AddressModal = ({ visible, onClose, }) => {
     const [landmark, setLandmark] = useState('');
     const [state, setState] = useState('');
     const [city, setCity] = useState('');
+    const [PickupLocationlat, setPickupLocationlat] = useState({
+        lat: "",
+        lng: "",
+        place: ""
+    });
     const dispatch = useDispatch()
+
+    console.log(PickupLocationlat);
     useEffect(() => {
         if (visible) {
             openModal();
@@ -132,12 +139,63 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                             />
                         </View>
                         <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Street"
-                                style={[styles.input, !street && styles.inputError]}
-                                value={street}
-                                onChangeText={setStreet}
-                            />
+                        <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 10,
+                        backgroundColor: 'white',
+                        elevation: 3,
+                        shadowColor: 'black',
+                        borderRadius: 3,
+                        shadowOffset: {
+                            width: 0,
+                            height: 1
+                        },
+                        padding: 8,
+                        shadowOpacity: 0.15,
+                        shadowRadius: 2.84,
+                        borderRadius: 12
+                    }}>
+
+                    <GooglePlacesAutocomplete
+                        scrollEnabled={false}
+                        fetchDetails={true}
+                        GooglePlacesDetailsQuery={{ fields: 'geometry' }}
+                        placeholder={'steet'}
+                        onPress={(data, details = null) => {
+                            try{
+
+                                setPickupLocationlat({ ...PickupLocationlat, lat: details?.geometry?.location?.lat, lng: details?.geometry?.location?.lng, place: data.description });
+                            }catch(err){
+                                console.log(err);
+                            }
+                        }}
+                        styles={{
+                            description: {
+                                fontWeight: 'bold',
+                                color: 'black',
+                                width: '100%',
+                            },
+                            container: {
+                                padding: 0,
+                            },
+                            textInput: {
+                                fontSize: 12,
+                                color: '#000',
+                                height: '100%',
+                                width: '100%',
+                            },
+                        }}
+                        textInputProps={{
+                            placeholderTextColor: "#000"
+                        }}
+                        query={{
+                            key: process.env.GOOGLE_MAPS_API_KEY,
+                            language: 'en',
+                        }}
+                    />
+                </View>
                         </View>
                         <View style={styles.inputContainer}>
                             <TextInput
@@ -196,8 +254,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        marginTop:hp(25),
-        height: hp(75),
+        marginTop:hp(10),
+        height: hp(90),
     },
     inputContainer: {
         marginVertical: 10,

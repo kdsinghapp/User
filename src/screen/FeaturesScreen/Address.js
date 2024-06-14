@@ -8,18 +8,18 @@ import {
   FlatList,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
-import { RadioButton } from 'react-native-paper'; // Importing RadioButton
+import { RadioButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { addres_delete, addres_list, update_address } from '../../redux/feature/featuresSlice';
+import { addres_delete, addres_list, update_address, add_address } from '../../redux/feature/featuresSlice';
 import ProfileHeader from './ProfileHeader';
 import Loading from '../../configs/Loader';
 import AddressModal from './Modal/AddressModal';
 import UpdateAddressModal from './Modal/UpdateAddressModal';
-import { successToast } from '../../configs/customToast';
-import ScreenNameEnum from '../../routes/screenName.enum';
-
+import { successToast, errorToast } from '../../configs/customToast';
+import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 
 export default function Address() {
   const user = useSelector((state) => state.auth.userData);
@@ -28,8 +28,17 @@ export default function Address() {
   const [visible, setVisible] = useState(false);
   const [updateVisible, setUpdateVisible] = useState(false);
   const [modalData, setModalData] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState(null); // State to keep track of selected address
-const navigation= useNavigation()
+  const [CurrentLocation, setCurrentLocation] = useState({});
+  const [LocationName, setLocationName] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [street, setStreet] = useState('');
+  const [houseNo, setHouseNo] = useState('');
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false); // Add loading state for location
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [landmark, setLandmark] = useState('');
+
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
 
@@ -41,45 +50,39 @@ const navigation= useNavigation()
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
-          onPress: () => {
-           remove_address(addressId)
-          },
+          onPress: () => remove_address(addressId),
           style: 'destructive',
         },
       ]
     );
   };
 
-  const remove_address =async(id)=>{
-console.log(id);
-    const params ={
-      address_id:id,
-      token:user?.token
-    }
-
-    dispatch(addres_delete(params)).then(res=>{
+  const remove_address = async (id) => {
+    const params = {
+      address_id: id,
+      token: user?.token,
+    };
+    dispatch(addres_delete(params)).then((res) => {
       get_Address();
-    })
-  }
-  const selected_Address = (id) => {
+    });
+  };
 
+  const selected_Address = (id) => {
     let data = new FormData();
     data?.append('user_id', user?.user_data?.id);
     data?.append('address_id', id);
-    data?.append('is_selected',1);
+    data?.append('is_selected', 1);
     data?.append('long', '22.7');
     data?.append('lat', '22.7');
     const params = {
-        data: data,
-        token: user?.token,
-        isSelectes:false
-    }
-    dispatch(update_address(params)).then(res => {
-  
+      data: data,
+      token: user?.token,
+      isSelectes: false,
+    };
+    dispatch(update_address(params)).then((res) => {
       get_Address();
-    })
-};
-
+    });
+  };
 
   const get_Address = () => {
     const params = {
@@ -89,12 +92,101 @@ console.log(id);
     dispatch(addres_list(params));
   };
 
+  const getLiveLocation = async () => {
+    console.log('=+>>>>>>>>>>>caled>>>>>>>>>>');
+    setIsFetchingLocation(true); // Start loading
+
+    const locPermissionDenied = await locationPermission();
+    console.log('locPermissionDenied', locPermissionDenied);
+
+    if (locPermissionDenied == 'granted') {
+      try {
+        const { latitude, longitude } = await getCurrentLocation();
+        console.log(latitude, longitude);
+        setCurrentLocation({
+          latitude,
+          longitude,
+        });
+
+        //   Fetch additional location details from Google Maps API (uncomment if needed)
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+        try {
+          const res = await fetch(url);
+          const json = await res.json();
+
+          const addressComponents = json.results[0].address_components;
+          console.log('addressComponents', addressComponents);
+          // Extract relevant address components
+          const street = await addressComponents.find((component) => component.types.includes('route'))?.long_name || '';
+          const houseNo = await addressComponents.find((component) => component.types.includes('street_number'))?.long_name || '';
+          const city = await addressComponents.find((component) => component.types.includes('locality'))?.long_name || '';
+          const state = await addressComponents.find((component) => component.types.includes('administrative_area_level_1'))?.long_name || '';
+          const pincode = await addressComponents.find((component) => component.types.includes('postal_code'))?.long_name || '';
+
+          setLocationName(json.results[0]?.formatted_address);
+          setStreet(street);
+          setHouseNo(houseNo);
+          setCity(city);
+          setState(state);
+          setPincode(pincode);
+          setLandmark(`${houseNo}' '${street}`)
+          // Automatically add the address with the fetched details
+          handleAddCurrentLocationAddress();
+        } catch (e) {
+          console.log("Error fetching location details:", e);
+        }
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        errorToast('Failed to fetch location. Please try again.');
+        setIsFetchingLocation(false); // End loading on error
+      }
+    } else {
+      errorToast('Location permission denied');
+      setIsFetchingLocation(false); // End loading if permission is denied
+    }
+  };
+
+  const handleAddCurrentLocationAddress = () => {
+    if (!pincode || !street || !houseNo || !state || !city) {
+      setIsFetchingLocation(false); // End loading
+      return errorToast('All fields are required');
+    }
+
+    console.log('landmark',landmark);
+
+    let data = new FormData();
+    data.append('user_id', user?.user_data.id);
+    data.append('full_name', user?.user_data?.full_name);
+    data.append('mobile_number', user?.user_data?.mobile_number);
+    data.append('lat', CurrentLocation.latitude.toString());
+    data.append('long', CurrentLocation.longitude.toString());
+    data.append('pincode', pincode);
+    data.append('street', street);
+    data.append('house_no', houseNo);
+    data.append('landmark', landmark);
+    data.append('state', state);
+    data.append('city', city);
+
+    const params = {
+      data: data,
+      token: user?.token,
+    };
+
+    dispatch(add_address(params)).then((res) => {
+      successToast('Address added successfully');
+      get_Address();
+      setIsFetchingLocation(false); // End loading after API call
+    }).catch(() => {
+      setIsFetchingLocation(false); // End loading on error
+    });
+  };
+
   useEffect(() => {
     get_Address();
   }, [user, isFocussed, visible, updateVisible]);
 
   const renderItem = ({ item }) => (
-    <View style={[styles.addressContainer,styles.shdow]}>
+    <View style={[styles.addressContainer, styles.shadow]}>
       <View style={styles.addressContent}>
         <Image
           source={require('../../assets/croping/Address__.png')}
@@ -110,11 +202,10 @@ console.log(id);
         </View>
         <RadioButton
           value={item.id}
-          status={item.is_selected == 1 ?'checked':'unchecked'}
-          onPress={()=>{
+          status={item.is_selected == 1 ? 'checked' : 'unchecked'}
+          onPress={() => {
             selected_Address(item.address_id)
           }}
-         
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -147,16 +238,23 @@ console.log(id);
             <FlatList
               data={addresList}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.address_id.toString()} // Add a keyExtractor
               showsHorizontalScrollIndicator={false}
             />
           )}
           <TouchableOpacity
-             onPress={() => setVisible(true)}
-
-            // onPress={()=>{
-            //   navigation.navigate(ScreenNameEnum.AddressPicker)
-            // }}
+            onPress={getLiveLocation}
+            style={styles.addButton}
+            disabled={isFetchingLocation} // Disable button while fetching location
+          >
+            {isFetchingLocation ? (
+              <ActivityIndicator size="small" color="#0000ff" />
+            ) : (
+              <Text style={styles.buttonText}>Use Current Location</Text>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setVisible(true)}
             style={styles.addButton}
           >
             <Text style={styles.buttonText}>Add New Address</Text>
@@ -175,16 +273,15 @@ console.log(id);
 }
 
 const styles = StyleSheet.create({
-  shdow:{
+  shadow: {
     shadowColor: "#000",
-shadowOffset: {
-	width: 0,
-	height: 2,
-},
-shadowOpacity: 0.25,
-shadowRadius: 3.84,
-
-elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   container: {
     flex: 1,
@@ -192,7 +289,7 @@ elevation: 5,
     paddingHorizontal: 15,
   },
   addressContainer: {
-    padding:10,
+    padding: 10,
     marginVertical: 10,
     marginHorizontal: 5,
     paddingVertical: 10,
@@ -262,7 +359,7 @@ elevation: 5,
     justifyContent: 'center',
     height: 50,
     borderRadius: 15,
-    borderWidth:1
+    borderWidth: 1,
   },
   listContainer: {
     flex: 1,

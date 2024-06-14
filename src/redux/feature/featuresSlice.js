@@ -448,7 +448,7 @@ export const get_order_locations = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_order_locations=>>>>', params);
+      console.log('get_order_locations=>>>>', params.data);
 
 
 
@@ -604,7 +604,7 @@ export const apply_coupon = createAsyncThunk(
 export const add_address = createAsyncThunk(
   'add_address',
   async (params, thunkApi) => {
-    console.log('===============add_address=====================', params.token);
+    console.log('===============add_address=====================', params.data);
 
 
     try {
@@ -626,7 +626,7 @@ export const add_address = createAsyncThunk(
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log(response.message);
+          console.log('user/addres/create=>>>>>>>>>>>>>',response);
           if (response.success) {
 
             successToast(response.message)

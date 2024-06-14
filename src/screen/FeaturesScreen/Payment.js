@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   PermissionsAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -29,10 +30,11 @@ import { current } from '@reduxjs/toolkit';
 import Geolocation from '@react-native-community/geolocation';
 import Loading from '../../configs/Loader';
 import { WebView } from 'react-native-webview';
+import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 
 export default function Payment() {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-  const isLoading = useSelector(state => state.feature.isLoading);
+  const isLoading2 = useSelector(state => state.feature.isLoading);
   const cartItem = useSelector(state => state.feature.cartItem);
   const user = useSelector(state => state.auth.userData);
   const generalInfo = useSelector(state => state.feature.generalInfo);
@@ -40,18 +42,17 @@ export default function Payment() {
   const PayMentStatus = useSelector(state => state.feature.PayMentStatus);
   const CouponCodeData = useSelector(state => state.feature.CouponCodeData);
   const [totalBill, setTotalBill] = useState(0);
+  const [CurrentLocation, setCurrentLocation] = useState({});
   const [CouponCode, setCouponCode] = useState(0);
   const [instruction, setInstruction] = useState('');
   const [PaymentMode, setPaymentMode] = useState('')
-  const [locationName, setLocationName] = useState('');
   const [Camount, setCamount] = useState('');
   const [selectedPayment, setselectedPayment] = useState('Cash on Delivery');
   const getProfile = useSelector(state => state.feature?.getProfile);
   const dispatch = useDispatch();
   const isFocuse = useIsFocused()
-  const [markerPosition, setMarkerPosition] = useState({ latitude: 22.701384, longitude: 75.867401 });
-  const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
   const [checkoutUrl, setCheckoutUrl] = React.useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -91,9 +92,7 @@ export default function Payment() {
       setCouponCode('')
     })
   }
-  const handleItemSelect = index => {
-    setSelectedItemIndex(index);
-  };
+
   const FoosItems = ({ item }) => {
 
 
@@ -255,61 +254,8 @@ export default function Payment() {
       console.error(err);
     }
   };
-  useEffect(() => {
-    const requestUserPermission = async () => {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
 
-      if (enabled) {
-        console.log('Authorization status:', authStatus);
-        const token = await messaging().getToken()
-        console.log('FCM token=>>>>>>>>>>.:', token);
-      }
-    };
-
-    requestUserPermission()
-  }, [])
-
-  const getLiveLocation = () => {
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        console.log(position);
-        const { latitude, longitude } = position.coords;
-        setOrigin({ latitude, longitude });
-
-        try {
-          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-          const responseData = await response.json();
-
-          console.log(responseData, 'responseData');
-
-          if (responseData.results && responseData.results.length > 0) {
-            // Extracting the main location from the address components
-            const mainLocation = responseData.results[0].address_components.find(component =>
-              component.types.includes('locality') || component.types.includes('administrative_area_level_1')
-            );
-            setLocationName(mainLocation ? mainLocation.long_name : 'Unknown location');
-
-            // Extracting x-goog-maps-metro-area header
-            const metroArea = response.headers.map['x-goog-maps-metro-area'];
-            console.log('Metro Area:', metroArea);
-          } else {
-            setLocationName('Unknown location');
-          }
-        } catch (error) {
-          console.error('Geocoding error:', error.message);
-          setLocationName('Error retrieving location');
-        }
-      },
-      (error) => {
-        console.error(error);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
 
   const Stripe_api = () => {
     let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
@@ -334,6 +280,8 @@ export default function Payment() {
 
   }
 
+
+
   const book_order = async () => {
 
 
@@ -344,8 +292,8 @@ export default function Payment() {
       let data = new FormData();
       data.append('user_id', user?.user_data?.id.toString());
       data.append('total_price', Total.toString());
-      data.append('lat', '23.1964672');
-      data.append('long', '77.4012928');
+      data.append('lat', CurrentLocation.latitude);
+      data.append('long', CurrentLocation.longitude);
       data.append('restaurant_id', cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString());
       data.append('address_id', getProfile?.address_data.address_id.toString());
       data.append('tax_amount', generalInfo?.tax.toString());
@@ -400,28 +348,36 @@ export default function Payment() {
     generalInfo?.tax,
     CouponCodeData?.coupon_discount
   );
+  const handleNavigationStateChange = (navState) => {
+    if (navState.url.includes('success-stripe')) {
+      Alert.alert('Payment Success', 'Your payment was successful!');
+      book_order();
+      setCheckoutUrl(null);
+    } else if (navState.url.includes('cancel-stripe')) {
+      Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
+      setCheckoutUrl(null);
+    }
+  };
 
+  const handleError = (error) => {
+    console.error('WebView Error:', error);
+    Alert.alert('Error', 'Failed to load payment page. Please try again later.');
+    setCheckoutUrl(null);
+  };
   return (
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
+      {isLoading2 ? <Loading /> : null}
       {isLoading ? <Loading /> : null}
-
       {checkoutUrl ? (
-        <WebView
-          source={{ uri: checkoutUrl }}
-          onNavigationStateChange={(navState) => {
-            // Handle navigation changes if needed
-            if (navState.url.includes('success-stripe')) {
-              Alert.alert('Payment Success', 'Your payment was successful!');
-              book_order();
-              setCheckoutUrl(null);
-            } else if (navState.url.includes('cancel-stripe')) {
-              Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
-              setCheckoutUrl(null);
-            }
-          }}
-          style={styles.webView}
-        />
+       <WebView
+       source={{ uri: checkoutUrl }}
+       onNavigationStateChange={handleNavigationStateChange}
+       onLoadStart={() => setIsLoading(true)}
+       onLoadEnd={() => setIsLoading(false)}
+       onError={handleError}
+       style={styles.webView}
+     />
       ) :
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ marginTop: 20, paddingHorizontal: 15 }}>
@@ -548,7 +504,7 @@ export default function Payment() {
               Deliver address{' '}
             </Text>
           </View>
-          {getProfile?.address_data && locationName == '' ? <View
+          {getProfile?.address_data  ? <View
             style={{
               paddingHorizontal: 15,
               paddingBottom: 10,
@@ -580,24 +536,7 @@ export default function Payment() {
               </View>
             </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                getLiveLocation()
-              }}
-              style={{ marginTop: 20 }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  borderBottomWidth: 0.5,
-                  width: '28%',
-                  borderColor: '#7756FC',
-                  fontWeight: '400',
-                  color: '#7756FC',
-                  lineHeight: 19.98,
-                }}>
-                Current Location
-              </Text>
-            </TouchableOpacity>
+         
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate(ScreenNameEnum.ADDRESS_SCREEN)
@@ -637,78 +576,9 @@ export default function Payment() {
               </Text>
             </TouchableOpacity>
           }
-          {/* {locationName != '' && <View
-        style={{
-          paddingHorizontal: 15,
-          paddingBottom: 10,
-          marginTop: 10,
-        }}>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={Styles.add}>
-            <Address />
-          </View>
-
-          <View
-            style={{ justifyContent: 'center', marginLeft: 10, width: '90%' }}>
-            <Text
-              style={{
-                fontSize: 12,
-                lineHeight: 20,
-                fontWeight: '500',
-                color: '#000000',
-                width: '80%'
-              }}>
-              {getProfile?.address_data.full_name} {' '}
-              House No- {getProfile?.address_data.house_no} {' '}
-              {getProfile?.address_data.landmark}{' '}
-              {getProfile?.address_data.city}{' '}
-              {getProfile?.address_data.pincode}{' '}
-              ({getProfile?.address_data.state}){' '}
-              Mobile {getProfile?.address_data.mobile_number}{' '}
-            </Text>
-          </View>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            getLiveLocation()
-          }}
-          style={{ marginTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 12,
-              borderBottomWidth: 0.5,
-              width: '28%',
-              borderColor: '#7756FC',
-              fontWeight: '400',
-              color: '#7756FC',
-              lineHeight: 19.98,
-            }}>
-            Current Location
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate(ScreenNameEnum.ADDRESS_SCREEN)
-          }}
-          style={{ marginTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 12,
-              borderBottomWidth: 0.5,
-              width: '28%',
-              borderColor: '#7756FC',
-              fontWeight: '400',
-              color: '#7756FC',
-              lineHeight: 19.98,
-            }}>
-            Another Location
-          </Text>
-        </TouchableOpacity>
-
-      </View>
        
-      } */}
+       
+      
 
           <View style={{ marginTop: 20, marginHorizontal: 10 }}>
             <Text

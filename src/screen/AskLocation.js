@@ -38,6 +38,12 @@ export default function AskLocation() {
           }
       }
   };
+
+
+
+
+
+  
   return (
 
           <View style={{flex: 1, paddingHorizontal: 15, backgroundColor: '#fff'}}>
@@ -71,7 +77,7 @@ style={{height:'80%',width:'80%'}}/>
         requestLocationPermission()
        
       }}
-        style={styles.tabBtn}>
+        style={[styles.tabBtn,{marginTop:hp(10)}]}>
         <Text
           style={{
             fontWeight: '600',
@@ -81,23 +87,6 @@ style={{height:'80%',width:'80%'}}/>
             marginLeft: 10,
           }}>
         Allow Location Access
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-   style={{alignSelf:'center',height:hp(5),marginTop:20}}
-      onPress={()=>{
-        navigation.navigate(ScreenNameEnum.LOCATION_SCREEN)
-      }}
-      >
-        <Text
-          style={{
-            fontWeight: '600',
-            fontSize: 17,
-            color: '#352C48',
-            lineHeight: 25.5,
-            marginLeft: 10,
-          }}>
-    Inter Location Manually
         </Text>
       </TouchableOpacity>
     

@@ -131,7 +131,7 @@ export default function Cart() {
           <Image
             source={{ uri: item.dish_data?.restaurant_dish_image }}
             style={styles.cartItemImage}
-            resizeMode="contain"
+            resizeMode='cover'
           />
         </View>
         <View style={styles.cartItemDetails}>
@@ -286,11 +286,12 @@ elevation: 5,
     height: 73.41,
     marginTop: 5,
     width: 73.41,
+    borderRadius:10
   },
   cartItemImage: {
     height: '100%',
     width: '100%',
-    borderRadius: 15,
+    borderRadius:10,
     borderColor: '#7756FC',
   },
   cartItemDetails: {

@@ -25,7 +25,7 @@ import Star from '../../assets/sgv/star.svg';
 import Pin from '../../assets/sgv/Pin.svg';
 import Clock from '../../assets/sgv/Clock.svg';
 import { styles } from '../../configs/Styles';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import PopularDishList from '../../configs/PopularDishList';
 import Search_Restaurants from './SearchRestaurant';
@@ -40,6 +40,7 @@ import FavAdd from '../../assets/sgv/addFav.svg';
 import Fav from '../../assets/sgv/Favorites.svg';
 import Geolocation from 'react-native-geolocation-service';
 import Ratting from '../../configs/Ratting';
+import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 
 export default function Home() {
   const [ShowSearch, setShowSearch] = useState(false);
@@ -90,67 +91,54 @@ export default function Home() {
     }, []);
   
 
-  useEffect(()=>{
-    const requestUserPermission = async () => {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-     const authStatus = await messaging().requestPermission();
-     const enabled =
-       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-     if (enabled) {
-       console.log('Authorization status:', authStatus);
-       const token = await messaging().getToken()
-       console.log('FCM token=>>>>>>>>>>.:', token);
-     }
-   };
-
-   requestUserPermission();
-   },[])
 
    useEffect(()=>{
     const token =  messaging().getToken();
     console.log('FCM token:', token);
    },[])
-
-
-  const getLiveLocation = () => {
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        console.log(position);
-        const { latitude, longitude } = position.coords;
-        setOrigin({ latitude, longitude });
-
-        try {
-          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-          const responseData = await response.json();
-
-          console.log(responseData, 'responseData');
-
-          if (responseData.results && responseData.results.length > 0) {
-            // Extracting the main location from the address components
-            const mainLocation = responseData.results[0].address_components.find(component =>
-              component.types.includes('locality') || component.types.includes('administrative_area_level_1')
-            );
-            setLocationName(mainLocation ? mainLocation.long_name : 'Unknown location');
-
-            // Extracting x-goog-maps-metro-area header
-            const metroArea = response.headers.map['x-goog-maps-metro-area'];
-            console.log('Metro Area:', metroArea);
-          } else {
-            setLocationName('Unknown location');
-          }
-        } catch (error) {
-          console.error('Geocoding error:', error.message);
-          setLocationName('Error retrieving location');
+   function findCityName(response) {
+    const results = response.results;
+    for (let i = 0; i < results.length; i++) {
+      const addressComponents = results[i].address_components;
+      for (let j = 0; j < addressComponents.length; j++) {
+        const types = addressComponents[j].types;
+        if (types.includes('locality') || types.includes('administrative_area_level_2')) {
+          return addressComponents[j].long_name; // Return the city name
         }
-      },
-      (error) => {
-        console.error(error);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
+      }
+    }
+    return null; // Return null if city name not found
+  }
+
+   const getLiveLocation = async () => {
+    const locPermissionDenied = await locationPermission();
+    if (locPermissionDenied) {
+
+        const { latitude, longitude } = await getCurrentLocation();
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+        try {
+            const res = await fetch(url);
+            const json = await res.json();
+            console.log(json);
+            setLocationName(json)
+           
+
+        } catch (e) {
+            console.log("e", e)
+        } finally {
+            
+        }
+    }
+};
+
+useFocusEffect(
+    React.useCallback(() => {
+      
+        getLiveLocation()
+      
+    }, [])
+)
+
   const searchDataByName = query => {
     const lowercaseQuery = query.toLowerCase();
     const filteredData = DashBoardData?.top_rated_restaurants.filter(item =>
@@ -279,7 +267,7 @@ export default function Home() {
           borderRadius: 10,
           backgroundColor: '#FFFFFF',
           width: widthPercentageToDP(45),
-          height: hp(40),
+          height: hp(35),
           marginVertical: 10,
         },
       ]}>
@@ -350,7 +338,7 @@ export default function Home() {
             {item.res_address?.substring(0, 25)}
           </Text>
         </View>
-        <View
+        {/* <View
           style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
           <Clock height={20} width={20} />
           <Text
@@ -363,7 +351,7 @@ export default function Home() {
             }}>
             15 min 1.5km. Free Delivery
           </Text>
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
@@ -435,7 +423,7 @@ export default function Home() {
                       color: '#101010',
                       marginLeft: 5,
                     }}>
-                    {locationName == '' ? 'fetching..' : locationName}
+                    {locationName == '' ? 'fetching..' : findCityName(locationName)}
                   </Text>
 
                   <Down width={24} height={24} />
