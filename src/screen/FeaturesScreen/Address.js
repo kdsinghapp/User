@@ -253,12 +253,12 @@ export default function Address() {
               <Text style={styles.buttonText}>Use Current Location</Text>
             )}
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setVisible(true)}
             style={styles.addButton}
           >
             <Text style={styles.buttonText}>Add New Address</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
 

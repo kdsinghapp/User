@@ -172,11 +172,11 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                             />
                         </View>
                       
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                             onPress={handleAddAddress}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Add Address</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                   
                 </Animated.View>
                 </ScrollView>

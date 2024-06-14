@@ -52,7 +52,7 @@ export default function Payment() {
   const dispatch = useDispatch();
   const isFocuse = useIsFocused()
   const [checkoutUrl, setCheckoutUrl] = React.useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
 
 
