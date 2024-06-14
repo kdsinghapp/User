@@ -22,8 +22,9 @@ const initialState = {
   CouponCodeData: null,
   CategoryDish: null,
   PopularDish: null,
-  getTopRated_restaurants:null,
-  Orderlocations:[]
+  getTopRated_restaurants: null,
+  Orderlocations: [],
+  PayMentStatus: []
 };
 
 export const get_HomeDashBoard = createAsyncThunk(
@@ -448,12 +449,12 @@ export const get_order_locations = createAsyncThunk(
       // Create form data with identity and otp
 
       console.log('get_order_locations=>>>>', params);
-   
 
-   
+
+
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
- 
+
 
       // Create request options
       const requestOptions = {
@@ -477,7 +478,7 @@ export const get_order_locations = createAsyncThunk(
 
       if (responseData.success) {
         console.log('get_order_locations ', responseData.message);
-       // successToast("Your order has been successfully canceled.")
+        // successToast("Your order has been successfully canceled.")
       } else {
         //errorToast(responseData.message); 
         console.log('get_order_locations ', responseData.message);
@@ -487,7 +488,7 @@ export const get_order_locations = createAsyncThunk(
       return responseData.data;
     } catch (error) {
       console.error('Error:', error);
-    //  errorToast('Network error');
+      //  errorToast('Network error');
       // Reject with error
       throw error;
     }
@@ -1297,6 +1298,59 @@ export const update_profile = createAsyncThunk(
     }
   },
 );
+export const Payment_api = createAsyncThunk(
+  'Payment_api',
+  async (params, thunkApi) => {
+    try {
+      // Create form data with identity and otp
+
+
+
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+
+
+      console.log('Payment_api=>>>>>>>>>>>>>>', params.data);
+      // Create request options
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: params.data,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/auth/create-checkout-session`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('Response Payment_api=>>>>>>>>>>>>> :', responseData.data);
+
+      // Handle successful response
+      if (responseData.data) {
+        // successToast(responseData.message);
+
+
+      } else {
+      
+
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.log('==========Payment_api==========================', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
 
 export const delete_favorite_restaurant = createAsyncThunk(
   'delete_favorite_restaurant',
@@ -1420,6 +1474,20 @@ const FeatureSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(Payment_api.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(Payment_api.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.PayMentStatus = action.payload;
+    });
+    builder.addCase(Payment_api.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
     builder.addCase(get_order_data_by_id.pending, state => {
       state.isLoading = true;
     });
@@ -1469,7 +1537,7 @@ const FeatureSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
-     
+
     });
     builder.addCase(user_order_status.rejected, (state, action) => {
       state.isLoading = false;

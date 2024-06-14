@@ -32,6 +32,8 @@ export default function DishInformation() {
   const user = useSelector(state => state.auth.userData);
   const isLoading = useSelector(state => state.feature.isLoading);
 
+
+
   const add_To_cart = async () => {
     const params = {
       data: {
@@ -114,6 +116,36 @@ export default function DishInformation() {
             <Text style={styles.aboutDescription}>
               {item.restaurant_dish_description}
             </Text>
+            {item?.restaurant_data && <Text style={[styles.aboutTitle,{marginTop:20}]}>Restaurant Details</Text> }
+            {item?.restaurant_data &&
+            
+               <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+               <Image
+
+                   style={{ height: 40, width: 40, borderRadius: 20 }}
+                   source={{ uri: item.restaurant_data?.res_image }} />
+               <View>
+                   <Text
+                       style={{
+                           color: '#352C48',
+                           fontSize: 14,
+                           fontWeight: '700',
+                           lineHeight: 14,
+                       }}>
+                       {item.restaurant_data?.res_name}
+                   </Text>
+                   <Text
+                       style={{
+                           color: '#777777',
+                           fontSize: 10,
+                           fontWeight: '700',
+                           lineHeight: 14,
+                       }}>
+                       {item.restaurant_data?.res_address?.substring(0, 20)}
+                   </Text>
+               </View>
+           </View>
+            }
           </View>
         </View>
       </ScrollView>

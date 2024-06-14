@@ -14,14 +14,19 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../redux/feature/authSlice';
 
 
 
 export default function Profile() {
 
+  const dispatch = useDispatch()
   const [isVisible, setIsVisible] = useState(false);
 const navigation = useNavigation()
-
+const user = useSelector(state => state.auth.userData);
+  
+const isLoading = useSelector(state => state.auth.isLoading);
   
   const renderItem = ({item}) => {
     return (
@@ -55,9 +60,20 @@ const navigation = useNavigation()
       </TouchableOpacity>
     );
   };
+
+  const user_Logout = () => {
+    setIsVisible(false);
+    const params = {
+     token:user?.token,
+      navigation: navigation,
+    };
+    dispatch(logout(params));
+  };
+
+
   return (
     <View style={{flex: 1, backgroundColor: '#fff', paddingHorizontal: 20}}>
-      {false ? <Loading /> : null}
+      {isLoading ? <Loading /> : null}
 
       {Platform.OS === 'ios' ? (
         <View style={{height: 68}} />
@@ -204,7 +220,7 @@ const navigation = useNavigation()
             </View>
             <TouchableOpacity
               onPress={() => {
-             navigation.navigate(ScreenNameEnum.LOGIN_SCREEN)
+            user_Logout()
               }}
               style={{
                 width: 225,
@@ -261,11 +277,11 @@ const Account = [
    
     screen: ScreenNameEnum.EDIT_PROFILE
   },
-  {
-    name: 'Payment Card',
+  // {
+  //   name: 'Payment Card',
    
-    screen: ScreenNameEnum.PAYMENT_CARD
-  },
+  //   screen: ScreenNameEnum.PAYMENT_CARD
+  // },
   {
     name: 'My Order',
    

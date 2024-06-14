@@ -217,64 +217,30 @@ console.log('identity, password, otp,',identity, password, otp,);
   }
 );
 
+
 export const logout = createAsyncThunk('logout', async (params, thunkApi) => {
   try {
-    const response = await API.post('/log_out', params.data ,{
+    const response = await API.post('/driver/auth/logout', null, {
       headers: {
-        Authorization: `Bearer ${params.authToken}`,
+        Authorization: `Bearer ${params.token}`,
       },
-    },);
+    });
 
     console.log(
       '🚀 ~ file: AuthSlice.js:29 ~ logout ~ response:',
       response.data,
     );
 
-    
-    if (response.data.status){
-      Alert.alert(
-        'LogOut',
-        response.data.message,
-        [
-          {
-            text: 'OK',
-            onPress: () =>  {
-              AsyncStorage.clear()
-            } 
-          }
-        ],
-        { cancelable: false }
-      );
-    }
-    else {
-      Alert.alert(
-        'LogOut',
-        response.data.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => console.log('OK Pressed') 
-          }
-        ],
-        { cancelable: false }
-      );
+    if (response.data.status == '1') {
+      successToast('User LogOut Successfuly');
+      params.navigation.navigate(ScreenNameEnum.LOGIN_SCREEN)
+    } else {
+      errorToast('User LogOut Faild');
     }
 
-
-      params.navigation.navigate('Login');
-    
+    params.navigation.navigate('Login');
   } catch (error) {
-    Alert.alert(
-      'Network error',
-      'server not responding please try later',
-      [
-        {
-          text: 'OK',
-          onPress: () => console.log('OK Pressed'),
-        },
-      ],
-      { cancelable: false }
-    );
+    errorToast('Network error');
     console.log('🚀 ~ file: AuthSlice.js:32 ~ logout ~ error:', error);
     return thunkApi.rejectWithValue(error);
   }

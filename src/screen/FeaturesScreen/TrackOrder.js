@@ -68,7 +68,7 @@ const TrackOrder = () => {
         zoom: 15,
       });
     }
-  }, []);
+  }, [driverLocation]);
 
   return (
     <View style={styles.container}>

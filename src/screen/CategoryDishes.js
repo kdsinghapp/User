@@ -55,9 +55,9 @@ export default function CategoryDishes() {
 
     const renderDish = ({ item }) => (
         <TouchableOpacity
-        onPress={() => {
-            navigation.navigate(ScreenNameEnum.DISH_INFORMATION,{item: item })
-          }}
+            onPress={() => {
+                navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item })
+            }}
             style={[
                 styles.shadow,
                 {
@@ -90,41 +90,63 @@ export default function CategoryDishes() {
                     style={{ height: 120, width: 150, borderRadius: 5 }}
                     onLoad={() => setLoading(false)}
                 />
-            </View>
-            <View style={{ marginTop: 10 }}>
                 <Text
                     style={{
                         color: '#352C48',
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: '700',
                         lineHeight: 28,
                     }}>
                     {item.restaurant_dish_name}
                 </Text>
-            </View>
-            <View style={{ marginTop: 5 }}>
                 <Text
                     style={{
                         color: '#E79B3F',
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: '700',
                         lineHeight: 24,
                     }}>
                     <Text
                         style={{
                             color: '#000',
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: '700',
                             lineHeight: 20,
                         }}>
                         {' '}
                         Price:-
                     </Text>{' '}
-                    ${item.restaurant_dish_price}
+                    {item.restaurant_dish_price}
                 </Text>
             </View>
+            <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+                <Image
 
-          
+                    style={{ height: 40, width: 40, borderRadius: 20 }}
+                    source={{ uri: item.restaurant_data?.res_image }} />
+                <View>
+                    <Text
+                        style={{
+                            color: '#352C48',
+                            fontSize: 14,
+                            fontWeight: '700',
+                            lineHeight: 14,
+                        }}>
+                        {item.restaurant_data?.res_name}
+                    </Text>
+                    <Text
+                        style={{
+                            color: '#777777',
+                            fontSize: 10,
+                            fontWeight: '700',
+                            lineHeight: 14,
+                        }}>
+                        {item.restaurant_data?.res_address?.substring(0, 20)}
+                    </Text>
+                </View>
+            </View>
+
+
         </TouchableOpacity>
     );
 
