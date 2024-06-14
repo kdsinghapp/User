@@ -220,7 +220,7 @@ console.log('identity, password, otp,',identity, password, otp,);
 
 export const logout = createAsyncThunk('logout', async (params, thunkApi) => {
   try {
-    const response = await API.post('/driver/auth/logout', null, {
+    const response = await API.post('/auth/logout', null, {
       headers: {
         Authorization: `Bearer ${params.token}`,
       },
