@@ -139,10 +139,10 @@ export default function MyOrders() {
         }}
       >
         <View style={{ width: '88%', justifyContent: 'center', }}>
-          <Text style={{ fontSize: 12, fontWeight: '500' }}>
+          <Text style={{ fontSize: 12, fontWeight: '500',color:'#777777' }}>
             Order ID- {item.resord_id}
           </Text>
-          <Text style={{ fontSize: 12, fontWeight: '500' }}>
+          <Text style={{ fontSize: 12, fontWeight: '500',color:'#777777' }}>
             Order Time {formatTime(item.created_at)}
           </Text>
         </View>
