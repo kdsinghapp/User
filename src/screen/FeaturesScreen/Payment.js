@@ -57,6 +57,8 @@ export default function Payment() {
 
   const [Paymentdata, setPaymentData] = useState(null);
 
+
+
   useEffect(() => {
     const params = {
       token: user.token,
@@ -255,7 +257,7 @@ export default function Payment() {
       console.error(err);
     }
   };
-  
+
 
 
   const Stripe_api = () => {
@@ -272,11 +274,11 @@ export default function Payment() {
         data: data
       }
 
-      dispatch(Payment_api(params)).then(res=>{
+      dispatch(Payment_api(params)).then(res => {
 
         setCheckoutUrl(true)
       })
-      
+
     }
 
   }
@@ -302,8 +304,8 @@ export default function Payment() {
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
-      data.append('payment_status', Paymentdata.data?.payment_status);
-      data.append('payment_intent', Paymentdata.data?.payment_intent);
+      data.append('payment_status', Paymentdata?.data?.payment_status);
+      data.append('payment_intent', Paymentdata?.data?.payment_intent);
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -351,9 +353,9 @@ export default function Payment() {
     generalInfo?.tax,
     CouponCodeData?.coupon_discount
   );
-  const handleNavigationStateChange =async (navState) => {
+  const handleNavigationStateChange = async (navState) => {
 
-    console.log('navState=>>>>>>>>',navState);
+    console.log('navState=>>>>>>>>', navState);
     if (navState.url.includes('success-stripe')) {
       Alert.alert('Payment Success', 'Your payment was successful!');
 
@@ -361,13 +363,15 @@ export default function Payment() {
         const response = await fetch(navState.url);
         const result = await response.json();
         setPaymentData(result);
-       
+        if (result) {
+          book_order();
+        }
       } catch (error) {
         Alert.alert('Error', 'Failed to fetch data');
         console.error(error);
-      } 
-    
-      book_order();
+      }
+
+
       setCheckoutUrl(false);
       setPaymentStatus('paid')
     } else if (navState.url.includes('cancel-stripe')) {
@@ -387,16 +391,16 @@ export default function Payment() {
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
       {isLoading2 ? <Loading /> : null}
-      
+
       {checkoutUrl ? (
-       <WebView
-       source={{ uri: PayMentStatus?.url }}
-       onNavigationStateChange={handleNavigationStateChange}
-       onLoadStart={() => setIsLoading(true)}
-       onLoadEnd={() => setIsLoading(false)}
-       onError={handleError}
-       style={styles.webView}
-     />
+        <WebView
+          source={{ uri: PayMentStatus?.url }}
+          onNavigationStateChange={handleNavigationStateChange}
+          onLoadStart={() => setIsLoading(true)}
+          onLoadEnd={() => setIsLoading(false)}
+          onError={handleError}
+          style={styles.webView}
+        />
       ) :
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ marginTop: 20, paddingHorizontal: 15 }}>
@@ -523,7 +527,7 @@ export default function Payment() {
               Deliver address{' '}
             </Text>
           </View>
-          {getProfile?.address_data  ? <View
+          {getProfile?.address_data ? <View
             style={{
               paddingHorizontal: 15,
               paddingBottom: 10,
@@ -555,7 +559,7 @@ export default function Payment() {
               </View>
             </View>
 
-         
+
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate(ScreenNameEnum.ADDRESS_SCREEN)
@@ -595,9 +599,9 @@ export default function Payment() {
               </Text>
             </TouchableOpacity>
           }
-       
-       
-      
+
+
+
 
           <View style={{ marginTop: 20, marginHorizontal: 10 }}>
             <Text
