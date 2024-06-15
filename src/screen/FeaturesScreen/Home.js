@@ -124,6 +124,61 @@ useFocusEffect(
       
     }, [])
 )
+useEffect(() => {
+  // Request permission for iOS
+  const requestPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  };
+
+  if (Platform.OS === 'ios') {
+    requestPermission();
+  }
+
+  // Get FCM token
+  const getToken = async () => {
+    const token = await messaging().getToken();
+    console.log('FCM Token:', token);
+  };
+
+  getToken();
+
+  // Handle foreground messages
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage.notification));
+    console.log('Foreground message:', remoteMessage);
+  });
+
+  return unsubscribe;
+}, []);
+useEffect(() => {
+  // When the app is in background or quit state
+  messaging().onNotificationOpenedApp(remoteMessage => {
+    console.log(
+      'Notification caused app to open from background state:',
+      remoteMessage.notification,
+    );
+  });
+
+  // When the app is opened from a notification (cold start)
+  messaging()
+    .getInitialNotification()
+    .then(remoteMessage => {
+      if (remoteMessage) {
+        console.log(
+          'Notification caused app to open from quit state:',
+          remoteMessage.notification,
+        );
+      }
+    });
+}, []);
+
 
   const searchDataByName = query => {
     const lowercaseQuery = query.toLowerCase();

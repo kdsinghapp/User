@@ -55,7 +55,7 @@ export default function Payment() {
   const [checkoutUrl, setCheckoutUrl] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
+  const [Paymentdata, setPaymentData] = useState(null);
 
   useEffect(() => {
     const params = {
@@ -302,7 +302,8 @@ export default function Payment() {
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
-      data.append('payment_status', PaymentStatus);
+      data.append('payment_status', Paymentdata.data?.payment_status);
+      data.append('payment_intent', Paymentdata.data?.payment_intent);
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -350,28 +351,43 @@ export default function Payment() {
     generalInfo?.tax,
     CouponCodeData?.coupon_discount
   );
-  const handleNavigationStateChange = (navState) => {
+  const handleNavigationStateChange =async (navState) => {
+
+    console.log('navState=>>>>>>>>',navState);
     if (navState.url.includes('success-stripe')) {
       Alert.alert('Payment Success', 'Your payment was successful!');
+
+      try {
+        const response = await fetch(navState.url);
+        const result = await response.json();
+        setPaymentData(result);
+       
+      } catch (error) {
+        Alert.alert('Error', 'Failed to fetch data');
+        console.error(error);
+      } 
+    
       book_order();
-      setCheckoutUrl(null);
+      setCheckoutUrl(false);
       setPaymentStatus('paid')
     } else if (navState.url.includes('cancel-stripe')) {
       Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
-      setCheckoutUrl(null);
+      setCheckoutUrl(false);
+      setPaymentStatus('paid')
     }
   };
 
   const handleError = (error) => {
     console.error('WebView Error:', error);
     Alert.alert('Error', 'Failed to load payment page. Please try again later.');
-    setCheckoutUrl(null);
+    setCheckoutUrl(false);
+    setPaymentStatus('unpaid')
   };
   return (
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
       {isLoading2 ? <Loading /> : null}
-      {isLoading ? <Loading /> : null}
+      
       {checkoutUrl ? (
        <WebView
        source={{ uri: PayMentStatus?.url }}
