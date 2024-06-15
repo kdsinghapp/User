@@ -36,7 +36,7 @@ export default function WELCOME_SCREEN() {
         justifyContent: 'center',
       }}>
       <Image
-        source={require('../assets/croping/Logo3x.png')}
+        source={require('../assets/croping/appLogo.png')}
         style={{height: 200, width: 200}}
         resizeMode="contain"
       />
