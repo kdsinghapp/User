@@ -304,8 +304,8 @@ export default function Payment() {
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
-      data.append('payment_status', Paymentdata?.data?.payment_status);
-      data.append('payment_intent', Paymentdata?.data?.payment_intent);
+      data.append('payment_status', Paymentdata?.data?.payment_status ? Paymentdata?.data?.payment_status : "unpaid");
+      data.append('payment_intent', Paymentdata?.data?.payment_intent ? Paymentdata?.data?.payment_intent : 'COD');
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -377,7 +377,7 @@ export default function Payment() {
     } else if (navState.url.includes('cancel-stripe')) {
       Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
       setCheckoutUrl(false);
-      setPaymentStatus('paid')
+      setPaymentStatus('unpaid')
     }
   };
 
