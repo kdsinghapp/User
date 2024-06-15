@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -10,55 +10,54 @@ const TrackOrder = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { OrderId } = route.params;
+  const { OrderId } = route.params || {};
+
   const mapRef = useRef(null);
   const dispatch = useDispatch();
 
   const Orderlocations = useSelector(state => state.feature.Orderlocations);
 
-  const defaultLocation = {
-    latitude: 22.7196,
-    longitude: 75.8577,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  };
+
 
   const driverLocation = Orderlocations?.driver_data
     ? {
-        latitude: parseFloat(Orderlocations.driver_data.driver_lat),
-        longitude: parseFloat(Orderlocations.driver_data.driver_long),
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }
+      latitude: parseFloat(Orderlocations.driver_data.driver_lat),
+      longitude: parseFloat(Orderlocations.driver_data.driver_long),
+
+    }
     : null;
 
   const dropLocation = Orderlocations?.user_data
     ? {
-        latitude: parseFloat(Orderlocations.user_data.lat),
-        longitude: parseFloat(Orderlocations.user_data.long),
-      }
+      latitude: parseFloat(Orderlocations?.user_data?.user_lat),
+      longitude: parseFloat(Orderlocations?.user_data?.user_long),
+    }
     : null;
 
   useEffect(() => {
+    if (!OrderId) return;
+
     const intervalId = setInterval(() => {
       getOrderLocation();
-    }, 4000); // 4000 milliseconds = 4 seconds
+    }, 5000); // 10000 milliseconds = 10 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [OrderId]);
 
-  const getOrderLocation = () => {
-    let data = new FormData();
-    data.append('order_id', OrderId);
+  const getOrderLocation = async () => {
+    try {
+      let data = new FormData();
+      data.append('order_id', OrderId);
 
-    const params = {
-      data: data,
-    };
+      const params = {
+        data: data,
+      };
 
-    dispatch(get_order_locations(params)).then(res => {
-     
-    });
+      await dispatch(get_order_locations(params)).unwrap();
+    } catch (error) {
+      console.error('Failed to fetch order locations:', error);
+    }
   };
 
   useEffect(() => {
@@ -70,53 +69,81 @@ const TrackOrder = () => {
     }
   }, [driverLocation]);
 
-  return (
-    <View style={styles.container}>
-      <ImageBackground source={require('../../assets/croping/Map3x.png')} style={styles.mapBackground}>
-        <MapView
-          style={styles.map}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={dropLocation || defaultLocation}
-          ref={mapRef}
-        >
-          {driverLocation && (
-            <Marker coordinate={driverLocation} title="Delivery boy Location">
-              <Image
-                source={require('../../assets/croping/waiter.png')}
-                style={{ width: 40, height: 40 }}
-                resizeMode="contain"
-              />
-            </Marker>
-          )}
-          {dropLocation && (
-            <Marker coordinate={dropLocation} title="Your Location">
-              <Image
-                source={require('../../assets/croping/table.png')}
-                style={{ width: 50, height: 50 }}
-                resizeMode="contain"
-              />
-            </Marker>
-          )}
-          {driverLocation && dropLocation && (
-            <MapViewDirections
-              origin={driverLocation}
-              destination={dropLocation}
-              apikey={process.env.GOOGLE_MAPS_API_KEY}
-              strokeWidth={5}
-              strokeColor="hotpink"
-              optimizeWaypoints={true}
-              mode="DRIVING"
-              onError={errorMessage => {
-                console.error('GOT AN ERROR', errorMessage);
-              }}
-            />
-          )}
-        </MapView>
-
+  if (!OrderId) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Order ID is missing. Please try again.</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-      </ImageBackground>
+      </View>
+    );
+  }
+
+  if (!dropLocation && !driverLocation) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading order locations...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {dropLocation && driverLocation &&
+
+        <ImageBackground source={require('../../assets/croping/Map3x.png')} style={styles.mapBackground}>
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={
+              {
+                ...dropLocation,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }
+            }
+            ref={mapRef}
+          >
+            {driverLocation && (
+              <Marker coordinate={driverLocation} title="Delivery boy Location">
+                <Image
+                  source={require('../../assets/croping/waiter.png')}
+                  style={{ width: 40, height: 40 }}
+                  resizeMode="contain"
+                />
+              </Marker>
+            )}
+            {dropLocation && (
+              <Marker coordinate={dropLocation} title="My Location">
+                <Image
+                  source={require('../../assets/croping/table.png')}
+                  style={{ width: 50, height: 50 }}
+                  resizeMode="contain"
+                />
+              </Marker>
+            )}
+            {driverLocation && dropLocation && (
+              <MapViewDirections
+                origin={driverLocation}
+                destination={dropLocation}
+                apikey={process.env.GOOGLE_PLACES_API_KEY}
+                strokeWidth={5}
+                strokeColor="hotpink"
+                optimizeWaypoints={true}
+                mode="DRIVING"
+                onError={errorMessage => {
+                  console.error('GOT AN ERROR', errorMessage);
+                }}
+              />
+            )}
+          </MapView>
+
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+        </ImageBackground>}
     </View>
   );
 };
@@ -145,6 +172,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default TrackOrder;
+
+
+
+
