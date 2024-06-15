@@ -81,21 +81,7 @@ export default function Home() {
 
   }
  
-    useEffect(() => {
-      const unsubscribe = messaging().onMessage(async remoteMessage => {
-        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.notification));
-        console.log(remoteMessage);
-      });
-  
-      return unsubscribe;
-    }, []);
-  
 
-
-   useEffect(()=>{
-    const token =  messaging().getToken();
-    console.log('FCM token:', token);
-   },[])
    function findCityName(response) {
     const results = response.results;
     for (let i = 0; i < results.length; i++) {

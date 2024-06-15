@@ -45,13 +45,14 @@ export default function Payment() {
   const [CurrentLocation, setCurrentLocation] = useState({});
   const [CouponCode, setCouponCode] = useState(0);
   const [instruction, setInstruction] = useState('');
-  const [PaymentMode, setPaymentMode] = useState('')
+  const [PaymentMode, setPaymentMode] = useState('Cash')
+  const [PaymentStatus, setPaymentStatus] = useState('unpaid')
   const [Camount, setCamount] = useState('');
   const [selectedPayment, setselectedPayment] = useState('Cash on Delivery');
   const getProfile = useSelector(state => state.feature?.getProfile);
   const dispatch = useDispatch();
   const isFocuse = useIsFocused()
-  const [checkoutUrl, setCheckoutUrl] = React.useState(null);
+  const [checkoutUrl, setCheckoutUrl] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -273,7 +274,7 @@ export default function Payment() {
 
       dispatch(Payment_api(params)).then(res=>{
 
-        setCheckoutUrl(PayMentStatus?.url)
+        setCheckoutUrl(true)
       })
       
     }
@@ -301,6 +302,7 @@ export default function Payment() {
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
+      data.append('payment_status', PaymentStatus);
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -353,6 +355,7 @@ export default function Payment() {
       Alert.alert('Payment Success', 'Your payment was successful!');
       book_order();
       setCheckoutUrl(null);
+      setPaymentStatus('paid')
     } else if (navState.url.includes('cancel-stripe')) {
       Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
       setCheckoutUrl(null);
@@ -371,7 +374,7 @@ export default function Payment() {
       {isLoading ? <Loading /> : null}
       {checkoutUrl ? (
        <WebView
-       source={{ uri: checkoutUrl }}
+       source={{ uri: PayMentStatus?.url }}
        onNavigationStateChange={handleNavigationStateChange}
        onLoadStart={() => setIsLoading(true)}
        onLoadEnd={() => setIsLoading(false)}

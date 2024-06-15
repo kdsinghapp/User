@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {styles} from '../configs/Styles';
 import TextInputField from '../configs/TextInput';
@@ -38,6 +38,27 @@ export default function Login() {
   const numberRegex = /^[0-9]+$/;
   const stringRegex = /^[a-zA-Z\s]*$/;
   const navigation = useNavigation();
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.notification));
+      console.log(remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const token = await messaging().getToken();
+        console.log('FCM token:', token);
+      } catch (error) {
+        console.error('Error getting FCM token:', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   const handleIdentityText = value => {
     setIdentity(value);
