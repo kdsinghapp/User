@@ -304,7 +304,7 @@ export default function Payment() {
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
-      data.append('payment_status', Paymentdata?.data?.payment_status ? Paymentdata?.data?.payment_status : "unpaid");
+      data.append('payment_status', PaymentStatus);
       data.append('payment_intent', Paymentdata?.data?.payment_intent ? Paymentdata?.data?.payment_intent : 'COD');
 
       cartItem.forEach((dish, index) => {
@@ -358,7 +358,7 @@ export default function Payment() {
     console.log('navState=>>>>>>>>', navState);
     if (navState.url.includes('success-stripe')) {
       Alert.alert('Payment Success', 'Your payment was successful!');
-
+      setPaymentStatus('paid')
       try {
         const response = await fetch(navState.url);
         const result = await response.json();
@@ -373,7 +373,7 @@ export default function Payment() {
 
 
       setCheckoutUrl(false);
-      setPaymentStatus('paid')
+     
     } else if (navState.url.includes('cancel-stripe')) {
       Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
       setCheckoutUrl(false);

@@ -17,7 +17,7 @@ const TrackOrder = () => {
 
   const Orderlocations = useSelector(state => state.feature.Orderlocations);
 
-
+console.log('Orderlocations?.user_data',Orderlocations?.driver_data);
 
   const driverLocation = Orderlocations?.driver_data
     ? {
@@ -88,7 +88,7 @@ const TrackOrder = () => {
       </View>
     );
   }
-
+console.log(dropLocation && driverLocation);
   return (
     <View style={styles.container}>
       {dropLocation && driverLocation &&
