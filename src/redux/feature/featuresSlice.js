@@ -24,7 +24,8 @@ const initialState = {
   PopularDish: null,
   getTopRated_restaurants: null,
   Orderlocations: [],
-  PayMentStatus: []
+  PayMentStatus: [],
+  NotificationList: []
 };
 
 export const get_HomeDashBoard = createAsyncThunk(
@@ -44,6 +45,30 @@ export const get_HomeDashBoard = createAsyncThunk(
     } catch (error) {
       console.log(
         '🚀 ~ file: get_HomeDashBoard .js:16 ~ get_HomeDashBoard ~ error:',
+        error,
+      );
+
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const get_notifications = createAsyncThunk(
+  'get_notifications',
+  async (params, thunkApi) => {
+    try {
+      const response = await API.post('/user/get-notifications', null, {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      });
+
+      if (response.data.success) {
+        console.log('User get_notifications Succesfuly');
+      }
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        '🚀 ~ file:  .js:16 ~ get_notifications ~ error:',
         error,
       );
 
@@ -1487,6 +1512,20 @@ const FeatureSlice = createSlice({
       state.PayMentStatus = action.payload;
     });
     builder.addCase(Payment_api.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+    builder.addCase(get_notifications.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_notifications.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.NotificationList = action.payload;
+    });
+    builder.addCase(get_notifications.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;

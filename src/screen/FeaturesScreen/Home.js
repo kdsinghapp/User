@@ -65,7 +65,7 @@ export default function Home() {
   };
   useEffect(() => {
     checkApplicationPermission();
-  getLiveLocation()
+    getLiveLocation()
 
   }, [user])
   const add_favrate = (id) => {
@@ -93,9 +93,9 @@ export default function Home() {
     }
 
   }
- 
 
-   function findCityName(response) {
+
+  function findCityName(response) {
     const results = response.results;
     for (let i = 0; i < results.length; i++) {
       const addressComponents = results[i].address_components;
@@ -109,26 +109,26 @@ export default function Home() {
     return null; // Return null if city name not found
   }
 
-   const getLiveLocation = async () => {
+  const getLiveLocation = async () => {
     const locPermissionDenied = await locationPermission();
     if (locPermissionDenied) {
 
-        const { latitude, longitude } = await getCurrentLocation();
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
-        try {
-            const res = await fetch(url);
-            const json = await res.json();
-            console.log(json);
-            setLocationName(json)
-           
+      const { latitude, longitude } = await getCurrentLocation();
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        console.log(json);
+        setLocationName(json)
 
-        } catch (e) {
-            console.log("e", e)
-        } finally {
-            
-        }
+
+      } catch (e) {
+        console.log("e", e)
+      } finally {
+
+      }
     }
-};
+  };
 
 
 
@@ -216,9 +216,9 @@ export default function Home() {
           // alignItems: 'center',
           backgroundColor: '#FFFFFF',
           marginHorizontal: 5,
-          width:90,
+          width: 90,
           borderRadius: 10,
-          marginVertical:10
+          marginVertical: 10
 
         },
       ]}>
@@ -226,7 +226,7 @@ export default function Home() {
         source={{ uri: item.rescat_image }}
         style={{
           height: 70,
-          width:90,
+          width: 90,
           borderRadius: 10,
 
           borderWidth: 2,
@@ -240,7 +240,7 @@ export default function Home() {
           marginLeft: 10,
           lineHeight: 18,
           color: '#352C48',
-          marginTop:5
+          marginTop: 5
         }}>
         {item.rescat_name?.substring(0, 20)}
       </Text>
@@ -265,7 +265,7 @@ export default function Home() {
         },
       ]}>
       <TouchableOpacity
-      disabled={item.fav}
+        disabled={item.fav}
         onPress={() => {
           add_favrate(item.res_id)
         }}
@@ -287,11 +287,11 @@ export default function Home() {
           }}
         />
       </View>
-      <View style={{flexDirection:'row',marginVertical:5,alignItems:'center',marginLeft:-6}}>
+      <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center', marginLeft: -6 }}>
 
-<Ratting  Ratting={item.res_average_rating}/>
-<Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.res_average_rating} ({item.res_rating_count} )</Text>
-</View>
+        <Ratting Ratting={item.res_average_rating} />
+        <Text style={{ fontSize: 10, fontWeight: '600', color: '#000', marginLeft: 5 }}>{item.res_average_rating} ({item.res_rating_count} )</Text>
+      </View>
       <View style={{}}>
         <Text
           style={{
@@ -424,10 +424,10 @@ export default function Home() {
               </View>
               <View>
                 <TouchableOpacity
-                onPress={()=>{
-                  //navigation.navigate(ScreenNameEnum.MsgNotification)
-                  requestUserPermission()
-                }}
+                  onPress={() => {
+                    navigation.navigate(ScreenNameEnum.MsgNotification)
+                    // requestUserPermission()
+                  }}
                 >
                   <Image
                     source={require('../../assets/croping/Notification3x.png')}
@@ -531,12 +531,12 @@ export default function Home() {
                 Popular Dishes
               </Text>
 
-              <TouchableOpacity 
-              
-              onPress={()=>{
-                navigation.navigate(ScreenNameEnum.AllPopularDishes)
-              }}
-              style={{ width: '15%' }}>
+              <TouchableOpacity
+
+                onPress={() => {
+                  navigation.navigate(ScreenNameEnum.AllPopularDishes)
+                }}
+                style={{ width: '15%' }}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -568,11 +568,11 @@ export default function Home() {
                 Top Rated Restaurant
               </Text>
 
-              <TouchableOpacity 
-                 onPress={()=>{
+              <TouchableOpacity
+                onPress={() => {
                   navigation.navigate(ScreenNameEnum.getTopRatedRestaurants)
                 }}
-              style={{ width: '15%' }}>
+                style={{ width: '15%' }}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -660,7 +660,7 @@ export default function Home() {
             )}
           </>
         )}
-    
+
       </ScrollView>
     </View>
   );
