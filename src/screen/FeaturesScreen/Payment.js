@@ -264,6 +264,7 @@ export default function Payment() {
     let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
 
     if (PaymentMode == 'Cash') {
+setPaymentStatus("unpaid")
       book_order()
     }
     else {

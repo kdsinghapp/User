@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -19,7 +20,7 @@ import Loading from '../../configs/Loader';
 import { useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import LoadingDots from "react-native-loading-dots";
-
+import messaging from '@react-native-firebase/messaging';
 export default function MyOrders() {
   const [status, setStatus] = useState('Pending');
   const OrderDetails = useSelector(state => state.feature.OrderDetails);
@@ -32,7 +33,9 @@ export default function MyOrders() {
   const navigation = useNavigation()
   useEffect(() => {
     get_order(status);
+
   }, [status]);
+
 
   const get_order = async sts => {
     try {
@@ -128,6 +131,8 @@ export default function MyOrders() {
 
 
 
+
+  
 
     return (
       <TouchableOpacity

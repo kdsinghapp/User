@@ -68,10 +68,10 @@ import Loading from '../../configs/Loader';
           style={styles.listItem}>
           <View style={styles.itemHeader}>
             <View>
-              <Image
+              {/* <Image
                 source={{uri:item.user_data.image}}
                 style={styles.avatar}
-              />
+              /> */}
             </View>
             <View style={styles.itemText}>
               <Text style={styles.itemTitle}>{item.user_data.first_name} {item.user_data.last_name}</Text>

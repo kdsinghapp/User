@@ -1278,7 +1278,10 @@ export const update_profile = createAsyncThunk(
 
       // Handle successful response
       if (responseData.success) {
-        successToast(responseData.message);
+        if(params.msg){
+
+          successToast(responseData.message);
+        }
 
 
       } else {

@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 
 import React, { useEffect, useState } from 'react';
@@ -41,6 +42,8 @@ import Fav from '../../assets/sgv/Favorites.svg';
 import Geolocation from 'react-native-geolocation-service';
 import Ratting from '../../configs/Ratting';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
+import { requestUserPermission } from './NotificationComponent';
+
 
 export default function Home() {
   const [ShowSearch, setShowSearch] = useState(false);
@@ -50,8 +53,18 @@ export default function Home() {
   const user = useSelector(state => state.auth.userData);
   const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
   const [locationName, setLocationName] = useState('');
-
+  const checkApplicationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+      } catch (error) {
+      }
+    }
+  };
   useEffect(() => {
+    checkApplicationPermission();
   getLiveLocation()
 
   }, [user])
@@ -117,67 +130,6 @@ export default function Home() {
     }
 };
 
-useFocusEffect(
-    React.useCallback(() => {
-      
-        getLiveLocation()
-      
-    }, [])
-)
-useEffect(() => {
-  // Request permission for iOS
-  const requestPermission = async () => {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  };
-
-  if (Platform.OS === 'ios') {
-    requestPermission();
-  }
-
-  // Get FCM token
-  const getToken = async () => {
-    const token = await messaging().getToken();
-    console.log('FCM Token:', token);
-  };
-
-  getToken();
-
-  // Handle foreground messages
-  const unsubscribe = messaging().onMessage(async remoteMessage => {
-    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage.notification));
-    console.log('Foreground message:', remoteMessage);
-  });
-
-  return unsubscribe;
-}, []);
-useEffect(() => {
-  // When the app is in background or quit state
-  messaging().onNotificationOpenedApp(remoteMessage => {
-    console.log(
-      'Notification caused app to open from background state:',
-      remoteMessage.notification,
-    );
-  });
-
-  // When the app is opened from a notification (cold start)
-  messaging()
-    .getInitialNotification()
-    .then(remoteMessage => {
-      if (remoteMessage) {
-        console.log(
-          'Notification caused app to open from quit state:',
-          remoteMessage.notification,
-        );
-      }
-    });
-}, []);
 
 
   const searchDataByName = query => {
@@ -473,7 +425,8 @@ useEffect(() => {
               <View>
                 <TouchableOpacity
                 onPress={()=>{
-                  navigation.navigate(ScreenNameEnum.MsgNotification)
+                  //navigation.navigate(ScreenNameEnum.MsgNotification)
+                  requestUserPermission()
                 }}
                 >
                   <Image
@@ -707,6 +660,7 @@ useEffect(() => {
             )}
           </>
         )}
+    
       </ScrollView>
     </View>
   );

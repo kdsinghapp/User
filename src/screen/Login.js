@@ -7,19 +7,20 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {styles} from '../configs/Styles';
+import React, { useEffect, useState } from 'react';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { styles } from '../configs/Styles';
 import TextInputField from '../configs/TextInput';
 import GLogo from '../assets/sgv/googleLogo.svg';
-import {ScreenContainer} from 'react-native-screens';
+import { ScreenContainer } from 'react-native-screens';
 import ScreenNameEnum from '../routes/screenName.enum';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {login} from '../redux/feature/authSlice';
-import {CountryPicker} from 'react-native-country-codes-picker';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/feature/authSlice';
+import { CountryPicker } from 'react-native-country-codes-picker';
 import Loading from '../configs/Loader';
 import messaging from '@react-native-firebase/messaging';
+import { update_profile } from '../redux/feature/featuresSlice';
 
 export default function Login() {
   const [identity, setIdentity] = useState();
@@ -32,44 +33,26 @@ export default function Login() {
   const isLoading = useSelector(state => state.auth.isLoading);
 
   const [Number, setNumber] = useState(false);
-
+  const user = useSelector(state => state.auth.userData);
   const isFocus = useIsFocused();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const numberRegex = /^[0-9]+$/;
   const stringRegex = /^[a-zA-Z\s]*$/;
   const navigation = useNavigation();
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.notification));
-      console.log(remoteMessage);
-    });
 
-    return unsubscribe;
-  }, []);
 
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const token = await messaging().getToken();
-        console.log('FCM token:', token);
-      } catch (error) {
-        console.error('Error getting FCM token:', error);
-      }
-    };
 
-    getToken();
-  }, []);
 
   const handleIdentityText = value => {
     setIdentity(value);
-if(identity == ''){
-  setNumber(false);
-}
+    if (identity == '') {
+      setNumber(false);
+    }
 
 
 
     if (numberRegex.test(identity)) {
-     
+
       setNumber(true);
     } else if (emailRegex.test(identity)) {
       setNumber(false);
@@ -86,68 +69,71 @@ if(identity == ''){
 
   const Login = () => {
 
-    if(password.length < 8) {return Alert.alert(
-      'Password',
-      'The password field must be at least 8 characters.',
-    );
-  }
-  else{
-    if (identity != '' && password != '' ) {
-      if (emailRegex.test(identity)) {
-
-        console.log('Login with Email');
-        const passwordWithoutSpaces = password.replace(/\s/g, '');
-
-        const params = {
-          data: {
-            identity: identity,
-  
-            password: passwordWithoutSpaces,
-          },
-          navigation: navigation,
-        };
- 
-        dispatch(login(params));
-      }
-      
-      else if (numberRegex.test(identity)) {
-        console.log('Login with Mobile ');
-        if(code =='') return Alert.alert(
-          'Country Code Empty',
-          'Please Select Country Code.',
-        );
-        const passwordWithoutSpaces = password.replace(/\s/g, '');
-
-        const params = {
-          data: {
-            identity: code+'-'+identity,
-            password: passwordWithoutSpaces,
-          },
-          navigation: navigation,
-        };
-
-       dispatch(login(params));
-      }
-   
-      else {
-        Alert.alert(
-          'Invalid Input',
-          'Please enter a valid email address or number.',
-        );
-      }
-    } else {
-      Alert.alert('Require', 'email or number password field empty');
+    if (password.length < 8) {
+      return Alert.alert(
+        'Password',
+        'The password field must be at least 8 characters.',
+      );
     }
-  }
+    else {
+      if (identity != '' && password != '') {
+        if (emailRegex.test(identity)) {
+
+          console.log('Login with Email');
+          const passwordWithoutSpaces = password.replace(/\s/g, '');
+
+          const params = {
+            data: {
+              identity: identity,
+
+              password: passwordWithoutSpaces,
+            },
+            navigation: navigation,
+          };
+
+          dispatch(login(params)).then(res => {
+            getToken();
+          })
+        }
+
+        else if (numberRegex.test(identity)) {
+          console.log('Login with Mobile ');
+          if (code == '') return Alert.alert(
+            'Country Code Empty',
+            'Please Select Country Code.',
+          );
+          const passwordWithoutSpaces = password.replace(/\s/g, '');
+
+          const params = {
+            data: {
+              identity: code + '-' + identity,
+              password: passwordWithoutSpaces,
+            },
+            navigation: navigation,
+          };
+
+          dispatch(login(params));
+        }
+
+        else {
+          Alert.alert(
+            'Invalid Input',
+            'Please enter a valid email address or number.',
+          );
+        }
+      } else {
+        Alert.alert('Require', 'email or number password field empty');
+      }
+    }
   };
- 
+
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       {isLoading ? <Loading /> : null}
       <Image
         source={require('../assets/images/Image.png')}
-        style={{height: hp(26), width: '100%'}}
+        style={{ height: hp(26), width: '100%' }}
       />
 
       <View
@@ -167,7 +153,7 @@ if(identity == ''){
           </Text>
         </View>
 
-        <View style={{marginTop: 10, paddingVertical: hp(2)}}>
+        <View style={{ marginTop: 10, paddingVertical: hp(2) }}>
           <TextInputField
             County={Number}
             countryCode={countryCode}
@@ -175,7 +161,7 @@ if(identity == ''){
             onChangeText={handleIdentityText}
             placeholder={'Email Address / Mobile number'}
             firstLogo={true}
-            img={Number?require('../assets/croping/Phone3x.png'):require('../assets/croping/Emal3x.png')}
+            img={Number ? require('../assets/croping/Phone3x.png') : require('../assets/croping/Emal3x.png')}
           />
 
           <TextInputField
@@ -191,7 +177,7 @@ if(identity == ''){
             // when picker button press you will get the country object with dial code
             pickerButtonOnPress={item => {
               setCountryCode(item.dial_code);
-             setCode(item.code)
+              setCode(item.code)
               setShow(false);
             }}
             popularCountries={['en', 'in', 'pl']}
@@ -240,7 +226,7 @@ if(identity == ''){
           </Text>
         </TouchableOpacity>
 
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <View
             style={{
               height: hp(5),
@@ -251,7 +237,7 @@ if(identity == ''){
 
               justifyContent: 'center',
             }}>
-            <Text style={{fontSize: 16, lineHeight: 24, color: '#0000000'}}>
+            <Text style={{ fontSize: 16, lineHeight: 24, color: '#0000000' }}>
               Don’t have an account?{' '}
             </Text>
             <TouchableOpacity
@@ -271,9 +257,9 @@ if(identity == ''){
               </Text>
             </TouchableOpacity>
           </View>
-         
+
         </View>
-   
+
       </View>
     </View>
   );

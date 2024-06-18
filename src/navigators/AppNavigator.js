@@ -8,7 +8,19 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from '../redux/Store';
 import Toast from 'react-native-toast-message';
 import toastConfig from '../configs/customToast';
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from "react-native-push-notification"
+import { notificationListener, requestUserPermission } from '../screen/FeaturesScreen/NotificationComponent';
+
 export default function AppNavigator() {
+
+  React.useEffect(() => {
+    notificationListener();
+    requestUserPermission();
+  }, []);
+
+
+  
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -16,6 +28,7 @@ export default function AppNavigator() {
           <NavigationContainer>
             <RegistrationRoutes />
             <Toast config={toastConfig} />
+      
           </NavigationContainer>
         </GestureHandlerRootView>
       </PersistGate>
