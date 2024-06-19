@@ -55,8 +55,6 @@ export default function Payment() {
   const [checkoutUrl, setCheckoutUrl] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [Paymentdata, setPaymentData] = useState(null);
-
 
 
   useEffect(() => {
@@ -264,8 +262,8 @@ export default function Payment() {
     let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
 
     if (PaymentMode == 'Cash') {
-setPaymentStatus("unpaid")
-      book_order()
+      setPaymentStatus("unpaid")
+      book_order('COD')
     }
     else {
       let data = new FormData();
@@ -276,7 +274,7 @@ setPaymentStatus("unpaid")
       }
 
       dispatch(Payment_api(params)).then(res => {
-
+        setPaymentStatus("paid")
         setCheckoutUrl(true)
       })
 
@@ -286,7 +284,63 @@ setPaymentStatus("unpaid")
 
 
 
-  const book_order = async () => {
+
+  const calculateTotal = (totalBill, deliveryCharge, tax, discount) => {
+    const bill = Number(totalBill) || 0;
+    const delivery = Number(deliveryCharge) || 0;
+    const taxAmount = Number(tax) || 0;
+    const couponDiscount = Number(discount) || 0;
+    return (bill + delivery + taxAmount - couponDiscount).toFixed(2);
+  };
+  const totalAmount = calculateTotal(
+    totalBill,
+    generalInfo?.delivery_charge,
+    generalInfo?.tax,
+    CouponCodeData?.coupon_discount
+  );
+  const handleNavigationStateChange = async (navState) => {
+
+
+    if (navState.url.includes('success-stripe')) {
+      setCheckoutUrl(false);  
+      // Alert.alert('Payment Success', 'Your payment was successful!');
+      setPaymentStatus('paid')
+
+      const response = await fetch(navState.url);
+      const result = await response.json();
+
+
+
+      if (PaymentStatus == "paid" && checkoutUrl) {
+        book_order(result?.data?.payment_intent);
+      }
+      else {
+        console.log('Error', 'result?.data?.payment_intent',PaymentStatus , checkoutUrl);
+      }
+
+
+
+    } else if (navState.url.includes('cancel-stripe')) {
+
+      setCheckoutUrl(false);  
+      setPaymentStatus('unpaid')
+    }
+  };
+
+
+
+
+
+
+  const handleError = (error) => {
+    console.error('WebView Error:', error);
+    Alert.alert('Error', 'Failed to load payment page. Please try again later.');
+    setCheckoutUrl(false);
+    setPaymentStatus('unpaid')
+  };
+
+
+  const book_order = async (payment_intent) => {
 
 
 
@@ -296,8 +350,8 @@ setPaymentStatus("unpaid")
       let data = new FormData();
       data.append('user_id', user?.user_data?.id.toString());
       data.append('total_price', Total.toString());
-      data.append('lat', CurrentLocation.latitude);
-      data.append('long', CurrentLocation.longitude);
+      data.append('lat', getProfile?.address_data.lat);
+      data.append('long', getProfile?.address_data.long);
       data.append('restaurant_id', cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString());
       data.append('address_id', getProfile?.address_data.address_id.toString());
       data.append('tax_amount', generalInfo?.tax.toString());
@@ -306,7 +360,7 @@ setPaymentStatus("unpaid")
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
       data.append('delivery_charge', generalInfo?.delivery_charge.toString());
       data.append('payment_status', PaymentStatus);
-      data.append('payment_intent', Paymentdata?.data?.payment_intent ? Paymentdata?.data?.payment_intent : 'COD');
+      data.append('payment_intent', payment_intent);
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -341,53 +395,6 @@ setPaymentStatus("unpaid")
     }
   };
 
-  const calculateTotal = (totalBill, deliveryCharge, tax, discount) => {
-    const bill = Number(totalBill) || 0;
-    const delivery = Number(deliveryCharge) || 0;
-    const taxAmount = Number(tax) || 0;
-    const couponDiscount = Number(discount) || 0;
-    return (bill + delivery + taxAmount - couponDiscount).toFixed(2);
-  };
-  const totalAmount = calculateTotal(
-    totalBill,
-    generalInfo?.delivery_charge,
-    generalInfo?.tax,
-    CouponCodeData?.coupon_discount
-  );
-  const handleNavigationStateChange = async (navState) => {
-
-    console.log('navState=>>>>>>>>', navState);
-    if (navState.url.includes('success-stripe')) {
-      Alert.alert('Payment Success', 'Your payment was successful!');
-      setPaymentStatus('paid')
-      try {
-        const response = await fetch(navState.url);
-        const result = await response.json();
-        setPaymentData(result);
-        if (result) {
-          book_order();
-        }
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch data');
-        console.error(error);
-      }
-
-
-      setCheckoutUrl(false);
-     
-    } else if (navState.url.includes('cancel-stripe')) {
-      Alert.alert('Payment Cancelled', 'Your payment was cancelled.');
-      setCheckoutUrl(false);
-      setPaymentStatus('unpaid')
-    }
-  };
-
-  const handleError = (error) => {
-    console.error('WebView Error:', error);
-    Alert.alert('Error', 'Failed to load payment page. Please try again later.');
-    setCheckoutUrl(false);
-    setPaymentStatus('unpaid')
-  };
   return (
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
@@ -724,304 +731,7 @@ setPaymentStatus("unpaid")
               />
             </View>
           </View>
-          {/* {selectedPayment === 'Card' && <>
-        <View style={{ paddingHorizontal: 15 }}>
-          <View>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '600',
-                color: '#000000',
-                marginTop: 15,
-              }}>
-              Credit & Debit Cards
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.shadow,
-              {
-                backgroundColor: '#fff',
-                padding: 10,
-                borderRadius: 10,
-                marginTop: 20,
-              },
-            ]}>
-            <FlatList
-              scrollEnabled={false}
-              data={card}
-              renderItem={({ item, index }) => (
-                <View
-                  style={{
-                    height: 36,
-                    borderRadius: 8,
-                    marginTop: 10,
-                    paddingHorizontal: 10,
-                    backgroundColor: '#F5F5F5',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
-                  <View>
-                    <Image
-                      source={item.logo}
-                      style={{ height: 20, width: 32 }}
-                      resizeMode="contain"
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      width: '70%',
-                    }}>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          lineHeight: 15.18,
-                          color: '#606060',
-                          fontWeight: '400',
-                        }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          lineHeight: 15.18,
-                          color: '#606060',
-                          fontWeight: '400',
-                        }}>
-                        {item.cardNo}
-                      </Text>
-                    </View>
-                  </View>
 
-                  <RadioButton
-                    selected={selectedItemIndex === index}
-                    onPress={() => handleItemSelect(index)}
-                    color="#6D6EEC"
-                    borderSize={1}
-                    size={20}
-                    borderColor="#6D6EEC"
-                    se
-                  />
-                </View>
-              )}
-              keyExtractor={item => item.id}
-            />
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 20,
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  backgroundColor: '#D2EAFF',
-                  height: 35,
-                  width: 35,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <AddPlus />
-              </View>
-              <View
-                style={{
-                  width: '80%',
-                  justifyContent: 'center',
-                  marginLeft: 10,
-                }}>
-                <Text
-                  style={{
-                    color: '#606060',
-                    fontSize: 14,
-                    lineHeight: 21,
-                    fontWeight: '400',
-                  }}>
-                  Add New Card
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-
-
-
-            paddingHorizontal: 15,
-            marginVertical: 10
-          }}>
-          <View>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 21,
-                marginTop: 5,
-                fontWeight: '500',
-                color: '#000000',
-              }}>
-              Card Number
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 50,
-              backgroundColor: '#F8F8F8',
-              marginTop: 10,
-              borderRadius: 12,
-              paddingHorizontal: 10,
-              justifyContent: 'center',
-            }}>
-            <TextInput
-              placeholder="Enter 12 digit card number"
-              placeholderTextColor={'#979797'}
-              style={{ fontSize: 12, fontWeight: '400', lineHeight: 20 }}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              alignItems: 'center',
-              marginTop: 5,
-            }}>
-            <View
-              style={{
-                width: '40%',
-                paddingHorizontal: 10,
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  lineHeight: 21,
-                  marginTop: 5,
-                  fontWeight: '500',
-                  color: '#000000',
-                }}>
-                Valid Thru
-              </Text>
-            </View>
-
-
-            <View
-              style={{
-                width: '40%',
-                paddingHorizontal: 10,
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  lineHeight: 21,
-                  marginTop: 5,
-                  fontWeight: '500',
-                  color: '#000000',
-                }}>
-                CVV
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              alignItems: 'center',
-              marginTop: 5,
-            }}>
-            <View style={{ width: '60%', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <View
-                style={{
-                  width: '48%',
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#F8F8F8',
-                  borderRadius: 12
-                }}>
-                <TextInput placeholder='Month' s />
-              </View>
-              <View
-                style={{
-                  width: '48%',
-                  paddingHorizontal: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#F8F8F8',
-                  borderRadius: 12
-                }}>
-                <TextInput placeholder='Year' s />
-              </View>
-            </View>
-            <View style={{ flexDirectionr: 'row', width: '30%', backgroundColor: '#F8F8F8', borderRadius: 12 }}>
-
-
-              <View
-                style={{
-
-                  paddingHorizontal: 15,
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-
-
-
-                }}>
-                <View style={{ width: '60%', }}>
-
-                  <TextInput placeholder='CVV' />
-                </View>
-                <TouchableOpacity>
-
-
-                  <Image source={require('../../assets/croping/HidePassword3x.png')} style={{ height: 20, width: 20 }} />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-
-
-          </View>
-
-
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 21,
-                marginTop: 5,
-                fontWeight: '500',
-                color: '#000000',
-              }}>
-              Card Holder’s Name
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 50,
-              backgroundColor: '#F8F8F8',
-              marginTop: 10,
-              borderRadius: 12,
-              paddingHorizontal: 10,
-              justifyContent: 'center',
-            }}>
-            <TextInput
-              placeholder="Name on Card"
-              placeholderTextColor={'#979797'}
-              style={{ fontSize: 12, fontWeight: '400', lineHeight: 20 }}
-            />
-          </View>
-        </View>
-      </>
-      } */}
           <TouchableOpacity
             onPress={() => {
               Stripe_api()
@@ -1043,18 +753,7 @@ setPaymentStatus("unpaid")
     </View>
   );
 }
-const card = [
-  {
-    cardNo: '**** **** **** 8395',
-    name: 'Axis Bank',
-    logo: require('../../assets/croping/mastercard2x.png'),
-  },
-  {
-    cardNo: '**** **** **** 6246',
-    name: 'HDFC Bank',
-    logo: require('../../assets/croping/visa3x.png'),
-  },
-];
+
 const PaymentOption = [
   // {
   //   id: 1,
@@ -1067,7 +766,7 @@ const PaymentOption = [
 
     name: 'Card or Online Payment',
     logo: require('../../assets/croping/Wallet3x.png'),
-    mode: 'Online'
+    mode: 'Paid'
   },
   {
     id: 3,

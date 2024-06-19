@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { get_Profile, update_profile } from '../../redux/feature/featuresSlice';
 import ProfileHeader from './ProfileHeader';
-import Fcm from '../../fcm';
 
 interface User {
   id: string;
@@ -144,15 +143,15 @@ const Notification: React.FC = () => {
     <View style={styles.container}>
       <ProfileHeader Dwidth={'35%'} name={'Notification'} />
      
-      {/* <View style={styles.listContainer}>
+       <View style={styles.listContainer}>
         <FlatList
           data={data}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
         />
-      </View> */}
-      <Fcm  />
+      </View> 
+     
     </View>
   );
 };

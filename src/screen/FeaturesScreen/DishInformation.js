@@ -76,8 +76,7 @@ export default function DishInformation() {
             </Text>
             <View style={styles.deliveryInfo}>
               <Text style={styles.deliveryText}>
-                {item.restaurant_dish_preapare_time?.substring(0, 2)} min 1.5km
-                Free Delivery
+                {item.restaurant_dish_preapare_time?.substring(0, 2)} min  preapare time
               </Text>
             </View>
             <View style={styles.ratingContainer}>
@@ -94,7 +93,7 @@ export default function DishInformation() {
         </ImageBackground>
         <View style={styles.contentContainer}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>${item.restaurant_dish_price}</Text>
+            <Text style={styles.price}>{item.restaurant_dish_price}</Text>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={decreaseQuantity}>
                 <Image
