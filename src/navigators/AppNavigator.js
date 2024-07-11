@@ -11,6 +11,7 @@ import toastConfig from '../configs/customToast';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from "react-native-push-notification"
 import { notificationListener, requestUserPermission } from '../screen/FeaturesScreen/NotificationComponent';
+import { LocationProvider } from '../configs/LocationContext';
 
 export default function AppNavigator() {
 
@@ -25,11 +26,13 @@ export default function AppNavigator() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{flex: 1}}>
+        <LocationProvider>
           <NavigationContainer>
             <RegistrationRoutes />
             <Toast config={toastConfig} />
       
           </NavigationContainer>
+          </LocationProvider>
         </GestureHandlerRootView>
       </PersistGate>
     </Provider>

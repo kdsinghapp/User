@@ -695,12 +695,12 @@ export const create_order = createAsyncThunk(
       };
 
       const respons = fetch(
-        base_url.url + '/user/order/create-restaurant-order', requestOptions
+        base_url.url +'/user/order/create-restaurant-order', requestOptions
       )
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log('/user/order/create-restaurant-order', response);
+          console.log('/user/order/create-restaurant-order===============create_order=====================', response);
           if (response.success) {
 
             successToast("Your Order Successfuly Create")

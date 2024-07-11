@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
     Modal,
     View,
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { add_address } from '../../../redux/feature/featuresSlice';
 import { errorToast } from '../../../configs/customToast';
 import Loading from '../../../configs/Loader';
+import GooglePlacesInput from '../../../configs/AutoAddress';
 
 const AddressModal = ({ visible, onClose, }) => {
     const screenHeight = Dimensions.get('screen').height;
@@ -28,11 +29,12 @@ const AddressModal = ({ visible, onClose, }) => {
     const [fullName, setFullName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
     const [pincode, setPincode] = useState('');
-    const [street, setStreet] = useState('');
+    const [street, setStreet] = useState('street');
     const [houseNo, setHouseNo] = useState('');
     const [landmark, setLandmark] = useState('');
     const [state, setState] = useState('');
     const [city, setCity] = useState('');
+    const [Location, setLocation] = useState(null)
     const dispatch = useDispatch()
     useEffect(() => {
         if (visible) {
@@ -68,8 +70,8 @@ const AddressModal = ({ visible, onClose, }) => {
         data.append('user_id', user?.user_data.id);
         data.append('full_name', fullName);
         data.append('mobile_number', mobileNumber);
-        data.append('lat', '78.000');
-        data.append('long', '20.00');
+        data.append('lat',Location?.latitude);
+        data.append('long', Location?.longitude);
         data.append('pincode', pincode);
         data.append('street', street);
         data.append('house_no', houseNo);
@@ -85,11 +87,49 @@ const AddressModal = ({ visible, onClose, }) => {
 
         })
     };
-
+    const handleSelectLocation = useCallback(
+        (details) => {
+          const { lat, lng } = details.geometry.location;
+          setLocation({
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+    
+    
+          const formattedAddress = formatAddress(details);
+          console.log('details=>>>>>>>>>>>>>>>>>>>>>', formattedAddress);
+          setStreet(formattedAddress)
+        },
+        [visible]
+      );
+      function formatAddress(addressData) {
+        const components = addressData.address_components;
+        const addressParts = [];
+    
+        components.forEach(component => {
+          if (component.types.includes("premise")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("sublocality_level_1") || component.types.includes("sublocality")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("locality")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("administrative_area_level_1")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("country")) {
+            addressParts.push(component.long_name);
+          }
+        });
+    
+        return addressParts.join(", ");
+      }
     return (
         <Modal visible={visible} transparent>
             <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          
+                
+            
                 <Animated.View
                     style={[
                         styles.modal,
@@ -105,6 +145,11 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
     style={{height:25,width:25}}
     source={require('../../../assets/croping/Close2x.png')}/>
 </TouchableOpacity>
+<View >
+        <GooglePlacesInput placeholder={street} onPlaceSelected={handleSelectLocation} />
+      </View>
+
+<ScrollView showsVerticalScrollIndicator={false}>
                         <View style={styles.inputContainer}>
                             <TextInput
                                 placeholder="Full Name"
@@ -131,14 +176,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 keyboardType="number-pad"
                             />
                         </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Street"
-                                style={[styles.input, !street && styles.inputError]}
-                                value={street}
-                                onChangeText={setStreet}
-                            />
-                        </View>
+             
                         <View style={styles.inputContainer}>
                             <TextInput
                                 placeholder="House Number"
@@ -177,9 +215,9 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                             style={styles.button}>
                             <Text style={styles.buttonText}>Add Address</Text>
                         </TouchableOpacity>
-                  
+                        </ScrollView>
                 </Animated.View>
-                </ScrollView>
+            
             </View>
         </Modal>
     );
@@ -197,7 +235,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         marginTop:hp(10),
-        height: hp(90),
+        height: hp(60),
     },
     inputContainer: {
         marginVertical: 10,

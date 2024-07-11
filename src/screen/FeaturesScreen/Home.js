@@ -43,6 +43,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Ratting from '../../configs/Ratting';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 import { requestUserPermission } from './NotificationComponent';
+import { useLocation } from '../../configs/LocationContext';
 
 
 export default function Home() {
@@ -52,22 +53,10 @@ export default function Home() {
   const DashBoardData = useSelector(state => state.feature.DashboardList);
   const user = useSelector(state => state.auth.userData);
   const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
-  const [locationName, setLocationName] = useState('');
-  const checkApplicationPermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
-      } catch (error) {
-      }
-    }
-  };
-  useEffect(() => {
-    checkApplicationPermission();
-    getLiveLocation()
+  const { locationName, setLocationName } = useLocation(); // Get locationName and setLocationName from context
 
-  }, [user])
+
+
   const add_favrate = (id) => {
 
 
@@ -95,40 +84,42 @@ export default function Home() {
   }
 
 
-  function findCityName(response) {
-    const results = response.results;
-    for (let i = 0; i < results.length; i++) {
-      const addressComponents = results[i].address_components;
-      for (let j = 0; j < addressComponents.length; j++) {
-        const types = addressComponents[j].types;
-        if (types.includes('locality') || types.includes('administrative_area_level_2')) {
-          return addressComponents[j].long_name; // Return the city name
+
+    useEffect(() => {
+        // Fetch live location and update locationName
+        const fetchLiveLocation = async () => {
+            const locPermissionDenied = await locationPermission();
+            if (locPermissionDenied) {
+                const { latitude, longitude } = await getCurrentLocation();
+                const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+                try {
+                    const res = await fetch(url);
+                    const json = await res.json();
+                    const city = findCityName(json);
+                    setLocationName(city);
+                } catch (e) {
+                    console.log("Error fetching location:", e);
+                }
+            }
+        };
+
+        fetchLiveLocation();
+    }, []);
+
+    function findCityName(response) {
+        const results = response.results;
+        for (let i = 0; i < results.length; i++) {
+            const addressComponents = results[i].address_components;
+            for (let j = 0; j < addressComponents.length; j++) {
+                const types = addressComponents[j].types;
+                if (types.includes('locality') || types.includes('administrative_area_level_2')) {
+                    return addressComponents[j].long_name; // Return the city name
+                }
+            }
         }
-      }
+        return null; // Return null if city name not found
     }
-    return null; // Return null if city name not found
-  }
 
-  const getLiveLocation = async () => {
-    const locPermissionDenied = await locationPermission();
-    if (locPermissionDenied) {
-
-      const { latitude, longitude } = await getCurrentLocation();
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
-      try {
-        const res = await fetch(url);
-        const json = await res.json();
-        console.log(json);
-        setLocationName(json)
-
-
-      } catch (e) {
-        console.log("e", e)
-      } finally {
-
-      }
-    }
-  };
 
 
 
@@ -387,7 +378,11 @@ export default function Home() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <View style={{}}>
+              <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(ScreenNameEnum.SelectLocation);
+            }}
+              style={{}}>
                 <Text
                   style={{
                     fontWeight: '500',
@@ -416,12 +411,12 @@ export default function Home() {
                       color: '#101010',
                       marginLeft: 5,
                     }}>
-                    {locationName == '' ? 'fetching..' : findCityName(locationName)}
+               {locationName ? locationName?.substring(0,15) : 'Fetching..'}
                   </Text>
 
                   <Down width={24} height={24} />
                 </View>
-              </View>
+              </TouchableOpacity>
               <View>
                 <TouchableOpacity
                   onPress={() => {

@@ -47,7 +47,7 @@ export const notificationListener = async () => {
 };
 
 const showLocalNotification = (value) => {
-  console.log("valueIndex Appnavigtore", value?.title, value?.body)
+ 
   PushNotification.createChannel({
     channelId: "Love.eats.channel",
     channelName: 'Loveeats',

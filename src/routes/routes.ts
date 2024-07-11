@@ -39,6 +39,7 @@ import SignUp from "../screen/SignUp";
 import TermConditions from "../screen/TermConditions";
 import WELCOME_SCREEN from "../screen/WELCOME_SCREEN";
 import CreatePassword from "../screen/createPassword";
+import SelectLocation from "../screen/location/SelectLocation";
 import ScreenNameEnum from "./screenName.enum";
 
 const _routes = {
@@ -152,6 +153,10 @@ const _routes = {
     {
       name: ScreenNameEnum.AddressPicker,
       Component:AddressPicker ,
+    },
+    {
+      name: ScreenNameEnum.SelectLocation,
+      Component:SelectLocation ,
     },
     
   ],

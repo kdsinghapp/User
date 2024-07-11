@@ -93,7 +93,7 @@ export default function Address() {
   };
 
   const getLiveLocation = async () => {
-    console.log('=+>>>>>>>>>>>caled>>>>>>>>>>');
+
     setIsFetchingLocation(true); // Start loading
 
     const locPermissionDenied = await locationPermission();
@@ -147,12 +147,13 @@ export default function Address() {
   };
 
   const handleAddCurrentLocationAddress = () => {
+    console.log(pincode , street ,houseNo ,state ,city);
+
     if (!pincode || !street || !houseNo || !state || !city) {
       setIsFetchingLocation(false); // End loading
       return errorToast('All fields are required');
     }
 
-    console.log('landmark',landmark);
 
     let data = new FormData();
     data.append('user_id', user?.user_data.id);
@@ -234,14 +235,7 @@ export default function Address() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <ProfileHeader name={'Address'} Dwidth={'22%'} />
         <View style={styles.listContainer}>
-          {addresList && (
-            <FlatList
-              data={addresList}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.address_id.toString()} // Add a keyExtractor
-              showsHorizontalScrollIndicator={false}
-            />
-          )}
+      
           <TouchableOpacity
             onPress={getLiveLocation}
             style={styles.addButton}
@@ -253,12 +247,20 @@ export default function Address() {
               <Text style={styles.buttonText}>Use Current Location</Text>
             )}
           </TouchableOpacity>
-          {/* <TouchableOpacity
+          <TouchableOpacity
             onPress={() => setVisible(true)}
             style={styles.addButton}
           >
             <Text style={styles.buttonText}>Add New Address</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
+          {addresList && (
+            <FlatList
+              data={addresList}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.address_id.toString()} // Add a keyExtractor
+              showsHorizontalScrollIndicator={false}
+            />
+          )}
         </View>
       </ScrollView>
 

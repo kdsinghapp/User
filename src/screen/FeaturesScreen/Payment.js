@@ -330,7 +330,7 @@ export default function Payment() {
 
 
 
-
+const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
   const handleError = (error) => {
     console.error('WebView Error:', error);
@@ -338,6 +338,7 @@ export default function Payment() {
     setCheckoutUrl(false);
     setPaymentStatus('unpaid')
   };
+
 
 
   const book_order = async (payment_intent) => {
@@ -352,7 +353,7 @@ export default function Payment() {
       data.append('total_price', Total.toString());
       data.append('lat', getProfile?.address_data.lat);
       data.append('long', getProfile?.address_data.long);
-      data.append('restaurant_id', cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString());
+      data.append('restaurant_id', res_id)
       data.append('address_id', getProfile?.address_data.address_id.toString());
       data.append('tax_amount', generalInfo?.tax.toString());
       data.append('coupon_amount', (CouponCodeData?.coupon_discount || 0).toString());
@@ -364,7 +365,7 @@ export default function Payment() {
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
-          dish_id: dish.dish_data.restaurant_dish_id,
+          dish_id: dish.dish_id,
           quantity: dish.quantity,
           price_per_unit: dish.dish_data.restaurant_dish_price,
           totalprice: dish.dish_data.restaurant_dish_price * dish.quantity,
@@ -377,6 +378,8 @@ export default function Payment() {
         // Append the serialized string to the FormData object
         data.append(`order_details[${index}]`, orderDetailString);
       });
+
+
 
       const params = {
         data: data,

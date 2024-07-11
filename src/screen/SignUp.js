@@ -17,8 +17,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CountryPicker} from 'react-native-country-codes-picker';
 import {register} from '../redux/feature/RegisterSlice';
 import Loading from '../configs/Loader';
+import DatePicker from 'react-native-date-picker';
+
 export default function SignUp() {
   const [isSelected, setSelection] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
 
   const [FullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -28,6 +32,7 @@ export default function SignUp() {
   const [code, setCode] = useState('');
   const [Dob, setDob] = useState('');
   const [HomeTown, setHomeTown] = useState('');
+  const [showDate, setShowDate] = useState(false);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -71,7 +76,6 @@ export default function SignUp() {
   };
   const handleMobileText = value => {
     setMobileNumber(value);
-
     setNumber(true);
   };
 
@@ -91,7 +95,7 @@ export default function SignUp() {
 
     if (!validatePassword(password)) {
       setError(
-        'Password must contain at least 8 characters, including  letters ,least one special character,  and numbers.',
+        'Password must contain at least 8 characters, including letters, at least one special character, and numbers.',
       );
       return;
     }
@@ -104,7 +108,7 @@ export default function SignUp() {
       setError('Please choose Country Code');
       return;
     }
- 
+
     const params = {
       data: {
         full_name: FullName,
@@ -113,13 +117,28 @@ export default function SignUp() {
         password: password,
         c_password: confirmPassword,
         country_code: code,
+        date_of_birth: formate(date),
+        home_town: HomeTown
       },
       navigation: navigation,
     };
     dispatch(register(params));
-
   };
 
+
+
+  const formate = (dateString)=>{
+    const dateObj = new Date(dateString);
+
+// Extract day, month, and year
+const day = dateObj.getUTCDate();
+const month = dateObj.getUTCMonth() + 1; // Months are zero-indexed, so we add 1
+const year = dateObj.getUTCFullYear();
+
+// Format the date as DD/MM/YYYY
+const formattedDate = `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`;
+return formattedDate
+  }
   return (
     <View style={{flex: 1}}>
        {isLoading ? <Loading /> : null}
@@ -155,15 +174,23 @@ export default function SignUp() {
               img={require('../assets/croping/Profile3x.png')}
             />
             <TextInputField
-              placeholder={'Email Address'}
+              placeholder={'Email'}
               onChangeText={handleEmailText}
               firstLogo={true}
+           
               img={require('../assets/croping/Emal3x.png')}
             />
-               <TextInputField 
-        img={require('../assets/croping/Dob.png')}
-        onChangeText={handleDobText}
-    isFocus={false}  name={'Date Of Birth'} placeholder={'DD/MM/YYYY'} firstLogo={true} showEye={false} /> 
+           <TouchableOpacity 
+          onPress={() => setOpen(true)}
+           style={{flexDirection:'row',
+           paddingVertical:15,borderRadius:20,paddingHorizontal:10,
+           alignItems:'center',backgroundColor:'#F7F8F8'}}>
+<Image   source={require('../assets/croping/Dob.png')} 
+
+
+style={{height:25,width:25}}/>
+<Text style={{marginLeft:10,color:"#ADA4A5",     fontWeight: '700',}}>{new Date() == date?'DD/MM/YYYY':formate(date)}</Text>
+           </TouchableOpacity>
       
       <TextInputField 
         img={require('../assets/croping/HomeUnactive3x.png')}
@@ -335,7 +362,23 @@ export default function SignUp() {
             </View>
           </View>
         </View>
-      </ScrollView>
+ 
+    
+                 </ScrollView>
+           
+            <DatePicker
+       modal={true}
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+        }}
+        mode='date'
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
     </View>
   );
 }
