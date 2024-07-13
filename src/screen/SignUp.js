@@ -340,7 +340,7 @@ style={{height:25,width:25}}/>
 
                 justifyContent: 'center',
               }}>
-              <Text style={{fontSize: 16, lineHeight: 24, color: '#0000000'}}>
+              <Text style={{fontSize: 16, lineHeight: 24, color: '#000'}}>
                 Alrady have an account?
               </Text>
               <TouchableOpacity

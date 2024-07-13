@@ -237,7 +237,7 @@ export default function Login() {
 
               justifyContent: 'center',
             }}>
-            <Text style={{ fontSize: 16, lineHeight: 24, color: '#0000000' }}>
+            <Text style={{ fontSize: 16, lineHeight: 24, color: '#000' }}>
               Don’t have an account?{' '}
             </Text>
             <TouchableOpacity

@@ -20,8 +20,10 @@ export default function ProfileHeader({name,Dwidth}) {
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            paddingHorizontal:10, 
           }}>
           <TouchableOpacity
+           style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center' }} 
             onPress={() => {
               navigation.goBack();
             }}>
@@ -30,13 +32,14 @@ export default function ProfileHeader({name,Dwidth}) {
               style={{height: 32, width: 32}}
             />
           </TouchableOpacity>
-          <View style={{justifyContent: 'center', width:Dwidth}}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text
               style={{
                 fontSize: 18,
                 fontWeight: '700',
                 lineHeight: 27,
                 color: '#000',
+                textAlign: 'center' 
               }}>
              {name}
             </Text>

@@ -440,7 +440,7 @@ export default function MyOrders() {
   };
 
 
-console.log(OrderDetails);
+
   return (
     <View style={{ paddingHorizontal: 15, flex: 1, backgroundColor: '#FFFFFF' }}>
       {isLoading && <Loading />}

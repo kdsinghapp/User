@@ -150,9 +150,9 @@ export const validOtp = createAsyncThunk(
     } catch (error) {
       console.log('Error:', error);
 
-      Alert.alert(
+      errorToast(
         'Network Error',
-        'Server not responding, please try again later',
+        
        
       );
       navigation.goBack()
@@ -190,10 +190,10 @@ console.log('identity, password, otp,',identity, password, otp,);
           console.log(response);
           if (response.success) {
             params.navigation.navigate(ScreenNameEnum.LOGIN_SCREEN);
-            Alert.alert('Success', 'Password updated successfully');
+       successToast('Password updated successfully');
            return response
           } else {
-            Alert.alert('Failed', response.message);
+            errorToast(response.message);
             params.navigation.navigate(ScreenNameEnum.PASSWORD_RESET);
             return response
           }
@@ -205,7 +205,7 @@ console.log('identity, password, otp,',identity, password, otp,);
     } catch (error) {
       console.log('Error:', error);
 
-      Alert.alert('Network Error', 'Server not responding, please try again later');
+   errorToast('Network Error');
 
       return thunkApi.rejectWithValue(error);
     }

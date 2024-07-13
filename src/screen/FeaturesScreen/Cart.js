@@ -55,6 +55,7 @@ export default function Cart() {
     dispatch(get_cart(params));
   };
 
+
   const calculateTotal = () => {
     let total = 0;
     cartItem?.forEach(item => {
@@ -234,12 +235,12 @@ export default function Cart() {
       )}
 
       {cartItem?.length == 0 && (
-        <>
+       
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>No Cart Item Found</Text>
+            <Text style={{color:'#000'}}>No Cart Item Found</Text>
           </View>
-        </>
+     
       )}
     </View>
   );
