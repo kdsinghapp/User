@@ -19,6 +19,7 @@ import DishInformation from "../screen/FeaturesScreen/DishInformation";
 import EditProfile from "../screen/FeaturesScreen/EditProfile";
 import Favorites from "../screen/FeaturesScreen/Favorites";
 import Home from "../screen/FeaturesScreen/Home";
+import MapScreen from "../screen/FeaturesScreen/Map";
 import MsgNotification from "../screen/FeaturesScreen/MsgNotification";
 import MyOrder from "../screen/FeaturesScreen/MyOrder";
 import MyOrders from "../screen/FeaturesScreen/Myorders";
@@ -157,6 +158,10 @@ const _routes = {
     {
       name: ScreenNameEnum.SelectLocation,
       Component:SelectLocation ,
+    },
+    {
+      name: ScreenNameEnum.MAP_SCREEN,
+      Component:MapScreen ,
     },
     
   ],

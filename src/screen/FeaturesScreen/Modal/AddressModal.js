@@ -155,6 +155,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 placeholder="Full Name"
                                 style={[styles.input, !fullName && styles.inputError]}
                                 value={fullName}
+                                placeholderTextColor={'#000'}
                                 onChangeText={setFullName}
                             />
                         </View>
@@ -165,15 +166,17 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 value={mobileNumber}
                                 onChangeText={setMobileNumber}
                                 keyboardType="phone-pad"
+                                placeholderTextColor={'#000'}
                             />
                         </View>
                         <View style={styles.inputContainer}>
                             <TextInput
-                                placeholder="Pincode"
+                                placeholder="Post code"
                                 style={[styles.input, !pincode && styles.inputError]}
                                 value={pincode}
                                 onChangeText={setPincode}
-                                keyboardType="number-pad"
+                               
+                                placeholderTextColor={'#000'}
                             />
                         </View>
              
@@ -183,6 +186,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 style={[styles.input, !houseNo && styles.inputError]}
                                 value={houseNo}
                                 onChangeText={setHouseNo}
+                                placeholderTextColor={'#000'}
                             />
                         </View>
                         <View style={styles.inputContainer}>
@@ -191,6 +195,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 style={[styles.input, !landmark && styles.inputError]}
                                 value={landmark}
                                 onChangeText={setLandmark}
+                                placeholderTextColor={'#000'}
                             />
                         </View>
                         <View style={styles.inputContainer}>
@@ -199,10 +204,12 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 style={[styles.input, !state && styles.inputError]}
                                 value={state}
                                 onChangeText={setState}
+                                placeholderTextColor={'#000'}
                             />
                         </View>
                         <View style={styles.inputContainer}>
                             <TextInput
+                             placeholderTextColor={'#000'}
                                 placeholder="City"
                                 style={[styles.input, !city && styles.inputError]}
                                 value={city}
@@ -235,7 +242,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         marginTop:hp(10),
-        height: hp(60),
+        height: hp(70),
     },
     inputContainer: {
         marginVertical: 10,

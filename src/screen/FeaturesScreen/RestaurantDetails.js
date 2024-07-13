@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP} from 'react-native-responsive-screen';
 
 import Star from '../../assets/sgv/star.svg';
 import BStar from '../../assets/sgv/StarBlack.svg';
@@ -25,6 +25,7 @@ import {get_RestauRantDetails} from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
 import RestaurantTime from './RestaurantTime';
 import RestaurantReview from './Review';
+import ScreenNameEnum from '../../routes/screenName.enum';
 export default function RestaurantDetails({route}) {
   const [showData, setShowData] = useState('Products');
   const {res_id} = route.params;
@@ -47,8 +48,8 @@ export default function RestaurantDetails({route}) {
   }, [isFocuss, res_id]);
 
 
-  console.log(RestauRantDetails);
 
+const location = RestauRantDetails?.restaurant
 
   const renderItem = ({item}) => (
     <TouchableOpacity
@@ -64,14 +65,14 @@ export default function RestaurantDetails({route}) {
           backgroundColor: item.name === showData ? '#7756FC' : '#FFF',
           height: 45,
           borderRadius: 30,
-          width: 120,
+         width:widthPercentageToDP(28),
 
           marginLeft: 10,
         },
       ]}>
       <Text
         style={{
-          fontSize: 18,
+          fontSize:16,
           fontWeight: '500',
 
           lineHeight: 27,
@@ -94,7 +95,7 @@ export default function RestaurantDetails({route}) {
       <View>
         <Image source={item.logo} style={{height: 60, width: 60}} />
       </View>
-      <View style={{marginLeft: 10}}>
+      <View style={{marginLeft: 10,width:'80%'}}>
         <Text
           style={{
             color: '#7756FC',
@@ -120,7 +121,7 @@ export default function RestaurantDetails({route}) {
   );
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1,backgroundColor:'#fff'}}>
       {isLoading ? <Loading /> : null}
    
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -462,7 +463,8 @@ export default function RestaurantDetails({route}) {
                         showsVerticalScrollIndicator={false}
                       />
                     </View>
-                    <View
+                  {location?.lat && location?.lon && <>
+                   <View
                       style={{
                         paddingHorizontal: 15,
                         marginVertical: 15,
@@ -481,6 +483,9 @@ export default function RestaurantDetails({route}) {
                       </Text>
                     </View>
                     <TouchableOpacity
+                    onPress={()=>{
+                      navigation.navigate(ScreenNameEnum.MAP_SCREEN,{item:{...location,address:RestauRantDetails?.restaurant?.res_address,name:RestauRantDetails?.restaurant?.res_name}})
+                    }}
                       style={{height: hp(15), paddingHorizontal: 20}}>
                       <Image
                         source={require('../../assets/croping/Map3x.png')}
@@ -492,6 +497,8 @@ export default function RestaurantDetails({route}) {
                         }}
                       />
                     </TouchableOpacity>
+                    </>
+                    }
                   </>
                 )}
             

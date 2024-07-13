@@ -166,7 +166,7 @@ export default function MyOrders() {
               resizeMode="cover"
             />
           </View>
-          <View style={{ marginLeft: 10 }}>
+          <View style={{ marginLeft: 10,width:'80%' }}>
             <Text style={{ fontSize: 14, color: "#000", fontWeight: '600' }}>{item.restaurant_data?.res_name}</Text>
             <Text style={{ fontSize: 12, color: "#777777", fontWeight: '600' }}>{item.restaurant_data?.res_address}</Text>
           </View>
@@ -181,7 +181,7 @@ export default function MyOrders() {
                 ...{ color: '#000', fontWeight: '600', marginRight: 20, },
               }}
             >
-              {item.total_price.toFixed(2)}
+              £{item.total_price.toFixed(2)}
             </Text>
           </View>
           <View
@@ -242,11 +242,11 @@ export default function MyOrders() {
                     </Text>
                     <View>
                       <Text style={{ fontSize: 14, color: "#000", fontWeight: '500' }}>
-                        Total: {(dish.quantity * dish.price_per_unit).toFixed(2)}
+                        Total: £{(dish.quantity * dish.price_per_unit).toFixed(2)}
                       </Text>
 
                       <Text style={{ fontSize: 10, color: "#000", fontWeight: '500' }}>
-                        (Price per unit: {dish.price_per_unit.toFixed(2)})
+                        (Price per unit: £{dish.price_per_unit.toFixed(2)})
                       </Text>
                     </View>
                   </View>
@@ -298,7 +298,7 @@ export default function MyOrders() {
                   ...{ color: '#000', fontWeight: '600', marginRight: 20, },
                 }}
               >
-                {item.tax_amount}.00
+                £{item.tax_amount}.00
               </Text>
             </View>
             <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
@@ -310,7 +310,7 @@ export default function MyOrders() {
                   ...{ color: '#000', fontWeight: '600', marginRight: 20 },
                 }}
               >
-                {item.delivery_charge}.00
+                £{item.delivery_charge}.00
               </Text>
             </View>
             <View style={[styles.detailsRow, { borderBottomWidth: 0, marginTop: 0 }]}>
@@ -322,7 +322,7 @@ export default function MyOrders() {
                   ...{ color: '#000', fontWeight: '600', marginRight: 20 },
                 }}
               >
-                {item.sub_total}.00
+                £{item.sub_total}.00
               </Text>
             </View>
             <View style={styles.detailsRow}>
@@ -334,7 +334,7 @@ export default function MyOrders() {
                   ...{ color: '#000', fontWeight: '600', marginRight: 20, },
                 }}
               >
-                {item.total_price.toFixed(2)}
+                £{item.total_price.toFixed(2)}
               </Text>
             </View>
             

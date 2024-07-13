@@ -120,7 +120,7 @@ export default function AllPopularDishes() {
                         {' '}
                         Price:-
                     </Text>{' '}
-                    ${item.restaurant_dish_price}
+                    £{item.restaurant_dish_price}
                 </Text>
             </View>
 

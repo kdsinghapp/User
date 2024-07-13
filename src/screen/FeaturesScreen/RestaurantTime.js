@@ -54,6 +54,7 @@ import {
     dayName: {
       fontSize: 12,
       fontWeight: '500',
+      color:'#000'
 
     },
     openCloseTimes: {

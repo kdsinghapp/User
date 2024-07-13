@@ -87,7 +87,7 @@ export default function MyOrder() {
                 
                 
               }}>
-              {item.Price}
+              £{item.Price}
             </Text>
             <View style={{flexDirection:'row',alignItems:'center'}}>
           <Text

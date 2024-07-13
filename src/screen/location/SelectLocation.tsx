@@ -21,6 +21,7 @@ import { useLocation } from '../../configs/LocationContext';
 import GooglePlacesInput from '../../configs/AutoAddress';
 import { update_profile } from '../../redux/feature/featuresSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import ProfileHeader from '../FeaturesScreen/ProfileHeader';
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY; // Replace with your actual API key
 
@@ -189,10 +190,8 @@ longitude,);
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginTop: Platform.OS === 'ios' ? -20 : 0 }}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Location</Text>
-                </View>
+            <View style={{ marginTop: Platform.OS === 'ios' ? -20 : 0 ,marginHorizontal:15}}>
+            <ProfileHeader name={'Location'} Dwidth={'22%'} />
             </View>
             <View style={{ width: '100%', marginTop: 10 }}>
                 <GooglePlacesInput placeholder={'Search'} onPlaceSelected={handleSelectLocation} />

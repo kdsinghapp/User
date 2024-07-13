@@ -68,13 +68,13 @@ export default function Home() {
       }
 
 
-      dispatch(Add_FavoriteList(params)).then(res => {
+      dispatch(Add_FavoriteList(params)).then(async(res) => {
         const params = {
           data: {
             token: user?.token,
           },
         }
-        dispatch(get_HomeDashBoard(params));
+       await dispatch(get_HomeDashBoard(params));
       })
     }
     catch (err) {
@@ -286,12 +286,12 @@ export default function Home() {
       <View style={{}}>
         <Text
           style={{
-            fontSize: 14,
+            fontSize:12,
             fontWeight: '700',
             lineHeight: 21,
             color: '#000000',
           }}>
-          {item.res_name}
+          {item.res_name?.substring(0,30)}
         </Text>
         <Text
           style={{

@@ -142,7 +142,7 @@ export default function Cart() {
             {item.dish_data?.restaurant_dish_description}
           </Text>
           <Text style={styles.dishPrice}>
-            {item.dish_data?.restaurant_dish_price*item.quantity}
+          £{item.dish_data?.restaurant_dish_price*item.quantity}
           </Text>
         </View>
         <View style={styles.quantityContainer}>
@@ -186,14 +186,18 @@ export default function Cart() {
         style={{height:60,width:60,borderRadius:30}}
         source={{uri:item.restaurant_data?.res_image}}
         />
-        <View style={{marginLeft:10}}>
+        <View style={{marginLeft:10,width:'80%'}}>
         <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name}</Text>
         <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-
+  const FooterComponent = () => (
+    <View style={{height:hp(20)}}>
+      
+    </View>
+  );
   return (
     <View style={styles.container}>
       {isLoading && <Loading />}
@@ -207,13 +211,14 @@ export default function Cart() {
               showsVerticalScrollIndicator={false}
               data={cartItem}
               renderItem={cartItemList}
+              ListFooterComponent={FooterComponent}
             />
           </View>
           <View style={styles.footer}>
             <View style={styles.footerContent}>
               <View>
                 <Text style={styles.totalLabel}>Total</Text>
-                <Text style={styles.totalAmount}>{calculateTotal()}</Text>
+                <Text style={styles.totalAmount}>£ {calculateTotal()}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {

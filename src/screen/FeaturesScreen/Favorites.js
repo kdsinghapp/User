@@ -128,7 +128,7 @@ export default function Favorites() {
     <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.dish_data?.restaurant_dish_rating}</Text>
     </View>
         <View style={styles.foodPriceContainer}>
-          <Text style={styles.foodPrice}>price :- {item.dish_data?.restaurant_dish_price}</Text>
+          <Text style={styles.foodPrice}>price: £{item.dish_data?.restaurant_dish_price}</Text>
           <TouchableOpacity 
             onPress={() => {
               delete_favorite(item.resfav_id);
@@ -144,7 +144,7 @@ export default function Favorites() {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Favorites</Text>
         </View>
@@ -198,7 +198,7 @@ export default function Favorites() {
             />
           )}
         </View>
-      </ScrollView>
+   
     </View>
   );
 }
@@ -264,8 +264,9 @@ elevation: 5,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 5,
     width: wp(90),
-    height: hp(40),
+    height: hp(45),
     marginVertical: 10,
+    paddingVertical:20
   },
   favoriteIconContainer: {
     width: '15%',

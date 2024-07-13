@@ -188,7 +188,7 @@ export default function Payment() {
                 lineHeight: 27,
                 fontWeight: '700',
               }}>
-              total value {(item.dish_data.restaurant_dish_price * item.quantity)}
+              total value £{(item.dish_data.restaurant_dish_price * item.quantity)}
             </Text>
 
           </View>
@@ -224,17 +224,17 @@ export default function Payment() {
         style={{ height: 30, width: 30 }}
         source={require('../../assets/croping/discount.png')}
       />
-      <View style={{ marginLeft: 10 }}>
+      <View style={{ marginLeft: 10 ,width:'60%'}}>
         <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>
 
           {item.description} ₹{item.min_order_amount}
         </Text>
-        <Text style={{ fontSize: 11, fontWeight: '600', color: '#777777' }}>
+        <Text style={{ fontSize: 10, fontWeight: '600', color: '#777777' }}>
           USE {item.coupon_code}| ON SELECT ITEMS
         </Text>
       </View>
       {CouponCode == item.coupon_code &&
-        <Text style={{ marginLeft: '15%', color: '#777777', fontWeight: '700' }}>Coupon Apply</Text>
+        <Text style={{color: '#777777', fontWeight: '700' }}>Coupon Apply</Text>
 
       }
     </TouchableOpacity>
@@ -439,7 +439,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Sub Total</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>{totalBill}</Text>
+                <Text style={Styles.txt}>£{totalBill}</Text>
               </View>
             </View>
             <View style={Styles.bill}>
@@ -447,7 +447,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Taxes & Fees</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>{generalInfo?.tax}</Text>
+                <Text style={Styles.txt}>£{generalInfo?.tax}</Text>
               </View>
             </View>
             <View style={Styles.bill}>
@@ -455,7 +455,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Delivery Fees</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>{generalInfo?.delivery_charge}</Text>
+                <Text style={Styles.txt}>£{generalInfo?.delivery_charge}</Text>
               </View>
             </View>
             {CouponCodeData && <View style={Styles.bill}>
@@ -473,7 +473,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.total}>Total</Text>
               </View>
               <View style={Styles.total}>
-                <Text style={Styles.total}>{totalAmount}</Text>
+                <Text style={Styles.total}>£{totalAmount}</Text>
               </View>
             </View>
           </View>
@@ -506,6 +506,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 style={{ fontSize: 14, fontWeight: '600', color: '#777777' }}
                 value={CouponCode}
                 onChangeText={(txt) => setCouponCode(txt)}
+                placeholderTextColor={'#000'}
               />
             </View>
             <TouchableOpacity
@@ -796,7 +797,7 @@ const Styles = StyleSheet.create({
   txt: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#352C48',
+    color: '#000',
     lineHeight: 21,
   },
   total: {

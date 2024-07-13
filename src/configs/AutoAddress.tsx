@@ -71,7 +71,7 @@ const GooglePlacesInput = ({ placeholder, onPlaceSelected }) => {
                     },
                 }}
                 textInputProps={{
-                  //  placeholderTextColor: "#000",
+                    placeholderTextColor: "#000",
                   
                 }}
                 query={{

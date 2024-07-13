@@ -66,6 +66,9 @@ export default function PopularDishList({ ...props }) {
           alignSelf: 'center',
           backgroundColor: '#FFFFFF',
           marginHorizontal: 10,
+          width:wp(45),
+          justifyContent:'center',
+          alignItems:'center'
         },
       ]}>
 
@@ -88,7 +91,7 @@ export default function PopularDishList({ ...props }) {
         }}
 
 
-        style={{ alignSelf: 'flex-end', position: 'absolute', }}>
+        style={{ alignSelf: 'flex-end', position: 'absolute',top:5,right:5 }}>
         {item.fav ? <FavAdd height={20} /> : <Fav height={20} />}
       </TouchableOpacity>
 
@@ -112,25 +115,26 @@ export default function PopularDishList({ ...props }) {
 
       <View style={{ flexDirection: 'row' }}>
         <View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row',alignItems:'center', justifyContent: 'space-between' }}>
             <Text
               style={{
-                fontSize: 14,
+                fontSize:12,
                 fontWeight: '700',
                 lineHeight: 21,
                 color: '#000000',
+                
               }}>
-              {item.restaurant_dish_name}
+              {item.restaurant_dish_name?.substring(0,12)}
             </Text>
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 10,
                 marginLeft: 5,
                 fontWeight: '700',
                 lineHeight: 18,
                 color: '#000',
               }}>
-              price :- {item.restaurant_dish_price}
+              Price: £{item.restaurant_dish_price}
             </Text>
             {props.showPlusIcon && <Plus height={20} width={20} />}
           </View>

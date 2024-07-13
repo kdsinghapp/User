@@ -104,7 +104,7 @@ export default function RestaurantItemList({ ...props }) {
                 <Text style={styles.itemDescription}>{item.restaurant_dish_description}</Text>
                 <View style={styles.itemFooter}>
                   <TouchableOpacity>
-                    <Text style={styles.itemPrice}>{item.restaurant_dish_price}</Text>
+                    <Text style={styles.itemPrice}>£{item.restaurant_dish_price}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

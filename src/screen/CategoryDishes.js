@@ -116,7 +116,7 @@ export default function CategoryDishes() {
                         {' '}
                         Price:-
                     </Text>{' '}
-                    {item.restaurant_dish_price}
+                    £{item.restaurant_dish_price}
                 </Text>
             </View>
             <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
@@ -124,11 +124,11 @@ export default function CategoryDishes() {
 
                     style={{ height: 40, width: 40, borderRadius: 20 }}
                     source={{ uri: item.restaurant_data?.res_image }} />
-                <View>
+                <View style={{marginLeft:5}}>
                     <Text
                         style={{
                             color: '#352C48',
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: '700',
                             lineHeight: 14,
                         }}>

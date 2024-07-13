@@ -93,7 +93,7 @@ export default function DishInformation() {
         </ImageBackground>
         <View style={styles.contentContainer}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{item.restaurant_dish_price}</Text>
+            <Text style={styles.price}>£{item.restaurant_dish_price}</Text>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={decreaseQuantity}>
                 <Image
@@ -118,16 +118,17 @@ export default function DishInformation() {
             {item?.restaurant_data && <Text style={[styles.aboutTitle,{marginTop:20}]}>Restaurant Details</Text> }
             {item?.restaurant_data &&
             
-               <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+               <View style={{ marginTop: 10, flexDirection: 'row', 
+               paddingVertical:5,alignItems: 'center' }}>
                <Image
 
                    style={{ height: 40, width: 40, borderRadius: 20 }}
                    source={{ uri: item.restaurant_data?.res_image }} />
-               <View>
+               <View style={{marginLeft:5,width:'80%'}}>
                    <Text
                        style={{
                            color: '#352C48',
-                           fontSize: 14,
+                           fontSize: 12,
                            fontWeight: '700',
                            lineHeight: 14,
                        }}>
@@ -140,7 +141,7 @@ export default function DishInformation() {
                            fontWeight: '700',
                            lineHeight: 14,
                        }}>
-                       {item.restaurant_data?.res_address?.substring(0, 20)}
+                       {item.restaurant_data?.res_address}
                    </Text>
                </View>
            </View>
