@@ -8,6 +8,8 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -15,6 +17,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import { get_order_data_by_id, user_order_status } from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
 import { useNavigation } from '@react-navigation/native';
@@ -33,9 +36,31 @@ export default function MyOrders() {
   const navigation = useNavigation()
   useEffect(() => {
     get_order(status);
-
+    requestCallPermission()
   }, [status]);
-
+  const requestCallPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+          {
+            title: "Call Phone Permission",
+            message: "This app needs access to your phone to make a call",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("You can use the phone");
+        } else {
+          console.log("Call Phone permission denied");
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
 
   const get_order = async sts => {
     try {
@@ -83,7 +108,7 @@ export default function MyOrders() {
     });
   };
 
-  const TopRateRestaurant = ({ item, index }) => {
+  const MyOderList = ({ item, index }) => {
 
     const isExpand = isExpanded && isExpandedIndex === index
     const statusImage =
@@ -131,7 +156,15 @@ export default function MyOrders() {
 
 
 
-
+    const makePhoneCall = (Number) => {
+  
+      try{
+          RNImmediatePhoneCall.immediatePhoneCall(Number);
+      }
+      catch(err){
+        console.log(err);
+      }
+        }
   
 
     return (
@@ -212,7 +245,8 @@ export default function MyOrders() {
     ? 'You canceled this booking!' 
     : 'Your order was canceled by the restaurant!')}
 {item.status === 'Pending' && 'Your booking is pending!'}
-{item.status === 'Accepted' && 'Your order is under prescription!'}
+{item.status === 'Accepted' && item.delivery_status == 'Pending' && 'Your order is under prescription!'}
+{item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
 
 
             </Text>
@@ -282,8 +316,8 @@ export default function MyOrders() {
     ? 'You canceled this booking!' 
     : 'Your order was canceled by the restaurant!')}
 {item.status === 'Pending' && 'Your booking is pending!'}
-{item.status === 'Accepted' && 'Your order is under prescription!'}
-
+{item.status === 'Accepted' && item.delivery_status == 'Pending' && 'Your order is under prescription!'}
+{item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
 
               </Text>
               {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
@@ -353,7 +387,7 @@ export default function MyOrders() {
         </>
         )}
 
-        {item.delivery_status == 'Pickuped' && (
+        {item.delivery_status == 'Pickuped' && item.delivery_status !== 'Deliverd' &&(
           <View
             style={{
               flexDirection: 'row',
@@ -363,10 +397,17 @@ export default function MyOrders() {
               marginTop: 20,
             }}
           >
+            <TouchableOpacity
+            onPress={()=>{
+              makePhoneCall(item.driver_data.driver_mobile_number)
+            }}
+            >
+
             <Image
               source={require('../../assets/croping/Call3x.png')}
               style={{ height: 60, width: 60 }}
-            />
+              />
+              </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate(ScreenNameEnum.TRACK_ORDER,{OrderId:item.resord_id});
@@ -399,7 +440,7 @@ export default function MyOrders() {
   };
 
 
-
+console.log(OrderDetails);
   return (
     <View style={{ paddingHorizontal: 15, flex: 1, backgroundColor: '#FFFFFF' }}>
       {isLoading && <Loading />}
@@ -495,7 +536,7 @@ export default function MyOrders() {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={OrderDetails}
-              renderItem={TopRateRestaurant}
+              renderItem={MyOderList}
               keyExtractor={item => item.id}
             />
           )}

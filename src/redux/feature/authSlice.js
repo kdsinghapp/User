@@ -88,16 +88,14 @@ export const sendOtpRestPass = createAsyncThunk(
       });
 
       if (response.data.status) {
-        Alert.alert(
-          'Success',
+    successToast(
           'OTP Sent Successfully',
          
         );
    
         navigation.navigate(ScreenNameEnum.OTP_SCREEN, { identity: data.identity });
       } else {
-        Alert.alert(
-          'Failed',
+        errorToast(
           response.data.message,
          
         );
@@ -136,19 +134,16 @@ export const validOtp = createAsyncThunk(
       console.log('Response:', response.data);
 
       if (response.data.success) {
-        Alert.alert(
-          'Success',
+      successToast(
           'OTP Verified Successfully',
          
         );
 
         navigation.navigate(ScreenNameEnum.CREATE_PASSWORD, { identity: data });
       } else {
-        Alert.alert(
-          'Failed',
+       errorToast(
           response.data.message,
-        
-        );
+          );
       }
 
       return response.data;

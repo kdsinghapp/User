@@ -17,7 +17,6 @@ const TrackOrder = () => {
 
   const Orderlocations = useSelector(state => state.feature.Orderlocations);
 
-console.log('Orderlocations?.user_data',Orderlocations?.driver_data);
 
   const driverLocation = Orderlocations?.driver_data
     ? {
@@ -84,11 +83,12 @@ console.log('Orderlocations?.user_data',Orderlocations?.driver_data);
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading order locations...</Text>
+        <Text style={{color:'#000'}}>Loading order locations...</Text>
       </View>
     );
   }
-console.log(dropLocation && driverLocation);
+
+
   return (
     <View style={styles.container}>
       {dropLocation && driverLocation &&
@@ -128,7 +128,7 @@ console.log(dropLocation && driverLocation);
               <MapViewDirections
                 origin={driverLocation}
                 destination={dropLocation}
-                apikey={process.env.GOOGLE_PLACES_API_KEY}
+                apikey={process.env.GOOGLE_MAPS_API_KEY}
                 strokeWidth={5}
                 strokeColor="hotpink"
                 optimizeWaypoints={true}
