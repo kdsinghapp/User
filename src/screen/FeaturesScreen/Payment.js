@@ -343,9 +343,12 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
   const book_order = async (payment_intent) => {
 
-
+if(!getProfile?.address_data){
+  errorToast('Please select delivery address')
+}
 
     let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
+
 
     try {
       let data = new FormData();
@@ -354,14 +357,15 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
       data.append('lat', getProfile?.address_data.lat);
       data.append('long', getProfile?.address_data.long);
       data.append('restaurant_id', res_id)
-      data.append('address_id', getProfile?.address_data.address_id.toString());
+      data.append('address_id', getProfile?.address_data.address_id?.toString());
       data.append('tax_amount', generalInfo?.tax.toString());
-      data.append('coupon_amount', (CouponCodeData?.coupon_discount || 0).toString());
+      data.append('coupon_amount', (CouponCodeData?.coupon_discount || 0)?.toString());
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
-      data.append('delivery_charge', generalInfo?.delivery_charge.toString());
+      data.append('delivery_charge', generalInfo?.delivery_charge?.toString());
       data.append('payment_status', PaymentStatus);
       data.append('payment_intent', payment_intent);
+      data.append('instruction', instruction);
 
       cartItem.forEach((dish, index) => {
         const orderDetail = {
@@ -642,7 +646,8 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
             <View style={{ marginLeft: 10, width: '90%' }}>
               <TextInput
                 placeholder='add delivery instructions '
-
+placeholderTextColor={'#000'}
+style={{color:'#000'}}
                 value={instruction}
                 onChangeText={(txt) => setInstruction(txt)}
               />

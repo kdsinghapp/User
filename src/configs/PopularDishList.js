@@ -51,6 +51,8 @@ export default function PopularDishList({ ...props }) {
     }
 
   }
+
+  console.log( RestauRantDetails?.popular_items);
   const PopularDishes = ({ item }) => (
     <TouchableOpacity
 

@@ -32,7 +32,7 @@ export default function DishInformation() {
   const user = useSelector(state => state.auth.userData);
   const isLoading = useSelector(state => state.feature.isLoading);
 
-
+console.log(item);
 
   const add_To_cart = async () => {
     const params = {

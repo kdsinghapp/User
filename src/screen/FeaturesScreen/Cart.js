@@ -34,6 +34,8 @@ export default function Cart() {
 
   const isLoading = useSelector(state => state.feature.isLoading);
   const cartItem = useSelector(state => state.feature.cartItem);
+
+  console.log(cartItem);
   useEffect(() => {
     const params = {
       token: user.token,

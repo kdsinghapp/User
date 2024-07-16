@@ -31,6 +31,7 @@ export default function MyOrders() {
   const isLoading = useSelector(state => state.feature.isLoading);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isExpandedIndex, setIsExpandedIndex] = useState(null);
+  const [showCancelButton, setShowCancelButton] = useState(false);
 
   const dispatch = useDispatch();
   const navigation = useNavigation()
@@ -109,6 +110,18 @@ export default function MyOrders() {
   };
 
   const MyOderList = ({ item, index }) => {
+const currentTime = new Date();
+
+    const calculateTotalMinutes = (createdAt, currentTime) => {
+      const createdDate = new Date(createdAt);
+      const currentDate = new Date(currentTime);
+    
+      const differenceInMilliseconds = currentDate - createdDate;
+      const differenceInMinutes = Math.floor(differenceInMilliseconds / (1000 * 60));
+    
+      return differenceInMinutes;
+    };
+
 
     const isExpand = isExpanded && isExpandedIndex === index
     const statusImage =
@@ -134,6 +147,7 @@ export default function MyOrders() {
 
 
     const formatTime = (dateTimeString) => {
+   
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const date = new Date(dateTimeString);
@@ -167,6 +181,10 @@ export default function MyOrders() {
         }
   
 
+console.log('resord_id',item.resord_id, calculateTotalMinutes(item.created_at, currentTime) <= 5);
+   
+console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calculateTotalMinutes(item.created_at, currentTime) <= 5))));
+    
     return (
       <TouchableOpacity
         // disabled={item.status === 'Pending'}
@@ -245,21 +263,22 @@ export default function MyOrders() {
     ? 'You canceled this booking!' 
     : 'Your order was canceled by the restaurant!')}
 {item.status === 'Pending' && 'Your booking is pending!'}
-{item.status === 'Accepted' && item.delivery_status == 'Pending' && 'Your order is under prescription!'}
+{item.status === 'Accepted' && item.delivery_status == 'Pending' && `Your prescription will be ready in ${item.order_preapare_time} minutes.`}
 {item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
 
 
             </Text>
             {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
           </View>
-
-       {item.status === 'Pending' ||item.status === 'Accepted' &&   <TouchableOpacity
-            onPress={() => {
-              order_canceld(item.resord_id)
-            }}
-            style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>Cancel Order</Text>
-          </TouchableOpacity>}
+          {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && (
+  <TouchableOpacity
+    onPress={() => {
+      order_canceld(item.resord_id)
+    }}
+    style={styles.cancelButton}>
+    <Text style={styles.cancelButtonText}>Cancel Order</Text>
+  </TouchableOpacity>
+)}
         </View>
         }
 
@@ -372,7 +391,7 @@ export default function MyOrders() {
               </Text>
             </View>
             
-            {(item.status === 'Pending' || item.status === 'Accepted') && item.delivery_status != 'Pickuped' && (
+            {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && (
   <TouchableOpacity
     onPress={() => {
       order_canceld(item.resord_id)

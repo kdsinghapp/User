@@ -67,13 +67,14 @@ export default function Address() {
     });
   };
 
-  const selected_Address = (id) => {
+  const selected_Address = (item) => {
+  console.log(item.address_id);
     let data = new FormData();
     data?.append('user_id', user?.user_data?.id);
-    data?.append('address_id', id);
+    data?.append('address_id', item.address_id);
     data?.append('is_selected', 1);
-    data?.append('long', '22.7');
-    data?.append('lat', '22.7');
+    data?.append('long', item.long);
+    data?.append('lat', item.lat);
     const params = {
       data: data,
       token: user?.token,
@@ -115,14 +116,13 @@ export default function Address() {
           const json = await res.json();
 
           const addressComponents = json.results[0].address_components;
-          console.log('addressComponents', addressComponents);
+      
           // Extract relevant address components
           const street = await addressComponents.find((component) => component.types.includes('route'))?.long_name || '';
           const houseNo = await addressComponents.find((component) => component.types.includes('street_number'))?.long_name || '';
           const city = await addressComponents.find((component) => component.types.includes('locality'))?.long_name || '';
           const state = await addressComponents.find((component) => component.types.includes('administrative_area_level_1'))?.long_name || '';
           const pincode = await addressComponents.find((component) => component.types.includes('postal_code'))?.long_name || '';
-
           setLocationName(json.results[0]?.formatted_address);
           setStreet(street);
           setHouseNo(houseNo);
@@ -147,8 +147,6 @@ export default function Address() {
   };
 
   const handleAddCurrentLocationAddress = () => {
-    console.log(pincode , street ,houseNo ,state ,city);
-
     if (!pincode || !street || !houseNo || !state || !city) {
       setIsFetchingLocation(false); // End loading
       return errorToast('All fields are required');
@@ -205,7 +203,7 @@ export default function Address() {
           value={item.id}
           status={item.is_selected == 1 ? 'checked' : 'unchecked'}
           onPress={() => {
-            selected_Address(item.address_id)
+            selected_Address(item)
           }}
         />
       </View>

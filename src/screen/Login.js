@@ -92,7 +92,7 @@ export default function Login() {
           };
 
           dispatch(login(params)).then(res => {
-            getToken();
+         
           })
         }
 
