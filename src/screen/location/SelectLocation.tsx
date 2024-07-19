@@ -190,7 +190,7 @@ longitude,);
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginTop: Platform.OS === 'ios' ? -20 : 0 ,marginHorizontal:15}}>
+            <View style={{ marginTop: Platform.OS === 'ios' ? -50 : 0 ,marginHorizontal:0}}>
             <ProfileHeader name={'Location'} Dwidth={'22%'} />
             </View>
             <View style={{ width: '100%', marginTop: 10 }}>

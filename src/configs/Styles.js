@@ -17,7 +17,8 @@ color:'#000'
     },
     tabBtn:{
         height:60,
-
+position:'absolute',
+bottom:20,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 15,

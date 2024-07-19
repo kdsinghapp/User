@@ -64,7 +64,7 @@ export default function TextInputField({...props}) {
             overflow: 'hidden',
             width: props.showEye ? '72%' :props.County?'85%': '90%',
             marginLeft: props.firstLogo ? 0 :  15,
-           
+           justifyContent:'center',
 
             height: 50,
           }}>

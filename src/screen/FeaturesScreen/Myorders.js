@@ -259,7 +259,7 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
             >
               {item.status === 'Complete' && 'Yeay, you have completed it!'}
 {item.status === 'Cancel' && 
-  (item.user_order_status === 'Cancel By User' 
+  (item.user_order_status == 'Cancel By User' 
     ? 'You canceled this booking!' 
     : 'Your order was canceled by the restaurant!')}
 {item.status === 'Pending' && 'Your booking is pending!'}
@@ -270,7 +270,7 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
             </Text>
             {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
           </View>
-          {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && (
+          {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && item.status == 'Pending' &&(
   <TouchableOpacity
     onPress={() => {
       order_canceld(item.resord_id)
@@ -462,6 +462,11 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
 
   return (
     <View style={{ paddingHorizontal: 15, flex: 1, backgroundColor: '#FFFFFF' }}>
+       {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
       {isLoading && <Loading />}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 20 }}>

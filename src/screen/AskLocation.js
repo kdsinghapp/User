@@ -1,4 +1,4 @@
-import { View, Text,Image, ScrollView, TouchableOpacity, Platform, PermissionsAndroid } from 'react-native'
+import { View, Text,Image, ScrollView, TouchableOpacity, Platform, PermissionsAndroid, Alert, Linking } from 'react-native'
 import React, { useEffect } from 'react'
 import Loading from '../configs/Loader';
 import { styles } from '../configs/Styles';
@@ -16,9 +16,48 @@ export default function AskLocation() {
     const isLoading =false
     const navigation = useNavigation()
     const dispatch = useDispatch();
+  
+
+
+    const showSettingsAlert = () => {
+      Alert.alert(
+          'Permission Required',
+          'Location permission is required to use this feature. Please enable it in the app settings.',
+          [
+              {
+                  text: 'Cancel',
+                  style: 'cancel'
+              },
+              {
+                  text: 'Open Settings',
+                  onPress: () => {
+                      // Open the app settings
+                      if (Platform.OS === 'ios') {
+                          Linking.openURL('app-settings:');
+                      } else {
+                          // For Android, use the package name to open settings
+                          Linking.openSettings();
+                      }
+                  }
+              }
+          ],
+          { cancelable: false }
+      );
+  };
     const requestLocationPermission = async () => {
+
+  
+
+  
       if (Platform.OS === 'ios') {
-          Geolocation.requestAuthorization('whenInUse');
+          const authStatus = await Geolocation.requestAuthorization('whenInUse');
+          if (authStatus === 'granted' || authStatus === 'whenInUse') {
+              console.log('You can use the location');
+              navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+          } else {
+              console.log('Location permission denied');
+              showSettingsAlert();
+          }
       } else {
           try {
               const granted = await PermissionsAndroid.request(
@@ -32,17 +71,29 @@ export default function AskLocation() {
                   }
               );
               if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                
                   console.log('You can use the location');
-                  navigation.navigate(ScreenNameEnum.BOTTOM_TAB)
-              } else {
+                  navigation.navigate(ScreenNameEnum.BOTTOM_TAB);
+              } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
                   console.log('Location permission denied');
+                  Alert.alert(
+                      'Permission Required',
+                      'Location permission is required to use this feature. Please grant the permission.',
+                      [
+                          { text: 'Cancel', style: 'cancel' },
+                          { text: 'Ask Again', onPress: () => requestLocationPermission() },
+                      ],
+                      { cancelable: false }
+                  );
+              } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+                  console.log('Location permission denied with "Never Ask Again"');
+                  showSettingsAlert();
               }
           } catch (err) {
               console.warn(err);
           }
       }
   };
+
 
 
   useEffect(()=>{

@@ -10,7 +10,7 @@ export default function ProfileHeader({name,Dwidth}) {
   return (
     <View >
          {Platform.OS === 'ios' ? (
-          <View style={{height: 68}} />
+          <View style={{height:40}} />
         ) : (
           <View style={{height: 10}} />
         )}
@@ -20,7 +20,7 @@ export default function ProfileHeader({name,Dwidth}) {
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingHorizontal:10, 
+            paddingHorizontal:5, 
           }}>
           <TouchableOpacity
            style={{ width: 32, height: 32, justifyContent: 'center', alignItems: 'center' }} 

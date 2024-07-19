@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import {
@@ -203,6 +204,11 @@ export default function Cart() {
   );
   return (
     <View style={styles.container}>
+       {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
       {isLoading && <Loading />}
       <View style={styles.header}>
         <Text style={styles.headerText}>Cart</Text>

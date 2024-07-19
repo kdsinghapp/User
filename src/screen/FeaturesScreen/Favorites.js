@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Star from '../../assets/sgv/star.svg';
@@ -144,7 +145,11 @@ export default function Favorites() {
 
   return (
     <View style={styles.container}>
-    
+     {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Favorites</Text>
         </View>
