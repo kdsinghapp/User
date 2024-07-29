@@ -8,6 +8,7 @@ import {
   Platform,
   Settings,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -15,7 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../redux/feature/authSlice';
+import { delete_acc, logout } from '../../redux/feature/authSlice';
 
 
 
@@ -32,7 +33,29 @@ const isLoading = useSelector(state => state.auth.isLoading);
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate(item.screen);
+
+          if(user?.guest){
+            Alert.alert(
+              "Sign Up Required",
+              "You need to sign up to access this feature. Would you like to sign up now?",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+                {
+                  text: "Sign Up",
+                  onPress: () => { navigation.navigate(ScreenNameEnum.SIGNUP_SCREEN) } // Replace with your signup navigation
+                }
+              ],
+              { cancelable: false }
+            );
+          
+          }else{
+
+            navigation.navigate(item.screen);
+          }
         }}
         style={{
       
@@ -69,6 +92,35 @@ const isLoading = useSelector(state => state.auth.isLoading);
     };
     dispatch(logout(params));
   };
+
+const Delete_Account =()=>{
+  Alert.alert(
+    "Are you sure?",
+    "This action will permanently delete your account.",
+    [
+      {
+        text: "Cancel",
+        style: "cancel"
+      },
+      {
+        text: "Delete",
+        onPress: () => handleDeleteAccount(),
+        style: "destructive"
+      }
+    ]
+  );
+}
+
+
+const handleDeleteAccount =()=>{
+
+  const params = {
+    token:user?.token,
+     navigation: navigation,
+   };
+  dispatch(delete_acc(params))
+
+}
 
 
   return (
@@ -244,6 +296,8 @@ const isLoading = useSelector(state => state.auth.isLoading);
           </View>
         </View>
       </Modal>
+
+
       <TouchableOpacity
         onPress={() => {
           setIsVisible(true);
@@ -266,6 +320,31 @@ const isLoading = useSelector(state => state.auth.isLoading);
           Log Out
         </Text>
       </TouchableOpacity>
+      {!user?.guest &&
+      <TouchableOpacity
+        onPress={() => {
+         Delete_Account()
+        }}
+        style={{
+         
+          height: 59,
+         
+          //backgroundColor: '#FAFAFA',
+         // alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text
+          style={{
+            color: '#FF0000',
+            fontSize: 14,
+            lineHeight: 21,
+            fontWeight: '700',
+          }}>
+         Delete Account
+        </Text>
+      </TouchableOpacity>
+
+        }
       </ScrollView>
     </View>
   );
@@ -322,6 +401,7 @@ const About = [
    
     screen: ScreenNameEnum.TERMS_CONDITIONS,
   },
+ 
   
   
 ];

@@ -68,7 +68,7 @@ export default function Address() {
   };
 
   const selected_Address = (item) => {
-  console.log(item.address_id);
+
     let data = new FormData();
     data?.append('user_id', user?.user_data?.id);
     data?.append('address_id', item.address_id);
@@ -83,8 +83,16 @@ export default function Address() {
     dispatch(update_address(params)).then((res) => {
       get_Address();
     });
+
+
   };
 
+
+  useEffect(()=>{
+    if(addresList?.length  == 1){
+    selected_Address(addresList[0])
+    }
+  },[addresList?.length  == 1])
   const get_Address = () => {
     const params = {
       token: user.token,
@@ -171,9 +179,10 @@ export default function Address() {
       token: user?.token,
     };
 
-    dispatch(add_address(params)).then((res) => {
+    dispatch(add_address(params)).then(async(res) => {
       successToast('Address added successfully');
       get_Address();
+
       setIsFetchingLocation(false); // End loading after API call
     }).catch(() => {
       setIsFetchingLocation(false); // End loading on error
@@ -229,7 +238,7 @@ export default function Address() {
 
   return (
     <View style={styles.container}>
-      {isLoading ? <Loading /> : null}
+    {isLoading?<Loading />:null}
       <ScrollView showsVerticalScrollIndicator={false}>
         <ProfileHeader name={'Address'} Dwidth={'22%'} />
         <View style={styles.listContainer}>

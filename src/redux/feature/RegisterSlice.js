@@ -39,8 +39,12 @@ export const register = createAsyncThunk(
         .then((res) => {
           const response = JSON.parse(res)
           console.log(response);
+     
+
           if (response.success) {
+            if(!params.guest){
             params.navigation.navigate(ScreenNameEnum.LOGIN_SCREEN);
+            }
             Alert.alert(
               'Success',
               'User Registered Successfully',
@@ -67,6 +71,8 @@ export const register = createAsyncThunk(
             );
             return response
           }
+        
+        
         })
         .catch((error) => console.error(error));
 

@@ -15,10 +15,7 @@ import { LocationProvider } from '../configs/LocationContext';
 
 export default function AppNavigator() {
 
-  React.useEffect(() => {
-    notificationListener();
-    requestUserPermission();
-  }, []);
+
 
 
   

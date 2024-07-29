@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -16,7 +17,7 @@ import { ScreenContainer } from 'react-native-screens';
 import ScreenNameEnum from '../routes/screenName.enum';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../redux/feature/authSlice';
+import { guest_login, login } from '../redux/feature/authSlice';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import Loading from '../configs/Loader';
 import messaging from '@react-native-firebase/messaging';
@@ -90,7 +91,8 @@ export default function Login() {
             },
             navigation: navigation,
           };
-
+         
+           
           dispatch(login(params)).then(res => {
          
           })
@@ -128,9 +130,18 @@ export default function Login() {
   };
 
 
+
+  const skip_login =()=>{
+    const params = {
+  
+      navigation: navigation,
+    };
+    dispatch(guest_login(params))
+  }
   return (
     <View style={{ flex: 1 }}>
       {isLoading ? <Loading /> : null}
+      <ScrollView showsVerticalScrollIndicator={false}>
       <Image
         source={require('../assets/images/Image.png')}
         style={{ height: hp(26), width: '100%' }}
@@ -257,10 +268,26 @@ export default function Login() {
               </Text>
             </TouchableOpacity>
           </View>
-
+          <TouchableOpacity
+              style={{}}
+              onPress={() => {
+              skip_login()
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  lineHeight: 24,
+                  color: '#6D6EEC',
+                  fontWeight: '700',
+                }}>
+                {' '}
+           Guest Login
+              </Text>
+            </TouchableOpacity>
         </View>
 
       </View>
+      </ScrollView>
     </View>
   );
 }

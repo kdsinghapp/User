@@ -11,9 +11,10 @@ color:'#000'
     },
     txtsubHeading:{
         fontWeight:'400',
-        fontSize:16,
+        fontSize:14,
         lineHeight:24,
-        color:'#9DB2BF'
+        color:'#9DB2BF',
+        textAlign:'center'
     },
     tabBtn:{
         height:60,

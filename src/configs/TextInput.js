@@ -72,7 +72,7 @@ export default function TextInputField({...props}) {
             <TextInput
               placeholderTextColor="#ADA4A5"
               style={{
-                color: '#000000',
+                color: '#000',
                 fontWeight: '700',
                 fontSize: 14,
                 lineHeight: 18,

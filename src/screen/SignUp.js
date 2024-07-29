@@ -18,12 +18,14 @@ import {CountryPicker} from 'react-native-country-codes-picker';
 import {register} from '../redux/feature/RegisterSlice';
 import Loading from '../configs/Loader';
 import DatePicker from 'react-native-date-picker';
+import { login } from '../redux/feature/authSlice';
 
 export default function SignUp() {
   const [isSelected, setSelection] = useState(false);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
+  const user = useSelector(state => state.auth.userData);
+  
   const [FullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,8 +52,10 @@ export default function SignUp() {
     return emailRegex.test(email);
   };
   const validatePassword = password => {
+
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
 
     return passwordRegex.test(password);
   };
@@ -120,9 +124,30 @@ export default function SignUp() {
         date_of_birth: formate(date),
         home_town: HomeTown
       },
-      navigation: navigation,
+      navigation:navigation,
+      guest:user?.guest?true:false
     };
-    dispatch(register(params));
+    dispatch(register(params)).then(res=>{
+      const token = res.payload.data.token;
+      const success = res.payload.success;
+ 
+if(user?.guest && success){
+
+  const params = {
+    data: {
+      identity: email,
+
+      password: password,
+    },
+    navigation: navigation,
+  };
+
+  dispatch(login(params)).then(res => {
+ 
+  })
+}
+      
+    })
   };
 
 
@@ -160,11 +185,9 @@ return formattedDate
           }}>
           <View>
             <Text style={styles.txtHeading}>Sign Up</Text>
-            <Text style={styles.txtsubHeading}>
-              Enter your email and password
-            </Text>
+          
           </View>
-
+         
           <View style={{marginTop: 10, paddingBottom: hp(2)}}>
             <TextInputField
               placeholder={'Full Name'}
@@ -253,7 +276,7 @@ style={{height:25,width:25}}/>
                     lineHeight: 24,
                     fontWeight: '400',
                   }}>
-                  I agree to the medidoc
+                  I must agree to the 
                 </Text>
                 <TouchableOpacity style={{marginHorizontal: 5}}>
                   <Text
@@ -299,9 +322,19 @@ style={{height:25,width:25}}/>
                     fontWeight: '400',
                     lineHeight: 24,
                   }}>
-                  Privacy Policy
+                  Privacy Policy  <Text
+                  style={{
+                    color: '#909090',
+                    fontSize: 14,
+                    lineHeight: 24,
+                    fontWeight: '400',
+                  }}>
+                 to register.
+                </Text>
                 </Text>
               </TouchableOpacity>
+             
+      
             </View>
           </View>
           <Text
@@ -315,6 +348,7 @@ style={{height:25,width:25}}/>
             {error}
           </Text>
           <View style={{alignItems: 'center'}}>
+   
             <TouchableOpacity
               onPress={() => {
                 Register();

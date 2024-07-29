@@ -5,7 +5,7 @@ import BStar from '../assets/sgv/StarBlack.svg';
 
 const Ratting = ({ Ratting }) => {
 
-    console.log(Ratting);
+   
   return (
     <View style={styles.container}>
       {StarData.map((item, index) => (

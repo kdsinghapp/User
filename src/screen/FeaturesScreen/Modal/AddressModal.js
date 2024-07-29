@@ -78,6 +78,7 @@ const AddressModal = ({ visible, onClose, }) => {
         data.append('landmark', landmark);
         data.append('state', state);
         data.append('city', city);
+        console.log('address data ',data);
         const params = {
             data: data,
             token: user?.token
@@ -200,6 +201,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                         </View>
                         <View style={styles.inputContainer}>
                             <TextInput
+                            
                                 placeholder="State"
                                 style={[styles.input, !state && styles.inputError]}
                                 value={state}
@@ -255,6 +257,7 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 50,
+        color:'#000'
     },
     inputError: {
         borderColor: 'red',

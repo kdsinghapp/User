@@ -34,6 +34,7 @@ export const get_HomeDashBoard = createAsyncThunk(
     try {
       const response = await API.post('/home/get-home', null, {
         headers: {
+          'Accept': 'application/json', 
           Authorization: `Bearer ${params.token}`,
         },
       });
@@ -1856,7 +1857,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = false;
     });
     builder.addCase(add_address.pending, state => {
-      state.isLoading = true;
+      state.isLoading = false;
     });
     builder.addCase(update_address.fulfilled, (state, action) => {
       state.isLoading = false;

@@ -6,6 +6,7 @@ import {
   FlatList,
   StyleSheet,
   Platform,
+  Alert,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import {
@@ -84,6 +85,27 @@ export default function Cart() {
   };
 
   const checkCartItem =()=>{
+
+    if(user?.guest){
+      Alert.alert(
+        "Sign Up Required",
+        "You need to sign up to access this feature. Would you like to sign up now?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Sign Up",
+            onPress: () => { navigation.navigate(ScreenNameEnum.SIGNUP_SCREEN) } // Replace with your signup navigation
+          }
+        ],
+        { cancelable: false }
+      );
+    
+    }
+    else{
     const allSameRestaurant = cartItem.every(
       dish => dish.dish_data.restaurant_dish_restaurant_id === cartItem[0].dish_data.restaurant_dish_restaurant_id
     );
@@ -94,7 +116,7 @@ export default function Cart() {
       navigation.navigate(ScreenNameEnum.PAYMENT_SCREEN);
     }
 
-
+  }
   }
 
   const handleDecrementQuantity = item => {

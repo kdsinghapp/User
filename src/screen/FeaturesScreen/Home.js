@@ -42,7 +42,7 @@ import Fav from '../../assets/sgv/Favorites.svg';
 import Geolocation from 'react-native-geolocation-service';
 import Ratting from '../../configs/Ratting';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
-import { requestUserPermission } from './NotificationComponent';
+import { notificationListener, requestUserPermission } from './NotificationComponent';
 import { useLocation } from '../../configs/LocationContext';
 
 
@@ -55,7 +55,10 @@ export default function Home() {
   const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
   const { locationName, setLocationName } = useLocation(); // Get locationName and setLocationName from context
 
-
+  React.useEffect(() => {
+    notificationListener();
+    
+  }, []);
 
   const add_favrate = (id) => {
 
@@ -226,7 +229,7 @@ export default function Home() {
       />
       <Text
         style={{
-          fontSize: 12,
+          fontSize: 10,
           fontWeight: '600',
           marginLeft: 10,
           lineHeight: 18,
