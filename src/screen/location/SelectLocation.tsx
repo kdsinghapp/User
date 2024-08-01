@@ -81,7 +81,7 @@ const SelectLocation = () => {
     const handleSaveAddress = useCallback(
         async (address) => {
 
-            console.log('handle save address',address?.geometry?.location);
+            console.log('handle save address',address);
             if(address?.geometry?.location?.lng &&  address?.geometry?.lng){
 
                 handleSave(address?.geometry?.location?.lng,
@@ -89,7 +89,7 @@ const SelectLocation = () => {
             }
             const existingAddress = savedAddresses.find(item => item.place_id === address.place_id);
             if (existingAddress) {
-                errorToast('This address is already saved.');
+                
                 setLocationName(address?.name); // Set the location name in context
                 navigation.goBack();
                 return;
@@ -97,7 +97,7 @@ const SelectLocation = () => {
 
             const updatedAddresses = [...savedAddresses, address];
             setSavedAddresses(updatedAddresses);
-            await AsyncStorage.setItem('savedAddresses', JSON.stringify(updatedAddresses));
+            await AsyncStorage.setItem('Location', JSON.stringify(updatedAddresses));
             setLocationName(address?.name); // Set the location name in context
             navigation.goBack();
         },
@@ -133,7 +133,6 @@ const SelectLocation = () => {
 console.log('call ','handleSave',latitude,
 longitude,);
 
-
         const formData = new FormData();
 
         formData.append('lat', latitude);
@@ -149,9 +148,7 @@ longitude,);
 
 
         dispatch(update_profile(params)).then(err => {
-            const params = {
-                token: user.token,
-            };
+           
 
         });
     };

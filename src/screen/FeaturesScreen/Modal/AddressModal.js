@@ -61,7 +61,7 @@ const AddressModal = ({ visible, onClose, }) => {
     };
 
     const handleAddAddress = () => {
-        if (!fullName || !mobileNumber || !pincode || !street || !houseNo || !state || !city) {
+        if (!fullName || !mobileNumber || !street || !houseNo) {
             // Display error message or toast indicating missing fields
             return errorToast('All fields are required');
            
@@ -72,13 +72,13 @@ const AddressModal = ({ visible, onClose, }) => {
         data.append('mobile_number', mobileNumber);
         data.append('lat',Location?.latitude);
         data.append('long', Location?.longitude);
-        data.append('pincode', pincode);
+        // data.append('pincode', pincode);
         data.append('street', street);
         data.append('house_no', houseNo);
-        data.append('landmark', landmark);
-        data.append('state', state);
-        data.append('city', city);
-        console.log('address data ',data);
+        // data.append('landmark', landmark);
+        // data.append('state', state);
+        // data.append('city', city);
+        console.log('address_data ',data);
         const params = {
             data: data,
             token: user?.token
@@ -147,7 +147,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
     source={require('../../../assets/croping/Close2x.png')}/>
 </TouchableOpacity>
 <View >
-        <GooglePlacesInput placeholder={street} onPlaceSelected={handleSelectLocation} />
+        <GooglePlacesInput placeholder={'Post code'} onPlaceSelected={handleSelectLocation} />
       </View>
 
 <ScrollView showsVerticalScrollIndicator={false}>
@@ -170,16 +170,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 placeholderTextColor={'#000'}
                             />
                         </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Post code"
-                                style={[styles.input, !pincode && styles.inputError]}
-                                value={pincode}
-                                onChangeText={setPincode}
-                               
-                                placeholderTextColor={'#000'}
-                            />
-                        </View>
+                   
              
                         <View style={styles.inputContainer}>
                             <TextInput
@@ -190,34 +181,7 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                                 placeholderTextColor={'#000'}
                             />
                         </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Landmark"
-                                style={[styles.input, !landmark && styles.inputError]}
-                                value={landmark}
-                                onChangeText={setLandmark}
-                                placeholderTextColor={'#000'}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                            
-                                placeholder="State"
-                                style={[styles.input, !state && styles.inputError]}
-                                value={state}
-                                onChangeText={setState}
-                                placeholderTextColor={'#000'}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                             placeholderTextColor={'#000'}
-                                placeholder="City"
-                                style={[styles.input, !city && styles.inputError]}
-                                value={city}
-                                onChangeText={setCity}
-                            />
-                        </View>
+                 
                       
                         <TouchableOpacity
                             onPress={handleAddAddress}
@@ -244,7 +208,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         marginTop:hp(10),
-        height: hp(70),
+        height: hp(60),
     },
     inputContainer: {
         marginVertical: 10,

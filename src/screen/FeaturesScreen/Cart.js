@@ -165,7 +165,7 @@ export default function Cart() {
             {item.dish_data?.restaurant_dish_name}
           </Text>
           <Text style={styles.dishDescription}>
-            {item.dish_data?.restaurant_dish_description}
+            {item.dish_data?.restaurant_dish_description?.substring(0,30)}..
           </Text>
           <Text style={styles.dishPrice}>
           £{item.dish_data?.restaurant_dish_price*item.quantity}
@@ -224,6 +224,8 @@ export default function Cart() {
       
     </View>
   );
+
+  
   return (
     <View style={styles.container}>
        {Platform.OS === 'ios' ? (

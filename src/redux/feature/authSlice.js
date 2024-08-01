@@ -228,7 +228,7 @@ export const CreateNewPassword = createAsyncThunk(
         redirect: "follow"
       };
 
-      const response = fetch("https://loveeatsdb.com/loveeat/api/auth/create-new-password-without-login", requestOptions)
+      const response = fetch("https://loveeatsdb.com/api/auth/create-new-password-without-login", requestOptions)
         .then((response) => response.text())
         .then((result) => {
           const response = JSON.parse(result)

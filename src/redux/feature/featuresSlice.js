@@ -25,12 +25,65 @@ const initialState = {
   getTopRated_restaurants: null,
   Orderlocations: [],
   PayMentStatus: [],
-  NotificationList: []
+  NotificationList: [],
+  AllCategory:[]
 };
+export const Food_categories = createAsyncThunk(
+  'Food_categories',
+  async (params, thunkApi) => {
+    console.log('=============Food_categories=======================',params);
+    try {
 
+      
+      
+      // Create form data with identity and otp
+    
+      // Configure request headers
+      const myHeaders = new Headers();
+      myHeaders.append('Accept', 'application/json');
+      myHeaders.append('Authorization', `Bearer ${params.token}`);
+      // Create request options
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        body: null,
+        redirect: 'follow',
+      };
+
+      // Make POST request to verify OTP
+      const response = await fetch(
+        `${base_url.url}/home/get-categories`,
+        requestOptions,
+      );
+
+      // Parse response as JSON
+      const responseData = await response.json();
+
+      console.log('Response restaurant/get-restaurant-categories=>>>>>>>>>>>>> :', responseData.success);
+
+      // Handle successful response
+      if (responseData.success) {
+        //successToast(responseData.message);
+       
+      } else {
+       // errorToast(responseData.message); 
+       
+      }
+
+      // Return response data
+      return responseData.data;
+    } catch (error) {
+      console.error('Error:', error);
+      errorToast('Network error');
+      // Reject with error
+      throw error;
+    }
+  },
+);
 export const get_HomeDashBoard = createAsyncThunk(
   'get_HomeDashBoard',
   async (params, thunkApi) => {
+    console.log('called DashBoardData api',params.token);
     try {
       const response = await API.post('/home/get-home', null, {
         headers: {
@@ -38,7 +91,7 @@ export const get_HomeDashBoard = createAsyncThunk(
           Authorization: `Bearer ${params.token}`,
         },
       });
-
+      console.log('DashBoardData api',response.data.success);
       if (response.data.success) {
         console.log('User Get_Home Succesfuly');
       }
@@ -1503,6 +1556,21 @@ const FeatureSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(Food_categories.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(Food_categories.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.AllCategory = action.payload;
+    });
+    builder.addCase(Food_categories.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+     
+    });
     builder.addCase(Payment_api.pending, state => {
       state.isLoading = true;
     });

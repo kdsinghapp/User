@@ -32,7 +32,7 @@ export default function DishInformation() {
   const user = useSelector(state => state.auth.userData);
   const isLoading = useSelector(state => state.feature.isLoading);
 
-console.log(item);
+
 
   const add_To_cart = async () => {
     const params = {
@@ -70,15 +70,15 @@ console.log(item);
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.headerContent}>
+         
+        </ImageBackground>
+        <View style={styles.headerContent}>
             <Text style={styles.restaurantName}>
-              {item.restaurant_dish_name}
+              {item.restaurant_dish_name?.toUpperCase()}
             </Text>
-            <View style={styles.deliveryInfo}>
-              <Text style={styles.deliveryText}>
-                {item.restaurant_dish_preapare_time?.substring(0, 2)} min  preapare time
+            <Text style={styles.deliveryText}>{item.restaurant_dish_preapare_time?.substring(0, 2)} min  preapare time
               </Text>
-            </View>
+           
             <View style={styles.ratingContainer}>
               <Star height={15} width={15} marginLeft={5} />
               <Star height={15} width={15} marginLeft={5} />
@@ -90,7 +90,6 @@ console.log(item);
               </Text>
             </View>
           </View>
-        </ImageBackground>
         <View style={styles.contentContainer}>
           <View style={styles.priceContainer}>
             <Text style={styles.price}>£{item.restaurant_dish_price}</Text>
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    height: hp(15),
+    height: hp(8),
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
@@ -180,36 +179,38 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     height: hp(10),
-    paddingHorizontal: 20,
+paddingHorizontal:10
+
   },
   restaurantName: {
-    fontWeight: '700',
+    fontWeight: '800',
     lineHeight: 30,
     fontSize: 20,
-    color: '#FFF',
+    color: '#000',
   },
   deliveryInfo: {
     justifyContent: 'center',
-    height: hp(5),
+
   },
   deliveryText: {
-    fontWeight: '500',
-    marginLeft: 10,
+    fontWeight: '600',
+
     lineHeight: 18,
-    fontSize: 12,
-    color: '#FFF',
+    fontSize: 14,
+    color: '#000',
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+ 
+    marginTop:10
   },
   ratingText: {
     fontSize: 12,
     lineHeight: 18,
     marginLeft: 10,
     fontWeight: '700',
-    color: '#FFF',
+    color: '#000',
   },
   contentContainer: {
     flex: 1,

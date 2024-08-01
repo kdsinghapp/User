@@ -10,6 +10,7 @@ import CategoryDishes from "../screen/CategoryDishes";
 import AddNewCard from "../screen/FeaturesScreen/AddNewCard";
 import AddressPicker from "../screen/FeaturesScreen/Addaddressmap";
 import Address from "../screen/FeaturesScreen/Address";
+import AllCategories from "../screen/FeaturesScreen/AllCategories";
 import AllPopularDishes from "../screen/FeaturesScreen/AllPopularDishes";
 
 import Cart from "../screen/FeaturesScreen/Cart";
@@ -162,6 +163,10 @@ const _routes = {
     {
       name: ScreenNameEnum.MAP_SCREEN,
       Component:MapScreen ,
+    },
+    {
+      name: ScreenNameEnum.AllCategories,
+      Component:AllCategories ,
     },
     
   ],

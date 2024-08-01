@@ -29,6 +29,7 @@ export default function Favorites() {
   const isFocussed = useIsFocused();
   const user = useSelector(state => state.auth.userData);
   const FavoriteList = useSelector(state => state.feature?.FavoriteList);
+  const UserData = useSelector(state => state.feature?.getProfile);
   const navigation = useNavigation();
   const params = {
     token: user.token
@@ -54,95 +55,256 @@ export default function Favorites() {
       dispatch(get_FavoriteList(params));
     });
   };
+  const toRadians = (degree) => {
+    return degree * (Math.PI / 180);
+  }
+  
+  const haversineDistance = (coords1, coords2, unit = 'miles') => {
+    const R = unit === 'miles' ? 3958.8 : 6371; // Radius of the Earth in miles or kilometers
+    const lat1 = toRadians(coords1.latitude);
+    const lon1 = toRadians(coords1.longitude);
+    const lat2 = toRadians(coords2.latitude);
+    const lon2 = toRadians(coords2.longitude);
+  
+    const dlat = lat2 - lat1;
+    const dlon = lon2 - lon1;
+  
+    const a = Math.sin(dlat / 2) * Math.sin(dlat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) *
+              Math.sin(dlon / 2) * Math.sin(dlon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    const distance = R * c;
+    return distance;
+  }
 
+const Restaurant = ({ item }) => {
+    const myLocation = {
+      latitude: UserData?.lat,
+      longitude: UserData?.long
+    };
+    
+    const restaurantLocation = {
+      latitude: item?.restorent_data.res_latitude, 
+      longitude: item?.restorent_data.res_longitude
+    };
+    const distance = haversineDistance(myLocation, restaurantLocation);
 
-  console.log();
-  const Restaurant = ({ item }) => (
+    return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate(ScreenNameEnum.RESTAURANT_DETAILS, { res_id: item.restorent_data.res_id });
       }}
-      style={[styles.shadow, styles.restaurantContainer]}
-    >
-      
-      <View style={styles.restaurantImageContainer}>
+      style={[
+        styles.shadow,
+        {
+          paddingHorizontal: 5,
+          marginHorizontal: 5,
+          borderRadius: 10,
+          backgroundColor: '#FFFFFF',
+          width: wp(45),
+          paddingVertical: 10,
+          paddingBottom: 30,
+          marginVertical: 10,
+          height: hp(30)
+        },
+      ]}>
+
+      <View
+        style={{
+          height: '50%',
+          marginTop: 5,
+          width: '100%',
+        }}>
         <Image
-          source={{ uri: item.restorent_data?.res_image }}
-          style={styles.restaurantImage}
-          
+          source={{ uri: item.restorent_data.res_image }}
+          style={{
+            height: '100%',
+            width: '100%',
+            borderRadius: 5,
+          }}
+          resizeMode='cover'
         />
-        <View style={styles.ratingContainer}>
-      
-          <View style={{flexDirection:'row',marginVertical:5,alignItems:'center',marginLeft:-6}}>
-    
-    <Ratting  Ratting={item.restorent_data?.res_average_rating}/>
-    <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.restorent_data?.res_average_rating} ({item.restorent_data?.res_rating_count} )</Text>
-    </View>
-        </View>
       </View>
-      <View style={styles.restaurantInfoContainer}>
-        <Text style={styles.restaurantName}>{item.restorent_data?.res_name}</Text>
-        <Text style={styles.restaurantDescription}>{item.restorent_data?.res_description}</Text>
-        <View style={styles.iconTextContainer}>
-          <Pin height={20} width={20} />
-          <Text style={styles.iconText}>{item.restorent_data?.res_address}</Text>
+
+      <View style={{ marginTop: 5 }}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: '700',
+            lineHeight: 21,
+            color: '#000000',
+          }}>
+          {item.restorent_data.res_name?.substring(0, 30)}
+        </Text>
+        <Text
+          style={{
+            color: '#9DB2BF',
+            fontSize: 12,
+            lineHeight: 18,
+            fontWeight: '400',
+          }}>
+          {item.restorent_data.res_description?.substring(0, 50)}
+        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginTop: 5,
+
+
+          }}>
+          <Pin height={20} width={20} style={{ marginTop: 0 }} />
+          <Text
+            style={{
+              color: '#9DB2BF',
+              marginLeft: 5,
+              fontSize: 10,
+              lineHeight: 18,
+              fontWeight: '400',
+
+            }}>
+            {item.restorent_data.res_address?.substring(0, 25)}
+          </Text>
         </View>
-        <View style={styles.iconTextContainer}>
+        <View style={{
+          flexDirection: 'row',
+
+          marginVertical: 5, alignItems: 'center',
+        }}>
+
+          <Ratting Ratting={item.restorent_data.res_average_rating} />
+          <Text style={{ fontSize: 10, fontWeight: '600', color: '#000', marginLeft: 5 }}>{item.restorent_data.res_average_rating} ({item.restorent_data.res_rating_count} )</Text>
+        </View>
+
+
+
+        <View
+          style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
           <Clock height={20} width={20} />
-          <Text style={styles.iconText}>{item.restorent_data?.res_updated_at}</Text>
+          <Text
+            style={{
+              color: '#9DB2BF',
+              marginLeft: 5,
+              fontSize: 12,
+              lineHeight: 18,
+              fontWeight: '400',
+            }}>
+      {distance.toFixed(2)} miles.
+          </Text>
         </View>
       </View>
-      <TouchableOpacity 
+      <TouchableOpacity
+        disabled={item.fav}
         onPress={() => {
           delete_favorite(item.resfav_id);
         }}
-        style={styles.favoriteIconContainer}
-      >
-        <FavAdd />
+        style={{ alignSelf: 'flex-end', marginTop: 10, position: 'absolute', bottom: 10, right: 10 }}>
+         <FavAdd /> 
       </TouchableOpacity>
     </TouchableOpacity>
-  );
+  )}
 
   const FOODS = ({ item }) => (
     <TouchableOpacity
+
       onPress={() => {
-        navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item?.dish_data });
+        navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item })
       }}
-      style={[styles.shadow, styles.foodContainer]}
-    >
-      <View style={styles.foodImageContainer}>
+      style={[
+        styles.shadow,
+        {
+
+          borderRadius: 10,
+          marginVertical: 10,
+          alignSelf: 'center',
+          backgroundColor: '#FFFFFF',
+          marginHorizontal: 10,
+          width: wp(40),
+          justifyContent: 'center',
+          alignItems: 'center'
+        },
+      ]}>
+
+      <View style={{
+        marginTop: 5, paddingBottom: 10,
+
+      }}>
         <Image
-          source={{ uri: item.dish_data?.restaurant_dish_image }}
-          style={styles.foodImage}
+          resizeMode='cover'
+          source={{ uri: item.dish_data.restaurant_dish_image }}
+          style={{
+            height: hp(11),
+            width: wp(35),
+            borderRadius: 15,
+            borderColor: '#7756FC',
+          }}
         />
       </View>
-      <View style={styles.foodInfoContainer}>
-        <View style={styles.foodTextContainer}>
-          <Text style={styles.foodName}>{item.dish_data?.restaurant_dish_name}</Text>
-          <Text style={styles.foodDescription}>{item.dish_data?.restaurant_dish_description}</Text>
-        </View>
-        <View style={{flexDirection:'row',
-        position:'absolute',alignSelf:'flex-end',
-        marginVertical:5,alignItems:'center',marginLeft:-6}}>
-    
-    <Ratting  Ratting={item.dish_data?.restaurant_dish_rating}/>
-    <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.dish_data?.restaurant_dish_rating}</Text>
-    </View>
-        <View style={styles.foodPriceContainer}>
-          <Text style={styles.foodPrice}>price: £{item.dish_data?.restaurant_dish_price}</Text>
-          <TouchableOpacity 
-            onPress={() => {
-              delete_favorite(item.resfav_id);
-            }}
-            style={styles.favoriteIconContainer}
-          >
-            <FavAdd />
-          </TouchableOpacity>
-        </View>
+      <TouchableOpacity
+        disabled={item.fav}
+        onPress={() => {
+          delete_favorite(item.resfav_id);
+        }}
+
+
+        style={{ alignSelf: 'flex-end', position: 'absolute', bottom: 10, right: 5 }}>
+    <FavAdd height={22} />
+      </TouchableOpacity>
+
+      {/* <View style={{flexDirection:'row',marginVertical:5,alignItems:'center',
+      marginLeft:-20}}>
+
+      <Ratting  Ratting={item.restaurant_dish_rating}/>
+      <Text style={{fontSize:10,fontWeight:'600',color:'#000',marginLeft:5}}>{item.restaurant_dish_rating}</Text>
+      </View> */}
+
+      <View style={{width:'80%'}}>
+
+          <View style={{ }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '700',
+                lineHeight:14,
+                color: '#000000',
+
+              }}>
+              {item.dish_data.restaurant_dish_name?.substring(0, 12)}
+            </Text>
+
+            {/* {props.showPlusIcon && <Plus height={25} width={25} />} */}
+          </View>
+          <View style={{}}>
+
+            <Text
+              style={{
+                fontSize: 12,
+
+                fontWeight: '700',
+                lineHeight: 18,
+                color: '#000',
+              }}>
+              Price: £{item.dish_data.restaurant_dish_price}
+            </Text>
+           
+          </View>
+          <Text
+            style={{
+              color: '#9DB2BF',
+              fontSize: 12,
+              lineHeight: 14,
+              fontWeight: '500',
+              marginVertical: 8,
+            }}>
+            {item.dish_data.restaurant_dish_preapare_time?.substring(0, 2)} min
+          </Text>
+     
       </View>
     </TouchableOpacity>
   );
 
+
+  console.log('FavoriteList?.restaurants',FavoriteList?.restaurants);
   return (
     <View style={styles.container}>
      {Platform.OS === 'ios' ? (
@@ -180,6 +342,7 @@ export default function Favorites() {
         {!chooseBtn && (
           <FlatList
             showsVerticalScrollIndicator={false}
+       
             data={FavoriteList?.restaurants}
             renderItem={Restaurant}
             ListEmptyComponent={
@@ -192,6 +355,7 @@ export default function Favorites() {
         <View style={styles.foodListContainer}>
           {chooseBtn && (
             <FlatList
+            numColumns={2}
               showsVerticalScrollIndicator={false}
               data={FavoriteList?.dishes}
               renderItem={FOODS}
@@ -241,6 +405,16 @@ const styles = StyleSheet.create({
   },
   inactiveButton: {
     backgroundColor: '#FFF',
+
+    shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 2,
+},
+shadowOpacity: 0.25,
+shadowRadius: 3.84,
+
+elevation: 5,
   },
   buttonText: {
     fontSize: 18,

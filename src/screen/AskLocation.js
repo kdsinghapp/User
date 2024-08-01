@@ -17,8 +17,6 @@ export default function AskLocation() {
   const navigation = useNavigation()
   const dispatch = useDispatch();
 
-
-
   const requestLocationPermission = async () => {
     const handlePermissionResult = (result) => {
       console.log(`Location permission ${result}`);

@@ -10,6 +10,7 @@ import {
   PermissionsAndroid,
   StyleSheet,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 
@@ -18,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {
   heightPercentageToDP as hp,
-  widthPercentageToDP,
+  widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import Down from '../../assets/sgv/down.svg';
 import Searchbar from '../../configs/Searchbar';
@@ -34,7 +35,7 @@ import Navigate from '../../assets/sgv/Navigate.svg';
 import Search from '../../assets/sgv/OrangeSearch.svg';
 import OrangePin from '../../assets/sgv/OrangePin.svg';
 import { SliderBox } from 'react-native-image-slider-box';
-import { Add_FavoriteList, get_HomeDashBoard, get_RestauRantDetails } from '../../redux/feature/featuresSlice';
+import { Add_FavoriteList, get_HomeDashBoard, get_Profile, get_RestauRantDetails } from '../../redux/feature/featuresSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../configs/Loader';
 import FavAdd from '../../assets/sgv/addFav.svg';
@@ -51,13 +52,20 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
   const isLoading = useSelector(state => state.feature.isLoading);
   const DashBoardData = useSelector(state => state.feature.DashboardList);
+  const UserData = useSelector(state => state.feature?.getProfile);
   const user = useSelector(state => state.auth.userData);
-  const [origin, setOrigin] = useState({ latitude: 22.701384, longitude: 75.867401 });
   const { locationName, setLocationName } = useLocation(); // Get locationName and setLocationName from context
 
+ 
+  useEffect(() => {
+    const params = {
+      token: user.token,
+    };
+    dispatch(get_Profile(params));
+  }, [user]);
   React.useEffect(() => {
     notificationListener();
-    
+
   }, []);
 
   const add_favrate = (id) => {
@@ -71,13 +79,13 @@ export default function Home() {
       }
 
 
-      dispatch(Add_FavoriteList(params)).then(async(res) => {
+      dispatch(Add_FavoriteList(params)).then(async (res) => {
         const params = {
-          data: {
-            token: user?.token,
-          },
+
+          token: user?.token,
+
         }
-       await dispatch(get_HomeDashBoard(params));
+        await dispatch(get_HomeDashBoard(params));
       })
     }
     catch (err) {
@@ -88,43 +96,64 @@ export default function Home() {
 
 
 
-    useEffect(() => {
-        // Fetch live location and update locationName
-        const fetchLiveLocation = async () => {
-            const locPermissionDenied = await locationPermission();
-            if (locPermissionDenied) {
-                const { latitude, longitude } = await getCurrentLocation();
-                const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
-                try {
-                    const res = await fetch(url);
-                    const json = await res.json();
-                    const city = findCityName(json);
-                    setLocationName(city);
-                } catch (e) {
-                    console.log("Error fetching location:", e);
-                }
-            }
-        };
-
-        fetchLiveLocation();
-    }, []);
-
-    function findCityName(response) {
-        const results = response.results;
-        for (let i = 0; i < results.length; i++) {
-            const addressComponents = results[i].address_components;
-            for (let j = 0; j < addressComponents.length; j++) {
-                const types = addressComponents[j].types;
-                if (types.includes('locality') || types.includes('administrative_area_level_2')) {
-                    return addressComponents[j].long_name; // Return the city name
-                }
-            }
+  useEffect(() => {
+    // Fetch live location and update locationName
+    const fetchLiveLocation = async () => {
+      const locPermissionDenied = await locationPermission();
+      if (locPermissionDenied) {
+        const { latitude, longitude } = await getCurrentLocation();
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+        try {
+          const res = await fetch(url);
+          const json = await res.json();
+          const city = findCityName(json);
+          setLocationName(city);
+        } catch (e) {
+          console.log("Error fetching location:", e);
         }
-        return null; // Return null if city name not found
+      }
+    };
+
+    fetchLiveLocation();
+  }, []);
+
+  function findCityName(response) {
+    const results = response.results;
+    for (let i = 0; i < results.length; i++) {
+      const addressComponents = results[i].address_components;
+      for (let j = 0; j < addressComponents.length; j++) {
+        const types = addressComponents[j].types;
+        if (types.includes('locality') || types.includes('administrative_area_level_2')) {
+          return addressComponents[j].long_name; // Return the city name
+        }
+      }
     }
+    return null; // Return null if city name not found
+  }
 
 
-
+  const toRadians = (degree) => {
+    return degree * (Math.PI / 180);
+  }
+  
+  const haversineDistance = (coords1, coords2, unit = 'miles') => {
+    const R = unit === 'miles' ? 3958.8 : 6371; // Radius of the Earth in miles or kilometers
+    const lat1 = toRadians(coords1.latitude);
+    const lon1 = toRadians(coords1.longitude);
+    const lat2 = toRadians(coords2.latitude);
+    const lon2 = toRadians(coords2.longitude);
+  
+    const dlat = lat2 - lat1;
+    const dlon = lon2 - lon1;
+  
+    const a = Math.sin(dlat / 2) * Math.sin(dlat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) *
+              Math.sin(dlon / 2) * Math.sin(dlon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    const distance = R * c;
+    return distance;
+  }
 
   const searchDataByName = query => {
     const lowercaseQuery = query.toLowerCase();
@@ -212,7 +241,8 @@ export default function Home() {
           marginHorizontal: 5,
           width: 90,
           borderRadius: 10,
-          marginVertical: 10
+          marginVertical: 10,
+          paddingBottom:10,
 
         },
       ]}>
@@ -222,8 +252,6 @@ export default function Home() {
           height: 70,
           width: 90,
           borderRadius: 10,
-
-          borderWidth: 2,
 
         }}
       />
@@ -241,7 +269,19 @@ export default function Home() {
     </TouchableOpacity>
   );
 
-  const TopRateRestaurant = ({ item }) => (
+  const TopRateRestaurant = ({ item }) => {
+    const myLocation = {
+      latitude: UserData?.lat,
+      longitude: UserData?.long
+    };
+    
+    const restaurantLocation = {
+      latitude: item?.res_latitude, 
+      longitude: item?.res_longitude
+    };
+    const distance = haversineDistance(myLocation, restaurantLocation);
+
+    return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate(ScreenNameEnum.RESTAURANT_DETAILS, { res_id: item.res_id });
@@ -253,22 +293,17 @@ export default function Home() {
           marginHorizontal: 5,
           borderRadius: 10,
           backgroundColor: '#FFFFFF',
-          width: widthPercentageToDP(45),
-          height: hp(35),
+          width: wp(45),
+          paddingVertical: 10,
+          paddingBottom: 30,
           marginVertical: 10,
+          height: hp(30)
         },
       ]}>
-      <TouchableOpacity
-        disabled={item.fav}
-        onPress={() => {
-          add_favrate(item.res_id)
-        }}
-        style={{ alignSelf: 'flex-end', marginTop: 10 }}>
-        {item.fav ? <FavAdd /> : <Fav />}
-      </TouchableOpacity>
+
       <View
         style={{
-          height: '40%',
+          height: '50%',
           marginTop: 5,
           width: '100%',
         }}>
@@ -279,22 +314,19 @@ export default function Home() {
             width: '100%',
             borderRadius: 5,
           }}
+          resizeMode='cover'
         />
       </View>
-      <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center', marginLeft: -6 }}>
 
-        <Ratting Ratting={item.res_average_rating} />
-        <Text style={{ fontSize: 10, fontWeight: '600', color: '#000', marginLeft: 5 }}>{item.res_average_rating} ({item.res_rating_count} )</Text>
-      </View>
-      <View style={{}}>
+      <View style={{ marginTop: 5 }}>
         <Text
           style={{
-            fontSize:12,
+            fontSize: 14,
             fontWeight: '700',
             lineHeight: 21,
             color: '#000000',
           }}>
-          {item.res_name?.substring(0,30)}
+          {item.res_name?.substring(0, 30)}
         </Text>
         <Text
           style={{
@@ -308,9 +340,9 @@ export default function Home() {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 10,
+            marginTop: 5,
 
-            paddingRight: 10,
+
           }}>
           <Pin height={20} width={20} style={{ marginTop: 0 }} />
           <Text
@@ -320,28 +352,48 @@ export default function Home() {
               fontSize: 10,
               lineHeight: 18,
               fontWeight: '400',
-              paddingHorizontal: 5
+
             }}>
             {item.res_address?.substring(0, 25)}
           </Text>
         </View>
-        {/* <View
+        <View style={{
+          flexDirection: 'row',
+
+          marginVertical: 5, alignItems: 'center',
+        }}>
+
+          <Ratting Ratting={item.res_average_rating} />
+          <Text style={{ fontSize: 10, fontWeight: '600', color: '#000', marginLeft: 5 }}>{item.res_average_rating} ({item.res_rating_count} )</Text>
+        </View>
+
+
+
+        <View
           style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
           <Clock height={20} width={20} />
           <Text
             style={{
               color: '#9DB2BF',
               marginLeft: 5,
-              fontSize: 10,
+              fontSize: 12,
               lineHeight: 18,
               fontWeight: '400',
             }}>
-            15 min 1.5km. Free Delivery
+      {distance.toFixed(2)} miles.
           </Text>
-        </View> */}
+        </View>
       </View>
+      <TouchableOpacity
+        disabled={item.fav}
+        onPress={() => {
+          add_favrate(item.res_id)
+        }}
+        style={{ alignSelf: 'flex-end', marginTop: 10, position: 'absolute', bottom: 10, right: 10 }}>
+        {item.fav ? <FavAdd /> : <Fav />}
+      </TouchableOpacity>
     </TouchableOpacity>
-  );
+  )}
 
   const SearchTxt = txt => {
     if (txt == '') {
@@ -363,6 +415,14 @@ export default function Home() {
     dispatch(get_HomeDashBoard(params));
   }, [isFocuss]);
   const images = DashBoardData && DashBoardData?.banners?.map(banner => banner.ban_image)
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
       {isLoading ? <Loading /> : null}
@@ -382,10 +442,10 @@ export default function Home() {
                 justifyContent: 'space-between',
               }}>
               <TouchableOpacity
-              onPress={() => {
-                navigation.navigate(ScreenNameEnum.SelectLocation);
-            }}
-              style={{}}>
+                onPress={() => {
+                  navigation.navigate(ScreenNameEnum.SelectLocation);
+                }}
+                style={{}}>
                 <Text
                   style={{
                     fontWeight: '500',
@@ -414,7 +474,7 @@ export default function Home() {
                       color: '#101010',
                       marginLeft: 5,
                     }}>
-               {locationName ? locationName?.substring(0,15) : 'Fetching..'}
+                    {locationName ? locationName?.substring(0, 15) : 'Fetching..'}
                   </Text>
 
                   <Down width={24} height={24} />
@@ -463,7 +523,8 @@ export default function Home() {
             <View style={{ marginTop: 20 }}>
               {images && <SliderBox
                 images={images}
-                style={{ borderRadius: 30, height: hp(25), width: '92%' }}
+
+                style={{ borderRadius: 15, height: hp(20), width: '92%', }}
                 onCurrentImagePressed={index =>
                   console.warn(`image ${index} pressed`)
                 }
@@ -495,12 +556,24 @@ export default function Home() {
                   color: '#101010',
                   lineHeight: 27,
                 }}>
-                Categories
+                Popular Categories
               </Text>
 
-              <View style={{ width: '15%' }}>
-
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(ScreenNameEnum.AllCategories)
+                }}
+                style={{ width: '15%' }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: '#E79B3F',
+                    lineHeight: 27,
+                  }}>
+                  See all
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <FlatList
@@ -549,6 +622,80 @@ export default function Home() {
             <View style={{ paddingVertical: 15 }}>
               <PopularDishList data={DashBoardData?.popular_dishes} home={true} />
             </View>
+            {!ShowSearch && (
+              <View style={{ flex: 1 }}>
+                 <View
+              style={{
+                marginTop: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: '700',
+                  color: '#101010',
+                  lineHeight: 27,
+                }}>
+               Coupons For You
+              </Text>
+              {/* <TouchableOpacity
+
+                onPress={() => {
+                  navigation.navigate(ScreenNameEnum.AllPopularDishes)
+                }}
+                style={{ width: '15%' }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: '#E79B3F',
+                    lineHeight: 27,
+                  }}>
+                  See all
+                </Text>
+              </TouchableOpacity> */}
+            </View>
+                <View style={{ marginTop: 20 }}>
+                  {DashBoardData?.offer_banners &&
+                   
+                    <FlatList
+                      data={DashBoardData?.offer_banners}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      renderItem={({item}) => {
+                        const randomColor = getRandomColor();
+                        return (   <TouchableOpacity
+
+                       onPress={()=>{
+                        navigation.navigate(ScreenNameEnum.CART_STACK);
+                       }}
+                          style={{ width: wp(30),
+                            alignItems:'center',justifyContent:'center',
+                            height: hp(18), marginRight:10 }}
+                          >
+<Image source={require('../../assets/croping/offerBg.png')} 
+resizeMode='contain'
+style={{height:'100%',width:'100%',borderWidth: 1,}}
+/>
+<View style={{position:'absolute',justifyContent:'center',alignItems:'center'}}>
+<Image source={{uri:item.ban_image}} 
+
+style={{height:45,width:45,borderRadius:22.5,}}
+/>
+  <Text style={{fontSize:10,   color: randomColor || '#000',fontWeight:'600',marginTop:10}} >-{item.ban_name?.toUpperCase()}-</Text>
+  <Text style={{fontSize:14,   color: randomColor || '#000',fontWeight:'800',textAlign:'center',marginTop:5}} >{item.ban_description?.toUpperCase()}</Text>
+  </View>
+
+
+                        </TouchableOpacity>)
+                      }}
+                    />
+                  }
+                </View>
+              </View>
+            )}
             <View
               style={{
                 marginTop: 10,
@@ -672,4 +819,6 @@ const LocationData = [{ id: '1', location: 'Indore' }];
 const Styles = StyleSheet.create({
   smallTxt: { fontSize: 10, fontWeight: '700', lineHeight: 14, color: '#777777' },
 });
+
+
 
