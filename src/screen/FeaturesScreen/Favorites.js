@@ -106,7 +106,7 @@ const Restaurant = ({ item }) => {
           paddingVertical: 10,
           paddingBottom: 30,
           marginVertical: 10,
-          height: hp(30)
+          height: hp(35)
         },
       ]}>
 
@@ -140,11 +140,11 @@ const Restaurant = ({ item }) => {
         <Text
           style={{
             color: '#9DB2BF',
-            fontSize: 12,
+            fontSize: 10,
             lineHeight: 18,
             fontWeight: '400',
           }}>
-          {item.restorent_data.res_description?.substring(0, 50)}
+          {item.restorent_data.res_description?.substring(0,40)}
         </Text>
         <View
           style={{

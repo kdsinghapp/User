@@ -66,6 +66,8 @@ export default function PopularDishList({ ...props }) {
     await dispatch(get_HomeDashBoard(params));
   }
 
+
+  
   const PopularDishes = ({ item }) => (
     <TouchableOpacity
 

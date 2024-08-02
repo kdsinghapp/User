@@ -26,7 +26,8 @@ const initialState = {
   Orderlocations: [],
   PayMentStatus: [],
   NotificationList: [],
-  AllCategory:[]
+  AllCategory:[],
+
 };
 export const Food_categories = createAsyncThunk(
   'Food_categories',
@@ -207,6 +208,7 @@ export const get_Profile = createAsyncThunk(
     }
   },
 );
+
 export const get_FavoriteList = createAsyncThunk(
   'get_FavoriteList',
   async (params, thunkApi) => {
@@ -1571,6 +1573,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = false;
      
     });
+   
     builder.addCase(Payment_api.pending, state => {
       state.isLoading = true;
     });

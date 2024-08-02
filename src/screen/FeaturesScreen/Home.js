@@ -270,6 +270,7 @@ export default function Home() {
   );
 
   const TopRateRestaurant = ({ item }) => {
+    
     const myLocation = {
       latitude: UserData?.lat,
       longitude: UserData?.long
@@ -297,7 +298,7 @@ export default function Home() {
           paddingVertical: 10,
           paddingBottom: 30,
           marginVertical: 10,
-          height: hp(30)
+  height:hp(35)
         },
       ]}>
 
@@ -331,11 +332,11 @@ export default function Home() {
         <Text
           style={{
             color: '#9DB2BF',
-            fontSize: 12,
+            fontSize: 10,
             lineHeight: 18,
             fontWeight: '400',
           }}>
-          {item.res_description?.substring(0, 50)}
+          {item.res_description?.substring(0, 40)}
         </Text>
         <View
           style={{
@@ -522,6 +523,8 @@ export default function Home() {
           <View style={{ flex: 1 }}>
             <View style={{ marginTop: 20 }}>
               {images && <SliderBox
+            
+     
                 images={images}
 
                 style={{ borderRadius: 15, height: hp(20), width: '92%', }}
@@ -538,6 +541,9 @@ export default function Home() {
                   borderRadius: 2.5,
                   marginLeft: -20,
                 }}
+                autoplay
+                circleLoop
+                autoplayInterval={3000}
               />
               }
             </View>
@@ -677,7 +683,7 @@ export default function Home() {
                           >
 <Image source={require('../../assets/croping/offerBg.png')} 
 resizeMode='contain'
-style={{height:'100%',width:'100%',borderWidth: 1,}}
+style={{height:'100%',width:'100%',}}
 />
 <View style={{position:'absolute',justifyContent:'center',alignItems:'center'}}>
 <Image source={{uri:item.ban_image}} 
@@ -729,7 +735,7 @@ style={{height:45,width:45,borderRadius:22.5,}}
                 </Text>
               </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10,paddingVertical:10,flex:1 }}>
               <FlatList
                 data={DashBoardData?.top_rated_restaurants}
                 scrollEnabled={false}
@@ -742,7 +748,11 @@ style={{height:45,width:45,borderRadius:22.5,}}
         )}
 
         {ShowSearch && (
-          <>
+          <TouchableOpacity
+          onPress={()=>{
+            setShowSearch(false)
+          }}
+          >
             {searchResults.length === 0 && (
               <>
                 <View
@@ -803,7 +813,7 @@ style={{height:45,width:45,borderRadius:22.5,}}
                 />
               </>
             )}
-          </>
+          </TouchableOpacity>
         )}
 
       </ScrollView>
