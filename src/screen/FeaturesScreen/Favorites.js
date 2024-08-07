@@ -144,7 +144,7 @@ const Restaurant = ({ item }) => {
             lineHeight: 18,
             fontWeight: '400',
           }}>
-          {item.restorent_data.res_description?.substring(0,40)}
+          {item.restorent_data.res_description?.substring(0,30)}..
         </Text>
         <View
           style={{
@@ -163,7 +163,7 @@ const Restaurant = ({ item }) => {
               fontWeight: '400',
 
             }}>
-            {item.restorent_data.res_address?.substring(0, 25)}
+            {item.restorent_data.res_address?.substring(0, 25)}..
           </Text>
         </View>
         <View style={{

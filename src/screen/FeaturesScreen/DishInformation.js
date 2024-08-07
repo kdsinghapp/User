@@ -8,6 +8,7 @@ import {
   ImageBackground,
   StyleSheet,
   Alert,
+  Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Star from '../../assets/sgv/star.svg';
@@ -58,6 +59,11 @@ export default function DishInformation() {
   return (
     <View style={styles.container}>
       {isLoading ? <Loading /> : null}
+      {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
           source={{ uri: item.restaurant_dish_image }}
@@ -265,7 +271,7 @@ paddingHorizontal:10
     marginTop: hp(11),
     width: '90%',
     position: 'absolute',
-    bottom: 10,
+    bottom:20,
     alignSelf: 'center',
     backgroundColor: '#7756FC',
     borderRadius: 30,
@@ -277,7 +283,7 @@ paddingHorizontal:10
     marginTop: hp(17),
     width: '90%',
     position: 'absolute',
-    bottom: 10,
+    bottom:20,
     alignSelf: 'center',
     backgroundColor: '#352C48',
     borderRadius: 30,

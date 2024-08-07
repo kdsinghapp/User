@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#F7F8F8',
         borderRadius: 10,
+        paddingVertical:20
     },
     commentInput: {
         fontSize: 16,

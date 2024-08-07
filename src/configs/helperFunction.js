@@ -20,33 +20,40 @@ export const getCurrentLocation = () =>
     );
   });
 
-export const locationPermission = () =>
-
-  new Promise(async (resolve, reject) => {
-    if (Platform.OS === 'ios') {
-      try {
-        const permissionStatus = await Geolocation.requestAuthorization(
-          'whenInUse',
-        );
-        if (permissionStatus === 'granted') {
-          return resolve('granted');
-        }
-        reject('Permission not granted');
-      } catch (error) {
-        return reject(error);
+  export const locationPermission = async () => {
+    const permissionKey = 'locationPermission';
+  
+    try {
+      const storedPermission = await AsyncStorage.getItem(permissionKey);
+  
+      if (storedPermission === 'denied') {
+        return Promise.reject('Location Permission denied previously');
       }
-    }
-    return PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    )
-      .then(granted => {
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          resolve('granted');
+  
+      if (Platform.OS === 'ios') {
+        const permissionStatus = await Geolocation.requestAuthorization('whenInUse');
+        if (permissionStatus === 'granted') {
+          await AsyncStorage.setItem(permissionKey, 'granted');
+          return 'granted';
+        } else {
+          await AsyncStorage.setItem(permissionKey, 'denied');
+          return Promise.reject('Permission not granted');
         }
-        return reject('Location Permission denied');
-      })
-      .catch(error => {
-        console.log('Ask Location permission error: ', error);
-        return reject(error);
-      });
-  });
+      }
+  
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+  
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        await AsyncStorage.setItem(permissionKey, 'granted');
+        return 'granted';
+      } else {
+        await AsyncStorage.setItem(permissionKey, 'denied');
+        return Promise.reject('Location Permission denied');
+      }
+    } catch (error) {
+      console.log('Ask Location permission error: ', error);
+      return Promise.reject(error);
+    }
+  };

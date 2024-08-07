@@ -19,7 +19,7 @@ const requestLocationPermission = async () => {
                 console.log('Location permission granted');
             } else {
                 console.log('Location permission denied');
-                showSettingsAlert()
+              
             }
         } catch (err) {
             console.warn(err);
@@ -28,31 +28,7 @@ const requestLocationPermission = async () => {
 };
 
 
-const showSettingsAlert = () => {
-    Alert.alert(
-        'Permission Required',
-        'Location permission is required to use this feature. Please enable it in the app settings.',
-        [
-            {
-                text: 'Cancel',
-                style: 'cancel'
-            },
-            {
-                text: 'Open Settings',
-                onPress: () => {
-                    // Open the app settings
-                    if (Platform.OS === 'ios') {
-                        Linking.openURL('app-settings:');
-                    } else {
-                        // For Android, use the package name to open settings
-                        Linking.openSettings();
-                    }
-                }
-            }
-        ],
-        { cancelable: false }
-    );
-};
+
 const GooglePlacesInput = ({ placeholder, onPlaceSelected }) => {
     useEffect(() => {
         requestLocationPermission();

@@ -122,11 +122,11 @@ export default function EditProfile() {
 
         <View style={styles.publicContainer}>
           <Text style={styles.publicText}>
-            Public
+     Details
           </Text>
         </View>
 
-        <View>
+        <View style={{}}>
           <TextInputField
             onChangeText={setFullName}
             isFocus={isFocus}
@@ -143,7 +143,7 @@ export default function EditProfile() {
               borderWidth: 2, height: 55, borderColor: '#EBEBEB', borderRadius: 10,
               flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
 
-              paddingHorizontal: 10
+              paddingHorizontal: 15
             }}
           >
             <View>
@@ -155,7 +155,7 @@ export default function EditProfile() {
                 color: '#000000', marginTop: 5,
                 fontWeight: '500',
                 fontSize: 14,
-              }}>{Dob ? Dob.toISOString().split('T')[0] : 'DD/MM/YYYY'}</Text>
+              }}>{Dob ? Dob.toISOString().split('T')[0] : 'DOB'}</Text>
             </View>
 
             <TouchableOpacity
@@ -172,17 +172,15 @@ export default function EditProfile() {
           <TextInputField
             onChangeText={setAddress}
             isFocus={isFocus}
-            name={'Home Town'}
-            placeholder={address || 'Home Town'}
+            name={'City'}
+            placeholder={address || 'City'}
             firstLogo={false}
             showEye={false}
           />
         </View>
 
         <View style={styles.privateContainer}>
-          <Text style={styles.privateText}>
-            Private
-          </Text>
+   
         </View>
         <View>
           <View
@@ -190,7 +188,7 @@ export default function EditProfile() {
               borderWidth: 2, height: 55, borderColor: '#EBEBEB', borderRadius: 10,
               flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
 marginTop:10,
-              paddingHorizontal: 10
+              paddingHorizontal: 15
             }}
           >
             <View>
@@ -200,6 +198,7 @@ marginTop:10,
               }}>Email</Text>
               <Text style={{
                 color: '#000000', marginTop: 5,
+                marginLeft:0,
                 fontWeight: '500',
                 fontSize: 14,
               }}>{email}</Text>
@@ -220,7 +219,7 @@ marginTop:10,
       </ScrollView>
 
       <TouchableOpacity
-        style={[styles.tabBtn, { position: 'absolute', bottom: 10 }]}
+        style={[styles.tabBtn, { position: 'absolute', bottom: 20 }]}
         onPress={handleSave}>
         <Text style={styles.saveButtonText}>
           Save
@@ -314,7 +313,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   privateContainer: {
-    marginTop: 5,
+
   },
   privateText: {
     fontSize: 20,

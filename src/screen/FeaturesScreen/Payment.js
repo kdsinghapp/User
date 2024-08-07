@@ -10,6 +10,7 @@ import {
   Alert,
   PermissionsAndroid,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -97,7 +98,6 @@ export default function Payment() {
   const FoosItems = ({ item }) => {
 
 
-    let totalvalue = item.dish_data.restaurant_dish_price * item.quantity
 
     return (
       <TouchableOpacity
@@ -131,7 +131,7 @@ export default function Payment() {
 
                 borderColor: '#7756FC',
               }}
-              resizeMode="contain"
+             
             />
           </View>
 
@@ -144,7 +144,7 @@ export default function Payment() {
             }}>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 12,
                 fontWeight: '700',
                 lineHeight: 24,
                 color: '#000000',
@@ -154,16 +154,16 @@ export default function Payment() {
             <Text
               style={{
                 color: '#9DB2BF',
-                fontSize: 10,
+                fontSize: 12,
                 lineHeight: 15,
                 fontWeight: '400',
               }}>
-              {item.dish_data.restaurant_dish_description}
+              {item.dish_data.restaurant_dish_description?.substring(0,30)}
             </Text>
             <Text
               style={{
                 color: '#181818',
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: '500',
                 lineHeight: 18,
               }}>
@@ -184,11 +184,11 @@ export default function Payment() {
             <Text
               style={{
                 color: '#E79B3F',
-                fontSize: 12,
+                fontSize: 14,
                 lineHeight: 27,
                 fontWeight: '700',
               }}>
-              total value £{(item.dish_data.restaurant_dish_price * item.quantity)}
+              Total Value £{(item.dish_data.restaurant_dish_price * item.quantity)}
             </Text>
 
           </View>
@@ -406,7 +406,11 @@ if(!getProfile?.address_data){
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
       {isLoading2 ? <Loading /> : null}
-
+      {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
       {checkoutUrl ? (
         <WebView
           source={{ uri: PayMentStatus?.url }}
@@ -492,11 +496,11 @@ if(!getProfile?.address_data){
           />}
           <View style={{
             flexDirection: 'row',
-
+            backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:10,
             justifyContent: 'space-between',
             alignItems: 'center', paddingHorizontal: 15
           }}>
-            <View>
+            <View >
               <Image
                 source={require('../../assets/croping/coupons.png')}
 
@@ -588,7 +592,7 @@ if(!getProfile?.address_data){
                   width: '28%',
                   borderColor: '#7756FC',
                   fontWeight: '400',
-                  color: '#7756FC',
+                  color: '#000',
                   lineHeight: 19.98,
                 }}>
                 Another Location
@@ -622,9 +626,9 @@ if(!getProfile?.address_data){
           <View style={{ marginTop: 20, marginHorizontal: 10 }}>
             <Text
               style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: '#9DB2BF',
+                fontSize: 16,
+                fontWeight: '600',
+                color: '#000',
                 lineHeight: 21,
               }}>
               Instructions
@@ -632,8 +636,8 @@ if(!getProfile?.address_data){
           </View>
           <View style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center', paddingHorizontal: 15
+            justifyContent: 'space-between',backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:10,
+            alignItems: 'center', paddingHorizontal: 15,marginTop:10
           }}>
             <View>
               <Image
@@ -643,10 +647,10 @@ if(!getProfile?.address_data){
               />
 
             </View>
-            <View style={{ marginLeft: 10, width: '90%' }}>
+            <View style={{ marginLeft: 10, width: '90%', }}>
               <TextInput
-                placeholder='add delivery instructions '
-placeholderTextColor={'#000'}
+                placeholder='Enter delivery instructions '
+placeholderTextColor={'#7756FC'}
 style={{color:'#000'}}
                 value={instruction}
                 onChangeText={(txt) => setInstruction(txt)}
@@ -726,13 +730,12 @@ style={{color:'#000'}}
                       </View>
                     </View>
                     <View
-                      style={{ justifyContent: 'center', alignItems: 'center' }}>
-                      <RadioButton
-                        value={item.id}
-                        status={item.name == selectedPayment ? 'checked' : 'unchecked'}
+                      style={{ justifyContent: 'center', alignItems: 'center', }}>
+                   
+                      <View    style={{height:30,width:30,borderRadius:15,borderWidth:1,
 
-
-                      />
+                        borderColor:item.name == selectedPayment?'#76b5c5':'#000',
+                        backgroundColor:item.name ==selectedPayment?'#063970':'#fff'}}/>
                     </View>
                   </TouchableOpacity>
                 )}

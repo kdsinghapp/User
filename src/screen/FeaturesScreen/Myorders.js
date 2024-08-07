@@ -32,9 +32,14 @@ export default function MyOrders() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isExpandedIndex, setIsExpandedIndex] = useState(null);
   const [showCancelButton, setShowCancelButton] = useState(false);
-
+  messaging().onNotificationOpenedApp(remoteMessage => {
+    let parsedMain = remoteMessage?.data
+    console.log("get order  notification Pending ", parsedMain)
+    get_order('Pending');
+  });
   const dispatch = useDispatch();
 
+  // get_order('Pending');
   const navigation = useNavigation()
   useEffect(() => {
     get_order(status);
@@ -63,7 +68,23 @@ export default function MyOrders() {
       }
     }
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
 
+      if(status == 'Pending'){
+        console.log("get order  notification Pending ",)
+        get_order('Pending')
+
+      }
+      else{
+        return () => clearInterval(interval);
+      }
+    }, 4000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(interval);
+  }, [status=='Pending']);
+   
   const get_order = async sts => {
     try {
       const params = {
@@ -182,7 +203,7 @@ const currentTime = new Date();
         }
   
 
-console.log('resord_id',item.resord_id, calculateTotalMinutes(item.created_at, currentTime) <= 5);
+
    
 console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calculateTotalMinutes(item.created_at, currentTime) <= 5))));
     
@@ -266,6 +287,7 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
 {item.status === 'Pending' && 'Your booking is pending!'}
 {item.status === 'Accepted' && item.delivery_status == 'Pending' && `Your prescription will be ready in ${item.order_preapare_time} minutes.`}
 {item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+{item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
 
 
             </Text>
@@ -338,6 +360,7 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
 {item.status === 'Pending' && 'Your booking is pending!'}
 {item.status === 'Accepted' && item.delivery_status == 'Pending' && 'Your order is under prescription!'}
 {item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+{item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
 
               </Text>
               {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}

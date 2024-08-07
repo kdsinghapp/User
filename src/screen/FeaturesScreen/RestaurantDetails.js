@@ -416,9 +416,8 @@ export default function RestaurantDetails({ route }) {
                   }}>
                   {RestauRantDetails?.restaurant.res_description}
                 </Text>
-                <Text style={styles.closedDay}>Closed on: {RestauRantDetails?.restaurant.res_weekly_closed}</Text>
               </View>
-
+         
 
               <View
                 style={{
@@ -426,6 +425,8 @@ export default function RestaurantDetails({ route }) {
                   paddingHorizontal: 15,
 
                 }}>
+                         <Text style={styles.closedDay}>Closed on: {RestauRantDetails?.restaurant.res_weekly_closed}</Text>
+
                 <Text
                   style={{
                     fontSize: 20,
@@ -521,7 +522,8 @@ const styles = StyleSheet.create({
   closedDay: {
     fontSize: 16,
     color: '#E74C3C',
-    marginBottom: 20,
+    marginVertical:10,
+
   },
 })
 const data = [

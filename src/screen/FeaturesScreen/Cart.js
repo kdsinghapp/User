@@ -162,10 +162,10 @@ export default function Cart() {
         </View>
         <View style={styles.cartItemDetails}>
           <Text style={styles.dishName}>
-            {item.dish_data?.restaurant_dish_name}
+            {item.dish_data?.restaurant_dish_name?.substring(0,20)}
           </Text>
           <Text style={styles.dishDescription}>
-            {item.dish_data?.restaurant_dish_description?.substring(0,30)}..
+            {item.dish_data?.restaurant_dish_description?.substring(0,25)}..
           </Text>
           <Text style={styles.dishPrice}>
           £{item.dish_data?.restaurant_dish_price*item.quantity}
@@ -213,8 +213,8 @@ export default function Cart() {
         source={{uri:item.restaurant_data?.res_image}}
         />
         <View style={{marginLeft:10,width:'80%'}}>
-        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name}</Text>
-        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address}</Text>
+        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name.substring(0,30)}</Text>
+        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address?.substring(0,30)}</Text>
         </View>
       </View>
     </TouchableOpacity>

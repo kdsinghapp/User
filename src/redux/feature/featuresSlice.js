@@ -979,7 +979,6 @@ export const get_order_data_by_id = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('restaurant/get-order-data-by-id=>>>>>>>>>>>>> :', responseData);
 
       // Handle successful response
       if (responseData.success) {
@@ -1603,7 +1602,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = false;
     });
     builder.addCase(get_order_data_by_id.pending, state => {
-      state.isLoading = true;
+      state.isLoading = false;
     });
     builder.addCase(get_order_data_by_id.fulfilled, (state, action) => {
       state.isLoading = false;

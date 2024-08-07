@@ -128,16 +128,16 @@ export default function CategoryDishes() {
                     <Text
                         style={{
                             color: '#352C48',
-                            fontSize: 12,
+                            fontSize: 10,
                             fontWeight: '700',
                             lineHeight: 14,
                         }}>
-                        {item.restaurant_data?.res_name}
+                        {item.restaurant_data?.res_name?.substring(0,15)}..
                     </Text>
                     <Text
                         style={{
                             color: '#777777',
-                            fontSize: 10,
+                            fontSize: 8,
                             fontWeight: '700',
                             lineHeight: 14,
                         }}>

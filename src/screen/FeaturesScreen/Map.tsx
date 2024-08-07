@@ -53,7 +53,7 @@ const MapScreen = ({ route }) => {
        <>
                 <MapView
                     ref={mapRef}
-                    provider={PROVIDER_GOOGLE}
+                  //  provider={PROVIDER_GOOGLE}
                     style={styles.map}
                     initialRegion={{
                         latitude: destination.latitude,

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
     Modal,
     View,
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { add_address, update_address } from '../../../redux/feature/featuresSlice';
 import { errorToast } from '../../../configs/customToast';
 import Loading from '../../../configs/Loader';
+import GooglePlacesInput from '../../../configs/AutoAddress';
 
 const UpdateAddressModal = ({ visible, onClose, data }) => {
     const screenHeight = Dimensions.get('screen').height;
@@ -36,7 +37,7 @@ const UpdateAddressModal = ({ visible, onClose, data }) => {
     const dispatch = useDispatch()
 
 
-
+    const [Location, setLocation] = useState(null)
 
 console.log(data?.address_id);
 
@@ -76,7 +77,7 @@ console.log(data?.address_id);
     };
 
     const handleAddAddress = () => {
-        if (!fullName || !mobileNumber || !pincode || !street || !houseNo || !state || !city) {
+        if (!fullName || !mobileNumber  ||  !houseNo ) {
             // Display error message or toast indicating missing fields
             return errorToast('All fields are required');
 
@@ -85,14 +86,13 @@ console.log(data?.address_id);
         formData?.append('user_id', user?.user_data?.id);
         formData?.append('full_name', fullName);
         formData?.append('mobile_number', mobileNumber);
-        formData?.append('lat', '78.000');
-        formData?.append('long', '20.00');
-        formData?.append('pincode', pincode);
+        formData.append('lat',Location?.latitude);
+        formData.append('long', Location?.longitude);
+        // data.append('pincode', pincode);
         formData?.append('street', street);
         formData?.append('house_no', houseNo);
-        formData?.append('landmark', landmark);
-        formData?.append('state', state);
-        formData?.append('city', city);
+
+
         formData?.append('address_id', data?.address_id);
         const params = {
             data: formData,
@@ -104,110 +104,111 @@ console.log(data?.address_id);
 
         })
     };
-
+    function formatAddress(addressData) {
+        const components = addressData.address_components;
+        const addressParts = [];
+    
+        components.forEach(component => {
+          if (component.types.includes("premise")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("sublocality_level_1") || component.types.includes("sublocality")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("locality")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("administrative_area_level_1")) {
+            addressParts.push(component.long_name);
+          } else if (component.types.includes("country")) {
+            addressParts.push(component.long_name);
+          }
+        });
+    
+        return addressParts.join(", ");
+      }
+    const handleSelectLocation = useCallback(
+        (details) => {
+          const { lat, lng } = details.geometry.location;
+          setLocation({
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+    
+    
+          const formattedAddress = formatAddress(details);
+          console.log('details=>>>>>>>>>>>>>>>>>>>>>', formattedAddress);
+          setStreet(formattedAddress)
+        },
+        [visible]
+      );
     return (
         <Modal visible={visible} transparent>
+        <View style={styles.container}>
+      
+            
+        
+            <Animated.View
+                style={[
+                    styles.modal,
+                    {
+                        transform: [{ translateY: translateY }],
+                    },
+                ]}>
+                    {isLoading?<Loading />:null}
+               <TouchableOpacity 
+onPress={()=>onClose()}
+style={{alignSelf:'flex-end',marginVertical:10,}}>
+<Image  
+style={{height:25,width:25}}
+source={require('../../../assets/croping/Close2x.png')}/>
+</TouchableOpacity>
+<View >
+    <GooglePlacesInput placeholder={'Post code'} onPlaceSelected={handleSelectLocation} />
+  </View>
 
-            <View style={styles.container}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <Animated.View
-                        style={[
-                            styles.modal,
-                            {
-                                transform: [{ translateY: translateY }],
-                            },
-                        ]}>
-
-
-                        {isLoading ? <Loading /> : null}
-                        <TouchableOpacity
-                            onPress={() => onClose()}
-                            style={{ alignSelf: 'flex-end', marginVertical: 10, }}>
-                            <Image
-                                style={{ height: 25, width: 25 }}
-                                source={require('../../../assets/croping/Close2x.png')} />
-                        </TouchableOpacity>
-
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Full Name"
-                                style={[styles.input, !fullName && styles.inputError]}
-                                value={fullName}
-                                onChangeText={setFullName}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Mobile Number"
-                                style={[styles.input, !mobileNumber && styles.inputError]}
-                                value={mobileNumber}
-                                onChangeText={setMobileNumber}
-                                keyboardType="phone-pad"
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Pincode"
-                                style={[styles.input, !pincode && styles.inputError]}
-                                value={pincode}
-                                onChangeText={setPincode}
-                                keyboardType="number-pad"
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Street"
-                                style={[styles.input, !street && styles.inputError]}
-                                value={street}
-                                onChangeText={setStreet}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="House Number"
-                                style={[styles.input, !houseNo && styles.inputError]}
-                                value={houseNo}
-                                onChangeText={setHouseNo}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="Landmark"
-                                style={[styles.input, !landmark && styles.inputError]}
-                                value={landmark}
-                                onChangeText={setLandmark}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="State"
-                                style={[styles.input, !state && styles.inputError]}
-                                value={state}
-                                onChangeText={setState}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="City"
-                                style={[styles.input, !city && styles.inputError]}
-                                value={city}
-                                onChangeText={setCity}
-                            />
-                        </View>
-
-
-                        <TouchableOpacity
-                            onPress={handleAddAddress}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>Update</Text>
-                        </TouchableOpacity>
-
-
-                    </Animated.View>
-                </ScrollView>
-            </View>
-
-        </Modal>
+<ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder="Full Name"
+                            style={[styles.input, !fullName && styles.inputError]}
+                            value={fullName}
+                            placeholderTextColor={'#000'}
+                            onChangeText={setFullName}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder="Mobile Number"
+                            style={[styles.input, !mobileNumber && styles.inputError]}
+                            value={mobileNumber}
+                            onChangeText={setMobileNumber}
+                            keyboardType="phone-pad"
+                            placeholderTextColor={'#000'}
+                        />
+                    </View>
+               
+         
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder="House Number"
+                            style={[styles.input, !houseNo && styles.inputError]}
+                            value={houseNo}
+                            onChangeText={setHouseNo}
+                            placeholderTextColor={'#000'}
+                        />
+                    </View>
+             
+                  
+                    <TouchableOpacity
+                        onPress={handleAddAddress}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Add Address</Text>
+                    </TouchableOpacity>
+                    </ScrollView>
+            </Animated.View>
+        
+        </View>
+    </Modal>
     );
 };
 

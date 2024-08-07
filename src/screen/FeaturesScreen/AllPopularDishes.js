@@ -95,7 +95,7 @@ export default function AllPopularDishes() {
                 <Text
                     style={{
                         color: '#352C48',
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: '700',
                         lineHeight: 28,
                     }}>
@@ -106,14 +106,14 @@ export default function AllPopularDishes() {
                 <Text
                     style={{
                         color: '#E79B3F',
-                        fontSize: 16,
+                        fontSize: 12,
                         fontWeight: '700',
                         lineHeight: 24,
                     }}>
                     <Text
                         style={{
                             color: '#000',
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: '700',
                             lineHeight: 20,
                         }}>

@@ -152,6 +152,12 @@ if(user?.guest && success){
 
 
 
+
+  const today = new Date();
+  const isToday = today.getFullYear() === date.getFullYear() &&
+                  today.getMonth() === date.getMonth() &&
+                  today.getDate() === date.getDate();
+                  console.log('new Date() === date',isToday);
   const formate = (dateString)=>{
     const dateObj = new Date(dateString);
 
@@ -212,14 +218,14 @@ return formattedDate
 
 
 style={{height:25,width:25}}/>
-<Text style={{marginLeft:10,color:"#ADA4A5",     fontWeight: '700',}}>{new Date() == date?'DD/MM/YYYY':formate(date)}</Text>
+<Text style={{marginLeft:10,color:"#ADA4A5",     fontWeight: '700',}}>{isToday?'DOB':formate(date)}</Text>
            </TouchableOpacity>
       
       <TextInputField 
         img={require('../assets/croping/HomeUnactive3x.png')}
        
         onChangeText={handleHomeTownText}
-    isFocus={false}  name={'Home Town'} placeholder={'Home Town'} firstLogo={true} showEye={false} /> 
+    isFocus={false}  name={'City'} placeholder={'City'} firstLogo={true} showEye={false} /> 
        
             <TextInputField
               County={Number}

@@ -7,7 +7,6 @@ import {
   StatusBar,
   ScrollView,
   FlatList,
-  PermissionsAndroid,
   StyleSheet,
   Alert,
   ImageBackground,
@@ -259,10 +258,11 @@ export default function Home() {
         style={{
           fontSize: 10,
           fontWeight: '600',
-          marginLeft: 10,
+   
           lineHeight: 18,
           color: '#352C48',
-          marginTop: 5
+          marginTop: 5,
+          textAlign:'center'
         }}>
         {item.rescat_name?.substring(0, 20)}
       </Text>
@@ -298,7 +298,7 @@ export default function Home() {
           paddingVertical: 10,
           paddingBottom: 30,
           marginVertical: 10,
-  height:hp(35)
+  height:hp(32)
         },
       ]}>
 
@@ -336,28 +336,9 @@ export default function Home() {
             lineHeight: 18,
             fontWeight: '400',
           }}>
-          {item.res_description?.substring(0, 40)}
+          {item.res_description?.substring(0, 20)}
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 5,
-
-
-          }}>
-          <Pin height={20} width={20} style={{ marginTop: 0 }} />
-          <Text
-            style={{
-              color: '#9DB2BF',
-              marginLeft: 5,
-              fontSize: 10,
-              lineHeight: 18,
-              fontWeight: '400',
-
-            }}>
-            {item.res_address?.substring(0, 25)}
-          </Text>
-        </View>
+        
         <View style={{
           flexDirection: 'row',
 
@@ -406,6 +387,8 @@ export default function Home() {
       setShowSearch(true);
     }
   };
+
+
 
   const dispatch = useDispatch();
   const isFocuss = useIsFocused();
@@ -500,6 +483,11 @@ export default function Home() {
         )}
         {ShowSearch && (
           <View style={{ paddingHorizontal: 10 }}>
+             {Platform.OS === 'ios' ? (
+          <View style={{height:40}} />
+        ) : (
+          <View style={{height: 10}} />
+        )}
             <Text
               style={{
                 fontWeight: '700',

@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         marginTop:hp(10),
-        height: hp(60),
+        height: hp(90),
     },
     inputContainer: {
         marginVertical: 10,

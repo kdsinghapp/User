@@ -25,6 +25,7 @@ export default function TextInputField({...props}) {
           height: 60,
           borderRadius: 40,
           alignItems: 'center',
+          paddingHorizontal:10,
           backgroundColor: '#F7F8F8',
           justifyContent: 'space-between',
         }}>
@@ -36,12 +37,12 @@ export default function TextInputField({...props}) {
               justifyContent: 'center',
               alignItems: 'center',
               width: '10%',
-              
+     
               marginLeft:props.County?2:0
             }}>
             <Image
               source={props.img}
-              style={{width: 25, height: 25, color: '6D6EEC'}}
+              style={{width: 25, height: 25, color: '#6D6EEC'}}
             />
           </View>
         )}
@@ -62,7 +63,7 @@ export default function TextInputField({...props}) {
         <View
           style={{
             overflow: 'hidden',
-            width: props.showEye ? '72%' :props.County?'85%': '90%',
+            width: props.showEye ? '75%' :props.County?'80%': '88%',
             marginLeft: props.firstLogo ? 0 :  15,
            justifyContent:'center',
 

@@ -61,7 +61,8 @@ export default function TextInputField({...props}) {
             </Text>
           </View>
 
-          <View style={{height: 38, width: '80%'}}>
+          <View style={{height: 38, width: '80%',
+        marginLeft:5}}>
             <TextInput
             
               placeholderTextColor="#000"

@@ -9,6 +9,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey:@"AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY"];
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
   self.moduleName = @"Food_User";
@@ -17,7 +18,7 @@
   // They will be passed down to the ViewController used by React Native.
   
   
-  [GMSServices provideAPIKey:@"AIzaSyADzwSBu_YTmqWZj7ys5kp5UcFDG9FQPVY"];
+  
   self.initialProps = @{};
   
   return [super application:application didFinishLaunchingWithOptions:launchOptions];

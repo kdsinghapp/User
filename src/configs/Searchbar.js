@@ -1,12 +1,28 @@
 import { View, Text ,Image,TextInput} from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styles } from './Styles'
 
 export default function Searchbar({...props}) {
     const [searchText, setSearchText] = useState('');
 
 
+  useEffect(() => {
+    const interval = setInterval(() => {
 
+      if(searchText != ''){
+
+        handleSearch(searchText);
+        
+  console.log('calle hab search');
+      }
+      else{
+        return () => clearInterval(interval);
+      }
+    }, 2000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(interval);
+  }, [searchText]);
    
     const handleSearch = (txt) => {
       setSearchText(txt)
