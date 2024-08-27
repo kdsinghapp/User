@@ -188,6 +188,9 @@ style={{alignSelf:'flex-end',marginVertical:10,}}>
                             style={styles.button}>
                             <Text style={styles.buttonText}>Add Address</Text>
                         </TouchableOpacity>
+
+
+                        <View  style={{height:hp(10)}} />
                         </ScrollView>
                 </Animated.View>
             
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         marginTop:hp(10),
-        height: hp(90),
+        height: hp(50),
     },
     inputContainer: {
         marginVertical: 10,

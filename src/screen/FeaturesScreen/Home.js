@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Alert,
   ImageBackground,
+  BackHandler,
 } from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 
@@ -55,6 +56,35 @@ export default function Home() {
   const user = useSelector(state => state.auth.userData);
   const { locationName, setLocationName } = useLocation(); // Get locationName and setLocationName from context
 
+
+  const backAction = () => {
+    // Get the current route index using getState
+    const currentRouteIndex = navigation.getState().index;
+
+    if (currentRouteIndex === 0) {
+      // If the user is on the home screen, exit the app
+      Alert.alert("Exit App", "Do you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true; // This prevents the default back behavior
+    } else {
+      // Navigate back if not on the home screen
+      navigation.goBack();
+      return true; // This prevents the default back behavior
+    }
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
  
   useEffect(() => {
     const params = {
