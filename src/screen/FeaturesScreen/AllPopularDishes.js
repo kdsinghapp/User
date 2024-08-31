@@ -19,19 +19,25 @@ import { get_popular_dish } from '../../redux/feature/featuresSlice';
 import ProfileHeader from './ProfileHeader';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import Searchbar from '../../configs/Searchbar';
 
 export default function AllPopularDishes() {
 
-
+    const [searchTerm, setSearchTerm] = useState('');
  
     const navigation = useNavigation();
     const isLoading = useSelector(state => state.feature.isLoading);
     const PopularDish = useSelector(state => state.feature.PopularDish) || [];
     const user = useSelector(state => state.auth.userData);
     const [loading, setLoading] = useState(true);
+    const [filteredCategories, setFilteredCategories] = useState(PopularDish);
 
     const dispatch = useDispatch()
 
+
+    useEffect(() => {
+        setFilteredCategories(PopularDish);
+    }, [PopularDish]);
 
     useEffect(() => {
         get_Mydishes();
@@ -128,6 +134,20 @@ export default function AllPopularDishes() {
         </TouchableOpacity>
     );
 
+    const handleSearch = (text) => {
+
+
+        setSearchTerm(text);
+        if (text) {
+            const filtered = PopularDish.filter((item) =>
+                item?.restaurant_dish_name.toLowerCase().includes(text?.toLowerCase())
+            );
+            setFilteredCategories(filtered);
+        } else {
+            setFilteredCategories(PopularDish);
+        }
+    };
+
 
 
     return (
@@ -140,10 +160,18 @@ export default function AllPopularDishes() {
                     </View>
 
                 </View>
+                <View style={{ marginTop: 5 }}>
+                    <Searchbar
+                        placeholder={'Search dishes, restaurants'}
+         
+                        onSearchTxt={handleSearch}
+                        searchText={searchTerm}
+                    />
+                </View>
                 <View style={{ marginTop: hp(3), flex: 1 }}>
-                    {PopularDish.length > 0 ? (
+                    {filteredCategories.length > 0 ? (
                         <FlatList
-                            data={PopularDish}
+                            data={filteredCategories}
                             numColumns={2}
                             renderItem={renderDish}
 

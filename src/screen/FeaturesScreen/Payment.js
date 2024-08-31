@@ -100,7 +100,7 @@ export default function Payment() {
 
 
     return (
-      <TouchableOpacity
+      <View
         style={[
           styles.shadow,
           {
@@ -144,7 +144,7 @@ export default function Payment() {
             }}>
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: '700',
                 lineHeight: 24,
                 color: '#000000',
@@ -163,7 +163,7 @@ export default function Payment() {
             <Text
               style={{
                 color: '#181818',
-                fontSize: 14,
+                fontSize: 10,
                 fontWeight: '500',
                 lineHeight: 18,
               }}>
@@ -176,8 +176,9 @@ export default function Payment() {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              width: '25%',
-
+             paddingHorizontal:5,
+              right:0,bottom:5,
+              position:'absolute',
               alignItems: 'center',
             }}>
 
@@ -185,15 +186,15 @@ export default function Payment() {
               style={{
                 color: '#E79B3F',
                 fontSize: 14,
-                lineHeight: 27,
+                lineHeight: 16,
                 fontWeight: '700',
               }}>
-              Total Value £{(item.dish_data.restaurant_dish_price * item.quantity)}
+              Total £{(item.dish_data.restaurant_dish_price * item.quantity)}
             </Text>
 
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 
@@ -240,6 +241,8 @@ export default function Payment() {
     </TouchableOpacity>
   )
 
+
+  
   const get_order = async sts => {
     try {
       const params = {
@@ -259,7 +262,9 @@ export default function Payment() {
 
 
   const Stripe_api = () => {
-    let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
+    let Total = (Number(totalBill) + Number(generalInfo?.service_charge) + Number(generalInfo?.delivery_charge)) - (Number(CouponCodeData?.coupon_discount) || 0);
+
+
 
     if (PaymentMode == 'Cash') {
       setPaymentStatus("unpaid")
@@ -295,7 +300,7 @@ export default function Payment() {
   const totalAmount = calculateTotal(
     totalBill,
     generalInfo?.delivery_charge,
-    generalInfo?.tax,
+    generalInfo?.service_charge,
     CouponCodeData?.coupon_discount
   );
   const handleNavigationStateChange = async (navState) => {
@@ -347,7 +352,7 @@ if(!getProfile?.address_data){
   errorToast('Please select delivery address')
 }
 
-    let Total = (totalBill + generalInfo?.tax + generalInfo?.delivery_charge) - (CouponCodeData?.coupon_discount || 0);
+    let Total = (Number(totalBill) + Number(generalInfo?.service_charge) + Number(generalInfo?.delivery_charge)) - (Number(CouponCodeData?.coupon_discount) || 0);
 
 
     try {
@@ -358,7 +363,7 @@ if(!getProfile?.address_data){
       data.append('long', getProfile?.address_data.long);
       data.append('restaurant_id', res_id)
       data.append('address_id', getProfile?.address_data.address_id?.toString());
-      data.append('tax_amount', generalInfo?.tax.toString());
+      data.append('tax_amount', generalInfo?.service_charge.toString());
       data.append('coupon_amount', (CouponCodeData?.coupon_discount || 0)?.toString());
       data.append('sub_total', totalBill.toString());
       data.append('coupon_code', CouponCodeData?.coupon_code?.toString() || '');
@@ -402,6 +407,8 @@ if(!getProfile?.address_data){
     }
   };
 
+console.log('PayMentStatus?.url',PayMentStatus);
+
   return (
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 
@@ -411,7 +418,7 @@ if(!getProfile?.address_data){
         ) : (
           <View style={{height: 10}} />
         )}
-      {checkoutUrl ? (
+      {checkoutUrl && PayMentStatus?.url  ? (
         <WebView
           source={{ uri: PayMentStatus?.url }}
           onNavigationStateChange={handleNavigationStateChange}
@@ -452,10 +459,10 @@ if(!getProfile?.address_data){
             </View>
             <View style={Styles.bill}>
               <View style={{}}>
-                <Text style={Styles.txt}>Taxes & Fees</Text>
+                <Text style={Styles.txt}>Service charge</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>£{generalInfo?.tax}</Text>
+                <Text style={Styles.txt}>£{generalInfo?.service_charge}</Text>
               </View>
             </View>
             <View style={Styles.bill}>
@@ -496,7 +503,7 @@ if(!getProfile?.address_data){
           />}
           <View style={{
             flexDirection: 'row',
-            backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:10,
+            backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:2,
             justifyContent: 'space-between',
             alignItems: 'center', paddingHorizontal: 15
           }}>
@@ -636,7 +643,7 @@ if(!getProfile?.address_data){
           </View>
           <View style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:10,
+            justifyContent: 'space-between',backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:0,
             alignItems: 'center', paddingHorizontal: 15,marginTop:10
           }}>
             <View>
@@ -731,11 +738,14 @@ style={{color:'#000'}}
                     </View>
                     <View
                       style={{ justifyContent: 'center', alignItems: 'center', }}>
-                   
-                      <View    style={{height:30,width:30,borderRadius:15,borderWidth:1,
+                   <View    style={{height:25,width:25,borderRadius:12.5,
+                    alignItems:'center',justifyContent:'center',borderColor:item.name == selectedPayment?'#000':'#f0f0f0',
+                    borderWidth:item.name == selectedPayment?0:3,backgroundColor:'#fff'}}>
+                      <View    style={{height:16,width:16,borderRadius:8,
 
-                        borderColor:item.name == selectedPayment?'#76b5c5':'#000',
+                      
                         backgroundColor:item.name ==selectedPayment?'#063970':'#fff'}}/>
+                        </View>
                     </View>
                   </TouchableOpacity>
                 )}
@@ -806,10 +816,10 @@ const Styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#000',
-    lineHeight: 21,
+    lineHeight:15,
   },
   total: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#7756FC',
     lineHeight: 27,
@@ -818,7 +828,6 @@ const Styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     paddingHorizontal: 15,
-    height: 30,
     alignItems: 'center',
     justifyContent: 'space-between',
   },

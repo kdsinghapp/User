@@ -16,8 +16,7 @@ const initialState = {
 };
 
 export const login = createAsyncThunk('login', async (params, thunkApi) => {
-  console.log('===============login=====================');
-  console.log(params.data);
+
 
   try {
     const myHeaders = new Headers();
@@ -38,7 +37,7 @@ export const login = createAsyncThunk('login', async (params, thunkApi) => {
       .then((response) => response.text())
       .then((res) => {
         const response = JSON.parse(res)
-        console.log(response.message);
+ 
         if (response.success) {
           thunkApi.dispatch(loginSuccess(response.data));
           params.navigation.navigate(ScreenNameEnum.ASK_LOCATION);
@@ -92,7 +91,7 @@ export const guest_login = createAsyncThunk('guest_login', async (params, thunkA
       .then((response) => response.text())
       .then((res) => {
         const response = JSON.parse(res)
-        console.log(response.message);
+   
         if (response.success) {
           thunkApi.dispatch(loginSuccess(response.data));
           params.navigation.navigate(ScreenNameEnum.ASK_LOCATION);
@@ -163,7 +162,7 @@ export const validOtp = createAsyncThunk(
   async (params, thunkApi) => {
     const { data, navigation } = params;
 
-    console.log('parms:', data.identity, data.otp);
+
     try {
       // Create a new FormData object
       const formData = new FormData();
@@ -176,7 +175,7 @@ export const validOtp = createAsyncThunk(
         },
       });
 
-      console.log('Response:', response.data);
+
 
       if (response.data.success) {
         successToast(
@@ -210,7 +209,7 @@ export const CreateNewPassword = createAsyncThunk(
   'create-new-password-without-login',
   async (params, thunkApi) => {
     const { identity, password, otp, } = params.data;
-    console.log('identity, password, otp,', identity, password, otp,);
+
     try {
       const myHeaders = new Headers();
       myHeaders.append("Accept", "application/json");
@@ -232,7 +231,7 @@ export const CreateNewPassword = createAsyncThunk(
         .then((response) => response.text())
         .then((result) => {
           const response = JSON.parse(result)
-          console.log(response);
+
           if (response.success) {
             params.navigation.navigate(ScreenNameEnum.LOGIN_SCREEN);
             successToast('Password updated successfully');
@@ -266,11 +265,7 @@ export const logout = createAsyncThunk('logout', async (params, thunkApi) => {
       },
     });
 
-    console.log(
-      '🚀 ~ file: AuthSlice.js:29 ~ logout ~ response:',
-      response.data,
-    );
-
+ 
     if (response.data.status == '1') {
       successToast('User LogOut Successfuly');
       params.navigation.navigate(ScreenNameEnum.LOGIN_SCREEN)
@@ -292,10 +287,7 @@ export const delete_acc = createAsyncThunk('delete_acc', async (params, thunkApi
       },
     });
 
-    console.log(
-      '🚀 ~ file: delete_acc.js:29 ~ delete_acc ~ response:',
-      response.data,
-    );
+
 
     if (response.data.status == '1') {
       successToast('User Account Successfuly');

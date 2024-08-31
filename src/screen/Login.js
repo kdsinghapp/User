@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -129,8 +130,42 @@ export default function Login() {
     }
   };
 
+  const backAction = () => {
+    // Get the current route index using getState
+    const currentRouteIndex = navigation.getState().index;
 
+    if (currentRouteIndex === 0) {
+      // If the user is on the home screen, exit the app
+      Alert.alert("Exit App", "Do you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true; // This prevents the default back behavior
+    } else {
+      // Navigate back if not on the home screen
+      Alert.alert("Exit App", "Do you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() }
+      ]);
 
+      return true; // This prevents the default back behavior
+    }
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
   const skip_login =()=>{
     const params = {
   

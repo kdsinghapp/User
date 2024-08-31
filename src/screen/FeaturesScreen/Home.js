@@ -131,11 +131,15 @@ export default function Home() {
       const locPermissionDenied = await locationPermission();
       if (locPermissionDenied) {
         const { latitude, longitude } = await getCurrentLocation();
+
+        console.log('latitude, longitude',latitude, longitude);
         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
         try {
           const res = await fetch(url);
           const json = await res.json();
           const city = findCityName(json);
+
+          console.log('city=>>=>>>>>>>>>>>>>>>>>>>>0',city);
           setLocationName(city);
         } catch (e) {
           console.log("Error fetching location:", e);
@@ -289,7 +293,7 @@ export default function Home() {
           fontSize: 10,
           fontWeight: '600',
    
-          lineHeight: 18,
+          lineHeight: 12,
           color: '#352C48',
           marginTop: 5,
           textAlign:'center'
@@ -539,7 +543,7 @@ export default function Home() {
         </View>
         {!ShowSearch && (
           <View style={{ flex: 1 }}>
-            <View style={{ marginTop: 20 }}>
+            {/* <View style={{ marginTop: 20 }}>
               {images && <SliderBox
             
      
@@ -564,7 +568,7 @@ export default function Home() {
                 autoplayInterval={3000}
               />
               }
-            </View>
+            </View> */}
 
             <View
               style={{

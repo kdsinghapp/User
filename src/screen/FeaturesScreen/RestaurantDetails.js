@@ -132,7 +132,7 @@ export default function RestaurantDetails({ route }) {
             style={{
               height: hp(8),
               justifyContent: 'center',
-              paddingHorizontal: 20,
+              paddingHorizontal:10,
             }}>
             <TouchableOpacity
               onPress={() => {
@@ -192,7 +192,7 @@ export default function RestaurantDetails({ route }) {
               alignItems: 'center',
               marginLeft: 10,
 
-              width: '33%',
+              width: '35%',
             }}>
             <FlatList
               horizontal={true}
@@ -213,8 +213,8 @@ export default function RestaurantDetails({ route }) {
           <Text
             style={{
               fontSize: 12,
-              lineHeight: 18,
-           
+              lineHeight: 14,
+           marginLeft:5,
               fontWeight: '700',
               color: '#000',
             }}>

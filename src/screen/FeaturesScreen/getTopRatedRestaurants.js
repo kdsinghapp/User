@@ -16,6 +16,7 @@ import FavAdd from '../../assets/sgv/addFav.svg';
 import Fav from '../../assets/sgv/Favorites.svg';
 import Ratting from '../../configs/Ratting';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import Searchbar from '../../configs/Searchbar';
 export default function getTopRatedRestaurants() {
 
   const UserData = useSelector(state => state.feature?.getProfile);
@@ -24,10 +25,27 @@ export default function getTopRatedRestaurants() {
     const getTopRated_restaurants = useSelector(state => state.feature.getTopRated_restaurants) || [];
     const user = useSelector(state => state.auth.userData);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCategories, setFilteredCategories] = useState(getTopRated_restaurants);
 
     const dispatch = useDispatch()
 
+    const handleSearch = (text) => {
 
+
+      setSearchTerm(text);
+      if (text) {
+          const filtered = getTopRated_restaurants.filter((item) =>
+              item?.res_name.toLowerCase().includes(text?.toLowerCase())
+          );
+          setFilteredCategories(filtered);
+      } else {
+          setFilteredCategories(getTopRated_restaurants);
+      }
+  };
+  useEffect(() => {
+    setFilteredCategories(getTopRated_restaurants);
+}, [getTopRated_restaurants]);
 
     useEffect(() => {
         get_MyRestaurant();
@@ -41,11 +59,15 @@ export default function getTopRatedRestaurants() {
                 
                 token: user?.token
             };
-            await dispatch(get_top_rated_restaurants(params));
+            await dispatch(get_top_rated_restaurants(params)).then(res=>{
+              setFilteredCategories(getTopRated_restaurants)
+            })
         } catch (err) {
             console.log(err);
         }
     };
+
+
     const add_favrate = (id) => {
 
 
@@ -211,10 +233,18 @@ export default function getTopRatedRestaurants() {
             </View>
 
         </View>
+        <View style={{ marginTop: 5 }}>
+                    <Searchbar
+                        placeholder={'Search dishes, restaurants'}
+                      
+                        onSearchTxt={handleSearch}
+                        searchText={searchTerm}
+                    />
+                </View>
         <View style={{ marginTop: hp(3), flex: 1 }}>
-            {getTopRated_restaurants.length > 0 ? (
+            {filteredCategories.length > 0 ? (
                 <FlatList
-                    data={getTopRated_restaurants}
+                    data={filteredCategories}
                     numColumns={2}
                     renderItem={TopRateRestaurant}
 

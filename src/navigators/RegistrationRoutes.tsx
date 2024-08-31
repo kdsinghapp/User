@@ -6,6 +6,8 @@ import _routes from '../routes/routes';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 
+
+
 const RegistrationRoutes: FunctionComponent = () => {
   return (
     <Stack.Navigator

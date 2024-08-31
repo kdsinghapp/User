@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../configs/Loader';
 import {
   add_cart,
+  general_setting,
   get_Profile,
   get_cart,
   remove_cart,
@@ -36,13 +37,15 @@ export default function Cart() {
 
   const isLoading = useSelector(state => state.feature.isLoading);
   const cartItem = useSelector(state => state.feature.cartItem);
-
+  const generalInfo = useSelector(state => state.feature.generalInfo);
   console.log(cartItem);
   useEffect(() => {
     const params = {
       token: user.token,
     };
     dispatch(get_Profile(params));
+
+    dispatch(general_setting(params));
   }, [user]);
   useEffect(() => {
     get_cart_item();
@@ -151,7 +154,7 @@ export default function Cart() {
     });
   };
   const cartItemList = ({ item }) => (
-    <TouchableOpacity style={styles.cartItemContainer}>
+    <View style={styles.cartItemContainer}>
       <View style={styles.cartItemRow}>
         <View style={styles.imageContainer}>
           <Image
@@ -195,10 +198,10 @@ export default function Cart() {
         }}
         style={{
           backgroundColor: '#ed777e',
-          width: '30%',
+          width: '25%',
           alignSelf: 'flex-end',
           justifyContent: 'center',
-          height: 30,
+          height:22,
           borderRadius: 15,
           alignItems: 'center',
         }}>
@@ -209,22 +212,34 @@ export default function Cart() {
 
       <View style={{flexDirection:'row',alignItems:'center'}}>
         <Image  
-        style={{height:60,width:60,borderRadius:30}}
+        style={{height:30,width:30,borderRadius:15}}
         source={{uri:item.restaurant_data?.res_image}}
         />
         <View style={{marginLeft:10,width:'80%'}}>
-        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name.substring(0,30)}</Text>
-        <Text style={{fontSize:12,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address?.substring(0,30)}</Text>
+        <Text style={{fontSize:10,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_name.substring(0,30)}</Text>
+        <Text style={{fontSize:10,color:'#000',fontWeight:'500'}}>{item.restaurant_data?.res_address?.substring(0,30)}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
   const FooterComponent = () => (
-    <View style={{height:hp(20)}}>
+    <View style={{height:hp(40)}}>
       
     </View>
   );
+  const calculateTotalAm = (totalBill, deliveryCharge, tax, discount) => {
+    const bill = Number(totalBill) || 0;
+    const delivery = Number(deliveryCharge) || 0;
+    const taxAmount = Number(tax) || 0;
 
+    return (bill + delivery + taxAmount).toFixed(2);
+  };
+  const totalAmount = calculateTotalAm(
+    calculateTotal(),
+    generalInfo?.delivery_charge,
+    generalInfo?.service_charge,
+
+  );
   
   return (
     <View style={styles.container}>
@@ -248,18 +263,31 @@ export default function Cart() {
             />
           </View>
           <View style={styles.footer}>
-            <View style={styles.footerContent}>
-              <View>
-                <Text style={styles.totalLabel}>Total</Text>
+            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
+            <Text style={styles.totalLabel}>Subtotal</Text>
                 <Text style={styles.totalAmount}>£ {calculateTotal()}</Text>
-              </View>
+            </View>
+            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
+            <Text style={styles.totalLabel}>Delivery fee</Text>
+                <Text style={styles.totalAmount}>£{generalInfo?.delivery_charge}</Text>
+            </View>
+            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
+            <Text style={styles.totalLabel}>Service charge </Text>
+                <Text style={styles.totalAmount}>£{generalInfo?.service_charge}</Text>
+            </View>
+            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
+            <Text style={styles.totalLabel}>Total</Text>
+                <Text style={styles.totalAmount}>£ {totalAmount}</Text>
+            </View>
+            <View style={styles.footerContent}>
+           
               <TouchableOpacity
                 onPress={() => {
                   checkCartItem()
                  
                 }}
                 style={styles.checkoutButton}>
-                <Text style={styles.checkoutButtonText}>Check Out</Text>
+                <Text style={styles.checkoutButtonText}>Check Out ( £{totalAmount})</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -321,9 +349,9 @@ elevation: 5,
     alignItems: 'center',
   },
   imageContainer: {
-    height: 73.41,
+    height:60,
     marginTop: 5,
-    width: 73.41,
+    width: 60,
     borderRadius:10
   },
   cartItemImage: {
@@ -333,26 +361,27 @@ elevation: 5,
     borderColor: '#7756FC',
   },
   cartItemDetails: {
-    width: '45%',
+    width: '52%',
     marginLeft: 10,
+    paddingTop:10,
     justifyContent: 'center',
   },
   dishName: {
-    fontSize: 16,
+    fontSize:12,
     fontWeight: '700',
-    lineHeight: 24,
+    lineHeight:13,
     color: '#000000',
   },
   dishDescription: {
     color: '#9DB2BF',
-    fontSize: 10,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 13,
     fontWeight: '400',
   },
   dishPrice: {
     color: '#E79B3F',
-    fontSize: 18,
-    lineHeight: 27,
+    fontSize:14,
+    lineHeight:15,
     fontWeight: '700',
   },
   quantityContainer: {
@@ -363,22 +392,23 @@ elevation: 5,
     alignItems: 'center',
   },
   quantityIcon: {
-    height: 30,
-    width: 30,
+    height:25,
+    width:25,
   },
   quantityText: {
     color: '#181818',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     lineHeight: 18,
   },
   footer: {
     backgroundColor: '#352C48',
-    height: hp(12),
+    paddingTop:5,
+    height: hp(25),
     width: '100%',
     bottom: 0,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    borderTopRightRadius:30,
+    borderTopLeftRadius:30,
     position: 'absolute',
     justifyContent: 'center',
   },
@@ -389,13 +419,13 @@ elevation: 5,
     paddingHorizontal: 15,
   },
   totalLabel: {
-    color: '#9E9E9E',
+    color: '#fff',
     fontSize: 14,
     fontWeight: '600',
     lineHeight: 33,
   },
   totalAmount: {
-    color: '#CBC3E3',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 33,
@@ -403,8 +433,9 @@ elevation: 5,
   checkoutButton: {
     backgroundColor: '#7756FC',
     borderRadius: 40,
-    height: 54,
-    width: '40%',
+    marginTop:10,
+    height:50,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },

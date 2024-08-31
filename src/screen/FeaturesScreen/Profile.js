@@ -320,31 +320,31 @@ const handleDeleteAccount =()=>{
           Log Out
         </Text>
       </TouchableOpacity>
-      {!user?.guest &&
-      <TouchableOpacity
-        onPress={() => {
-         Delete_Account()
-        }}
-        style={{
+      {/* {!user?.guest &&
+      // <TouchableOpacity
+      //   onPress={() => {
+      //    Delete_Account()
+      //   }}
+      //   style={{
          
-          height: 59,
+      //     height: 59,
          
-          //backgroundColor: '#FAFAFA',
-         // alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Text
-          style={{
-            color: '#FF0000',
-            fontSize: 14,
-            lineHeight: 21,
-            fontWeight: '700',
-          }}>
-         Delete Account
-        </Text>
-      </TouchableOpacity>
+      //     //backgroundColor: '#FAFAFA',
+      //    // alignItems: 'center',
+      //     justifyContent: 'center',
+      //   }}>
+      //   <Text
+      //     style={{
+      //       color: '#FF0000',
+      //       fontSize: 14,
+      //       lineHeight: 21,
+      //       fontWeight: '700',
+      //     }}>
+      //    Delete Account
+      //   </Text>
+      // </TouchableOpacity>
 
-        }
+        } */}
       </ScrollView>
     </View>
   );

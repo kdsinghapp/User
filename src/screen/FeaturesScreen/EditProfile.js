@@ -216,16 +216,16 @@ marginTop:10,
             showEye={false}
           />
         </View>
-      </ScrollView>
+
 
       <TouchableOpacity
-        style={[styles.tabBtn, { position: 'absolute', bottom: 20 }]}
+        style={[styles.tabBtn, {  }]}
         onPress={handleSave}>
         <Text style={styles.saveButtonText}>
           Save
         </Text>
       </TouchableOpacity>
-
+      </ScrollView>
       <DatePicker
         modal
         open={isDatePickerVisible}

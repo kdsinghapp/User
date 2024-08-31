@@ -101,7 +101,7 @@ export default function RestaurantItemList({ ...props }) {
                     {item?.fav ? <FavAdd height={20} width={20} /> : <Fav height={20} width={20} />}
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.itemDescription}>{item.restaurant_dish_description}</Text>
+                <Text style={styles.itemDescription}>{item.restaurant_dish_description?.substring(0,60)}...</Text>
                 <View style={styles.itemFooter}>
                   <TouchableOpacity>
                     <Text style={styles.itemPrice}>£{item.restaurant_dish_price}</Text>
@@ -137,16 +137,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+
   },
   categoryHeaderTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+
   },
   categoryName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#101010',
-    lineHeight: 27,
+    lineHeight:18,
+    marginLeft:10
   },
   categoryItemsCount: {
     color: '#9E9E9E',
@@ -156,7 +159,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   seeAllButton: {
-    width: '20%',
+paddingHorizontal:5,
+
   },
   seeAllText: {
     fontSize: 14,

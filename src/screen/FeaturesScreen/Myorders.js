@@ -71,20 +71,20 @@ export default function MyOrders() {
   useEffect(() => {
     const interval = setInterval(() => {
 
-      if(status == 'Pending'){
+      if (status == 'Pending') {
         console.log("get order  notification Pending ",)
         get_order('Pending')
 
       }
-      else{
+      else {
         return () => clearInterval(interval);
       }
     }, 4000);
 
     // Clean up interval on component unmount
     return () => clearInterval(interval);
-  }, [status=='Pending']);
-   
+  }, [status == 'Pending']);
+
   const get_order = async sts => {
     try {
       const params = {
@@ -99,6 +99,8 @@ export default function MyOrders() {
       console.error(err);
     }
   };
+
+
   const order_canceld = (order_id) => {
 
     Alert.alert(
@@ -132,15 +134,15 @@ export default function MyOrders() {
   };
 
   const MyOderList = ({ item, index }) => {
-const currentTime = new Date();
+    const currentTime = new Date();
 
     const calculateTotalMinutes = (createdAt, currentTime) => {
       const createdDate = new Date(createdAt);
       const currentDate = new Date(currentTime);
-    
+
       const differenceInMilliseconds = currentDate - createdDate;
       const differenceInMinutes = Math.floor(differenceInMilliseconds / (1000 * 60));
-    
+
       return differenceInMinutes;
     };
 
@@ -169,7 +171,7 @@ const currentTime = new Date();
 
 
     const formatTime = (dateTimeString) => {
-   
+
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const date = new Date(dateTimeString);
@@ -193,20 +195,20 @@ const currentTime = new Date();
 
 
     const makePhoneCall = (Number) => {
-  
-      try{
-          RNImmediatePhoneCall.immediatePhoneCall(Number);
+
+      try {
+        RNImmediatePhoneCall.immediatePhoneCall(Number);
       }
-      catch(err){
+      catch (err) {
         console.log(err);
       }
-        }
-  
+    }
 
 
-   
-console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calculateTotalMinutes(item.created_at, currentTime) <= 5))));
-    
+
+
+    console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calculateTotalMinutes(item.created_at, currentTime) <= 5))));
+
     return (
       <TouchableOpacity
         // disabled={item.status === 'Pending'}
@@ -217,10 +219,10 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
         }}
       >
         <View style={{ width: '88%', justifyContent: 'center', }}>
-          <Text style={{ fontSize: 12, fontWeight: '500',color:'#777777' }}>
+          <Text style={{ fontSize: 12, fontWeight: '500', color: '#777777' }}>
             Order ID- {item.resord_id}
           </Text>
-          <Text style={{ fontSize: 12, fontWeight: '500',color:'#777777' }}>
+          <Text style={{ fontSize: 12, fontWeight: '500', color: '#777777' }}>
             Order Time {formatTime(item.created_at)}
           </Text>
         </View>
@@ -239,7 +241,7 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
               resizeMode="cover"
             />
           </View>
-          <View style={{ marginLeft: 10,width:'80%' }}>
+          <View style={{ marginLeft: 10, width: '80%' }}>
             <Text style={{ fontSize: 14, color: "#000", fontWeight: '600' }}>{item.restaurant_data?.res_name}</Text>
             <Text style={{ fontSize: 12, color: "#777777", fontWeight: '600' }}>{item.restaurant_data?.res_address}</Text>
           </View>
@@ -280,34 +282,37 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
               }}
             >
               {item.status === 'Complete' && 'Yeay, you have completed it!'}
-{item.status === 'Cancel' && 
-  (item.user_order_status == 'Cancel By User' 
-    ? 'You canceled this booking!' 
-    : 'Your order was canceled by the restaurant!')}
-{item.status === 'Pending' && 'Your booking is pending!'}
-{item.status === 'Accepted' && item.delivery_status == 'Pending' && `Your prescription will be ready in ${item.order_preapare_time} minutes.`}
-{item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
-{item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
+              {item.status === 'Cancel' &&
+                (item.user_order_status == 'Cancel By User'
+                  ? 'You canceled this booking!'
+                  : 'Your order was canceled by the restaurant!')}
+              {item.status === 'Pending' && 'Your booking is pending!'}
+              {item.status === 'Accepted' && item.delivery_status == 'Pending' && `Your prescription will be ready in ${item.order_preapare_time} minutes.`}
+              {item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+              {item.status === 'Ready' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+              {item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
+              {item.status === 'Ready' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
+              {item.status === 'Ready' && item.delivery_status == 'Pending' && 'Your order is Ready !'}
 
 
             </Text>
             {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
           </View>
-          {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && item.status == 'Pending' &&(
-  <TouchableOpacity
-    onPress={() => {
-      order_canceld(item.resord_id)
-    }}
-    style={styles.cancelButton}>
-    <Text style={styles.cancelButtonText}>Cancel Order</Text>
-  </TouchableOpacity>
-)}
+          {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && item.status == 'Pending' && (
+            <TouchableOpacity
+              onPress={() => {
+                order_canceld(item.resord_id)
+              }}
+              style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>Cancel Order</Text>
+            </TouchableOpacity>
+          )}
         </View>
         }
 
         {isExpand && (<>
           <View style={{ marginTop: 5 }}>
-            {item.order_details.map((dish, index) => (
+            {item.order_details?.map((dish, index) => (
               <View key={index} style={{ marginTop: 15 }}>
 
                 <View style={{ marginTop: 5 }}>
@@ -353,15 +358,17 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
                 }}
               >
                 {item.status === 'Complete' && 'Yeay, you have completed it!'}
-{item.status === 'Cancel' && 
-  (item.user_order_status === 'Cancel By User' 
-    ? 'You canceled this booking!' 
-    : 'Your order was canceled by the restaurant!')}
-{item.status === 'Pending' && 'Your booking is pending!'}
-{item.status === 'Accepted' && item.delivery_status == 'Pending' && 'Your order is under prescription!'}
-{item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
-{item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
-
+                {item.status === 'Cancel' &&
+                  (item.user_order_status == 'Cancel By User'
+                    ? 'You canceled this booking!'
+                    : 'Your order was canceled by the restaurant!')}
+                {item.status === 'Pending' && 'Your booking is pending!'}
+                {item.status === 'Accepted' && item.delivery_status == 'Pending' && `Your prescription will be ready in ${item.order_preapare_time} minutes.`}
+                {item.status === 'Accepted' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+                {item.status === 'Ready' && item.delivery_status == 'Pickuped' && 'Your order is Pickuped by rider!'}
+                {item.status === 'Accepted' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
+                {item.status === 'Ready' && item.delivery_status == 'Accepted' && 'Your order is Accepte by rider!'}
+                {item.status === 'Ready' && item.delivery_status == 'Pending' && 'Your order is Ready !'}
               </Text>
               {item.status === 'Accepted' && <LoadingDots size={5} bounceHeight={4} colors={[statusColor, statusColor, statusColor, statusColor]} />}
             </View>
@@ -414,23 +421,23 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
                 £{item.total_price.toFixed(2)}
               </Text>
             </View>
-            
+
             {(calculateTotalMinutes(item.created_at, currentTime) <= 5) && (
-  <TouchableOpacity
-    onPress={() => {
-      order_canceld(item.resord_id)
-    }}
-    style={styles.cancelButton}>
-    <Text style={styles.cancelButtonText}>Cancel Order</Text>
-  </TouchableOpacity>
-)}
+              <TouchableOpacity
+                onPress={() => {
+                  order_canceld(item.resord_id)
+                }}
+                style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>Cancel Order</Text>
+              </TouchableOpacity>
+            )}
 
           </View>
-      
+
         </>
         )}
 
-        {item.delivery_status == 'Pickuped' && item.delivery_status !== 'Deliverd' &&(
+        {item.delivery_status == 'Pickuped' && item.delivery_status !== 'Deliverd' && (
           <View
             style={{
               flexDirection: 'row',
@@ -441,20 +448,20 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
             }}
           >
             <TouchableOpacity
-            onPress={()=>{
-              makePhoneCall(item.driver_data.driver_mobile_number)
-            }}
+              onPress={() => {
+                makePhoneCall(item.driver_data.driver_mobile_number)
+              }}
             >
 
-            <Image
-              source={require('../../assets/croping/Call3x.png')}
-              style={{ height: 60, width: 60 }}
+              <Image
+                source={require('../../assets/croping/Call3x.png')}
+                style={{ height: 60, width: 60 }}
               />
-              </TouchableOpacity>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(ScreenNameEnum.TRACK_ORDER,{OrderId:item.resord_id});
-              
+                navigation.navigate(ScreenNameEnum.TRACK_ORDER, { OrderId: item.resord_id });
+
               }}
               style={{
                 backgroundColor: '#352C48',
@@ -486,11 +493,11 @@ console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calcul
 
   return (
     <View style={{ paddingHorizontal: 15, flex: 1, backgroundColor: '#FFFFFF' }}>
-       {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
+      {Platform.OS === 'ios' ? (
+        <View style={{ height: 40 }} />
+      ) : (
+        <View style={{ height: 10 }} />
+      )}
       {isLoading && <Loading />}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 20 }}>

@@ -84,7 +84,7 @@ export const Food_categories = createAsyncThunk(
 export const get_HomeDashBoard = createAsyncThunk(
   'get_HomeDashBoard',
   async (params, thunkApi) => {
-    console.log('called DashBoardData api',params.token);
+   
     try {
       const response = await API.post('/home/get-home', null, {
         headers: {
@@ -269,7 +269,7 @@ export const Add_FavoriteList = createAsyncThunk(
 
             successToast(response.message)
             // params.navigation.goBack()
-            console.log('=>>>>>>>Add_FavoriteList cart ', response.message);
+        
 
             return response.data;
           } else {
@@ -298,7 +298,7 @@ export const get_privacy_policy = createAsyncThunk(
         },
       });
 
-      console.log('🚀 ~ get_privacy_policy ~ response:', response);
+ 
 
       if (response.data.success) {
         console.log('User get_privacy_policy Succesfuly');
@@ -318,7 +318,7 @@ export const get_cart = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_cart=>>>>', params);
+
       const formdata = new FormData();
 
       formdata.append("user_id", params.data.user_id);
@@ -345,14 +345,13 @@ export const get_cart = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('/api/user/cart/item-get=>>>>>>>>>>>>> :', responseData);
-
+   
 
       if (responseData.success) {
-        console.log('restaurant/get-order-data-by-id', responseData.message);
+        console.log('restaurant/get-order-data-by-id',);
       } else {
         //errorToast(responseData.message); 
-        console.log('restaurant/get-order-data-by-id', responseData.message);
+        console.log('restaurant/get-order-data-by-id', );
       }
 
 
@@ -371,7 +370,7 @@ export const get_coupon_list = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_coupon_list=>>>>', params);
+      console.log('get_coupon_list=>>>>', );
 
 
       // Configure request headers
@@ -396,7 +395,7 @@ export const get_coupon_list = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('get_coupon_list=>>>>>>>>>>>>> :', responseData);
+      console.log('get_coupon_list=>>>>>>>>>>>>> :', );
 
 
       if (responseData.success) {
@@ -422,7 +421,7 @@ export const addres_list = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('addres_list=>>>>', params);
+    
       const formdata = new FormData();
 
       formdata.append("user_id", params.user_id);
@@ -449,7 +448,7 @@ export const addres_list = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('addres_list =>>>>>>>>>>>>> :', responseData.data);
+
 
 
       if (responseData.success) {
@@ -475,7 +474,7 @@ export const user_order_status = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('user_order_status=>>>>', params);
+
       const formdata = new FormData();
 
       formdata.append("order_id", params.order_id);
@@ -502,7 +501,7 @@ export const user_order_status = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('user_order_status =>>>>>>>>>>>>> :', responseData.data);
+
 
 
       if (responseData.success) {
@@ -529,7 +528,7 @@ export const get_order_locations = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_order_locations=>>>>', params.data);
+
 
 
 
@@ -554,7 +553,7 @@ export const get_order_locations = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('get_order_locations =>>>>>>>>>>>>> :', responseData.data);
+
 
 
       if (responseData.success) {
@@ -580,8 +579,7 @@ export const get_order_locations = createAsyncThunk(
 export const add_cart = createAsyncThunk(
   'add_cart',
   async (params, thunkApi) => {
-    console.log('===============add_cart=====================');
-    console.log(params);
+
 
     try {
       const myHeaders = new Headers();
@@ -633,8 +631,7 @@ export const add_cart = createAsyncThunk(
 export const apply_coupon = createAsyncThunk(
   'apply_coupon',
   async (params, thunkApi) => {
-    console.log('===============apply_coupon=====================');
-    console.log(params);
+
 
     try {
       const myHeaders = new Headers();
@@ -685,9 +682,7 @@ export const apply_coupon = createAsyncThunk(
 export const add_address = createAsyncThunk(
   'add_address',
   async (params, thunkApi) => {
-    console.log('===============add_address=====================', params.data);
-
-
+ 
     try {
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
@@ -707,7 +702,7 @@ export const add_address = createAsyncThunk(
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log('user/addres/create=>>>>>>>>>>>>>',response);
+     
           if (response.success) {
 
             successToast(response.message)
@@ -734,8 +729,7 @@ export const add_address = createAsyncThunk(
 export const create_order = createAsyncThunk(
   'create_order',
   async (params, thunkApi) => {
-    console.log('===============create_order=====================', params.data);
-
+ 
 
     try {
       const myHeaders = new Headers();
@@ -784,7 +778,7 @@ export const update_address = createAsyncThunk(
   'update_address',
   async (params, thunkApi) => {
 
-    console.log('=>>>>>>>>>>>>>>>.', params.data,);
+
 
     try {
       const myHeaders = new Headers();
@@ -806,7 +800,7 @@ export const update_address = createAsyncThunk(
         .then(res => {
 
           const response = JSON.parse(res);
-          console.log(response);
+  
           if (response.success) {
             if (params.isSelectes) {
 
@@ -836,8 +830,7 @@ export const update_address = createAsyncThunk(
 export const remove_cart = createAsyncThunk(
   'remove_cart',
   async (params, thunkApi) => {
-    console.log('===============remove_cart=====================');
-    console.log(params);
+ 
 
     try {
       const myHeaders = new Headers();
@@ -891,8 +884,7 @@ export const remove_cart = createAsyncThunk(
 export const addres_delete = createAsyncThunk(
   'addres_delete',
   async (params, thunkApi) => {
-    console.log('===============addres_delete=====================');
-    console.log(params);
+
 
     try {
       const myHeaders = new Headers();
@@ -948,9 +940,7 @@ export const get_order_data_by_id = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
-      console.log('============get_order_data_by_id========================');
-      console.log(params.data);
-      console.log('====================================');
+
       const formdata = new FormData();
 
       formdata.append("user_id", params.data.user_id);
@@ -1006,9 +996,7 @@ export const get_category_dish = createAsyncThunk(
     console.log('================get_category_dish=APi===================', params);
     try {
       // Create form data with identity and otp
-      console.log('============get_order_data_by_id========================');
-      console.log(params.data);
-      console.log('====================================');
+    
       const formdata = new FormData();
 
       formdata.append("category_id", params.category_id);
@@ -1036,7 +1024,7 @@ export const get_category_dish = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('restaurant/get-order-data-by-id=>>>>>>>>>>>>> :', responseData);
+
 
       // Handle successful response
       if (responseData.success) {
@@ -1060,7 +1048,7 @@ export const get_category_dish = createAsyncThunk(
 export const add_review = createAsyncThunk(
   'add_review',
   async (params, thunkApi) => {
-    console.log('================add_review=APi===================', params);
+ 
     try {
       // Create form data with identity and otp
 
@@ -1093,7 +1081,7 @@ export const add_review = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('add_review>>>>>>>>>>>> :', responseData.data);
+
 
 
       if (responseData.success) {
@@ -1117,7 +1105,7 @@ export const add_review = createAsyncThunk(
 export const get_popular_dish = createAsyncThunk(
   'get_popular_dish',
   async (params, thunkApi) => {
-    console.log('================get_popular_dish=APi===================', params);
+   
     try {
       // Create form data with identity and otp
 
@@ -1144,7 +1132,7 @@ export const get_popular_dish = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('get_popular_dish=>>>>>>>>>>>>> :', responseData);
+
 
       // Handle successful response
       if (responseData.success) {
@@ -1168,7 +1156,7 @@ export const get_popular_dish = createAsyncThunk(
 export const get_top_rated_restaurants = createAsyncThunk(
   'get_top_rated_restaurants',
   async (params, thunkApi) => {
-    console.log('================get_top_rated_restaurants=APi===================', params);
+
     try {
       // Create form data with identity and otp
 
@@ -1195,7 +1183,7 @@ export const get_top_rated_restaurants = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('get_top_rated_restaurants=>>>>>>>>>>>>> :', responseData);
+
 
       // Handle successful response
       if (responseData.success) {
@@ -1221,9 +1209,7 @@ export const general_setting = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       // Create form data with identity and otp
-      console.log('============general_setting========================');
-      console.log(params.data);
-      console.log('====================================');
+
       const formdata = new FormData();
 
 
@@ -1250,7 +1236,7 @@ export const general_setting = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('general_setting=>>>>>>>>>>>>> :', responseData);
+
 
       // Handle successful response
       if (responseData.success) {
@@ -1274,8 +1260,7 @@ export const general_setting = createAsyncThunk(
 export const update_cart = createAsyncThunk(
   'update_cart',
   async (params, thunkApi) => {
-    console.log('===============update_cart=====================', params.data);
-
+  
 
     try {
       const myHeaders = new Headers();
@@ -1303,7 +1288,7 @@ export const update_cart = createAsyncThunk(
 
           if (response.success) {
 
-            console.log('update cart =>>>>>>>>>>>>>>>', respons);
+
             //  successToast(response.message);
 
             return response.data;
@@ -1336,7 +1321,7 @@ export const update_profile = createAsyncThunk(
       myHeaders.append('Accept', 'application/json');
       myHeaders.append('Authorization', `Bearer ${params.token}`);
 
-      console.log('data=>>>>>>>>>>>>>>', params.data);
+
       // Create request options
       const requestOptions = {
         method: 'POST',
@@ -1393,8 +1378,6 @@ export const Payment_api = createAsyncThunk(
       const myHeaders = new Headers();
       myHeaders.append('Accept', 'application/json');
 
-
-      console.log('Payment_api=>>>>>>>>>>>>>>', params.data);
       // Create request options
       const requestOptions = {
         method: 'POST',
@@ -1412,7 +1395,7 @@ export const Payment_api = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('Response Payment_api=>>>>>>>>>>>>> :', responseData.data);
+
 
       // Handle successful response
       if (responseData.data) {
@@ -1448,7 +1431,6 @@ export const delete_favorite_restaurant = createAsyncThunk(
       myHeaders.append('Accept', 'application/json');
       myHeaders.append('Authorization', `Bearer ${params.token}`);
 
-      console.log('delete_favorite_restaurant=>>>>>>>>>>>>>>', params.data);
       // Create request options
       const requestOptions = {
         method: 'POST',
@@ -1858,7 +1840,7 @@ const FeatureSlice = createSlice({
       state.isSuccess = false;
     });
     builder.addCase(get_cart.pending, state => {
-      state.isLoading = true;
+      state.isLoading = false;
     });
     builder.addCase(get_cart.fulfilled, (state, action) => {
       state.isLoading = false;
@@ -1947,18 +1929,19 @@ const FeatureSlice = createSlice({
       state.isSuccess = true;
       state.isError = false;
     });
-    builder.addCase(update_cart.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.isSuccess = false;
-    });
+
     builder.addCase(update_cart.pending, state => {
-      state.isLoading = true;
+      state.isLoading = false;
     });
     builder.addCase(remove_cart.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
+    });
+    builder.addCase(update_cart.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
     });
     builder.addCase(remove_cart.rejected, (state, action) => {
       state.isLoading = false;
