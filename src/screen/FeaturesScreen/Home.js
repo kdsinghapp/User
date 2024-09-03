@@ -63,7 +63,7 @@ export default function Home() {
   const navigation = useNavigation();
   const PopularDish = useSelector(state => state.feature.PopularDish) || [];
   const getTopRated_restaurants = useSelector(state => state.feature.getTopRated_restaurants) || [];
-
+  const [randomColor,setrandomColor] = useState('#000')
   useBackHandler(navigation,'Home');
  
   useEffect(() => {
@@ -111,6 +111,24 @@ export default function Home() {
     }, 2000); // 2 seconds delay for demonstration
   };
 
+  useEffect(() => {
+    // Set an interval to update the color every 2 seconds
+    const interval = setInterval(() => {
+      const newColor = getRandomColor();
+      setrandomColor(newColor);
+    }, 2000);
+
+    // Listen for navigation events to clear the interval when navigating away
+    const unsubscribe = navigation.addListener('blur', () => {
+      clearInterval(interval);
+    });
+
+    // Cleanup the interval on component unmount and navigation unsubscribe
+    return () => {
+      clearInterval(interval);
+      unsubscribe();
+    };
+  }, [navigation]);
 
 
   useEffect(() => {
@@ -253,8 +271,24 @@ const get_Mydishes = async () => {
       </Text>
     </TouchableOpacity>
   );
-
+  function findGreatestDiscountCoupon(restaurant) {
+    if (!restaurant.coupons || restaurant.coupons.length === 0) {
+      return null; // No coupons available
+    }
+  
+    let maxDiscountCoupon = restaurant.coupons[0]; // Start with the first coupon
+  
+    for (let i = 1; i < restaurant.coupons.length; i++) {
+      if (parseFloat(restaurant.coupons[i].coupon_discount) > parseFloat(maxDiscountCoupon.coupon_discount)) {
+        maxDiscountCoupon = restaurant.coupons[i];
+      }
+    }
+  
+    return maxDiscountCoupon;
+  }
+  
   const TopRateRestaurant = ({ item }) => {
+
     
     const myLocation = {
       latitude: UserData?.lat,
@@ -266,6 +300,7 @@ const get_Mydishes = async () => {
       longitude: item?.res_longitude
     };
     const distance = haversineDistance(myLocation, restaurantLocation);
+    const greatestDiscountCoupon = findGreatestDiscountCoupon(item);
 
     return (
     <TouchableOpacity
@@ -356,15 +391,32 @@ const get_Mydishes = async () => {
       {distance.toFixed(2)} miles.
           </Text>
         </View>
-      </View>
+        
+
+    
+        </View>
       <TouchableOpacity
         disabled={item.fav}
         onPress={() => {
           add_favrate(item.res_id)
         }}
-        style={{ alignSelf: 'flex-end', marginTop: 10, position: 'absolute', bottom: 10, right: 10 }}>
+        style={{ alignSelf: 'flex-end', marginTop: 10, position: 'absolute', bottom:greatestDiscountCoupon != null?40:10, right:5 }}>
         {item.fav ? <FavAdd /> : <Fav />}
       </TouchableOpacity>
+
+      <View style={{ position: 'absolute', top:-7, right: -7 }}>
+          <Image source={require('../../assets/croping/redo.png')} style={{ height: 60, width: 60 }} />
+        </View>
+
+        {greatestDiscountCoupon != null &&   
+     <View style={{backgroundColor:randomColor,position:'absolute',bottom:0,width:'106%',borderBottomRightRadius:7,borderBottomLeftRadius:7,
+     zIndex:-1,height:35,
+     alignItems:'center',justifyContent:'center',}}>
+
+     <Text style={{fontSize:18,color:'#fff',fontWeight:'800',marginTop:5}} >GET {greatestDiscountCoupon?.coupon_discount}% OFF</Text>
+ 
+ </View>
+ }
     </TouchableOpacity>
   )}
   const SearchData = ({ item }) => {
@@ -461,20 +513,7 @@ const get_Mydishes = async () => {
 
 
 
-        <View
-          style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
-          <Clock height={20} width={20} />
-          <Text
-            style={{
-              color: '#9DB2BF',
-              marginLeft: 5,
-              fontSize: 12,
-              lineHeight: 18,
-              fontWeight: '400',
-            }}>
-      {distance.toFixed(2)} miles.
-          </Text>
-        </View>
+     
       </View>
       <TouchableOpacity
         disabled={item.fav}
@@ -520,14 +559,14 @@ const get_Mydishes = async () => {
     dispatch(get_HomeDashBoard(params));
   }, [isFocuss]);
   const images = DashBoardData && DashBoardData?.banners?.map(banner => banner.ban_image)
-  const getRandomColor = () => {
+  function getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  };
+  }
 
 
   useEffect(() => {
