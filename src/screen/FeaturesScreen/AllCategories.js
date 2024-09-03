@@ -20,6 +20,7 @@ import ProfileHeader from './ProfileHeader';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import Searchbar from '../../configs/Searchbar';
+import useBackHandler from '../../configs/useBackHandler';
 
 export default function AllCategories() {
     const navigation = useNavigation();
@@ -28,24 +29,26 @@ export default function AllCategories() {
     const user = useSelector(state => state.auth.userData);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredCategories, setFilteredCategories] = useState(AllCategory);
-
+    const [filteredCategories, setFilteredCategories] = useState([]);
+    useBackHandler(navigation,'Category');
     const dispatch = useDispatch();
 
     useEffect(() => {
         get_Category();
     }, [user]);
 
-    useEffect(() => {
-        setFilteredCategories(AllCategory);
-    }, [AllCategory]);
+
 
     const get_Category = async () => {
         try {
             const params = {
                 token: user?.token
             };
-            await dispatch(Food_categories(params));
+            await dispatch(Food_categories(params)).then(res=>{
+                setTimeout(() => {
+                   
+                }, 3000); // 3
+            })
         } catch (err) {
             console.log(err);
         }
@@ -66,6 +69,8 @@ export default function AllCategories() {
     };
 
 
+
+  
 
     const renderDish = ({ item }) => (
         <TouchableOpacity
@@ -121,8 +126,8 @@ export default function AllCategories() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 10 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
                 {isLoading ? <Loading /> : null}
+            <ScrollView showsVerticalScrollIndicator={false}>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ width: '90%' }}>
@@ -140,9 +145,9 @@ export default function AllCategories() {
                 </View>
 
                 <View style={{ marginTop: hp(3), flex: 1 }}>
-                    {filteredCategories.length > 0 ? (
+                    {filteredCategories.length > 0 || AllCategory?.length > 0 ? (
                         <FlatList
-                            data={filteredCategories}
+                            data={filteredCategories?.length !== 0 ?filteredCategories:AllCategory}
                             numColumns={2}
                             renderItem={renderDish}
                         />

@@ -24,6 +24,7 @@ import { useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import LoadingDots from "react-native-loading-dots";
 import messaging from '@react-native-firebase/messaging';
+import useBackHandler from '../../configs/useBackHandler';
 export default function MyOrders() {
   const [status, setStatus] = useState('Pending');
   const OrderDetails = useSelector(state => state.feature.OrderDetails);
@@ -34,13 +35,17 @@ export default function MyOrders() {
   const [showCancelButton, setShowCancelButton] = useState(false);
   messaging().onNotificationOpenedApp(remoteMessage => {
     let parsedMain = remoteMessage?.data
-    console.log("get order  notification Pending ", parsedMain)
+
     get_order('Pending');
   });
   const dispatch = useDispatch();
 
-  // get_order('Pending');
   const navigation = useNavigation()
+  
+  useBackHandler(navigation,'Booking');
+
+
+  // get_order('Pending');
   useEffect(() => {
     get_order(status);
     requestCallPermission()
@@ -207,7 +212,6 @@ export default function MyOrders() {
 
 
 
-    console.log((item.status === 'Pending' || (item.status === 'Accepted' && (calculateTotalMinutes(item.created_at, currentTime) <= 5))));
 
     return (
       <TouchableOpacity

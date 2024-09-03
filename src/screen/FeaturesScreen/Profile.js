@@ -17,6 +17,7 @@ import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import { useDispatch, useSelector } from 'react-redux';
 import { delete_acc, logout } from '../../redux/feature/authSlice';
+import useBackHandler from '../../configs/useBackHandler';
 
 
 
@@ -28,7 +29,7 @@ const navigation = useNavigation()
 const user = useSelector(state => state.auth.userData);
   
 const isLoading = useSelector(state => state.auth.isLoading);
-  
+useBackHandler(navigation,'Profile');
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity

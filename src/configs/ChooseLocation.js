@@ -19,7 +19,7 @@ const ChooseLocation = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false)
   const { colors } = useTheme()
 
-  console.log(PickupLocationlat);
+
   const get_providerList = () => {
     if (PickupLocationlat?.lat?.length === 0) {
       errorToast("Please Enter Location")
@@ -60,7 +60,7 @@ const ChooseLocation = ({ navigation, route }) => {
             placeholder={'localizationStrings?.searchlocation'}
             onPress={(data, details = null) => {
               try {
-                console.log(data, details);
+         
                 setPickupLocationlat({ ...PickupLocationlat, lat: details?.geometry?.location?.lat, lng: details?.geometry?.location?.lng, place: data.description });
               } catch (err) {
                 console.log(err);

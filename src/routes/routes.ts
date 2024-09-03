@@ -168,6 +168,10 @@ const _routes = {
       name: ScreenNameEnum.AllCategories,
       Component:AllCategories ,
     },
+    {
+      name: ScreenNameEnum.PAYMENT_SCREEN,
+      Component:Payment ,
+    },
     
   ],
   CART_ROUTE: [
@@ -175,10 +179,6 @@ const _routes = {
     {
       name: ScreenNameEnum.CART_SCREEN,
       Component:Cart ,
-    },
-    {
-      name: ScreenNameEnum.PAYMENT_SCREEN,
-      Component:Payment ,
     },
     
     

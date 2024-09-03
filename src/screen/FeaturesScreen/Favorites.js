@@ -22,6 +22,7 @@ import FavAdd from '../../assets/sgv/addFav.svg';
 import Pin from '../../assets/sgv/Pin.svg';
 import Clock from '../../assets/sgv/Clock.svg';
 import Ratting from '../../configs/Ratting';
+import useBackHandler from '../../configs/useBackHandler';
 
 export default function Favorites() {
   const [chooseBtn, setChooseBtn] = useState(true);
@@ -34,6 +35,8 @@ export default function Favorites() {
   const params = {
     token: user.token
   };
+  useBackHandler(navigation,'Favrate');
+
 
   useEffect(() => {
     dispatch(get_FavoriteList(params));
@@ -78,6 +81,8 @@ export default function Favorites() {
     return distance;
   }
 
+
+  console.log('FavoriteList?.dishes',FavoriteList?.dishes);
 const Restaurant = ({ item }) => {
     const myLocation = {
       latitude: UserData?.lat,
@@ -208,7 +213,7 @@ const Restaurant = ({ item }) => {
     <TouchableOpacity
 
       onPress={() => {
-        navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item })
+        navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item?.dish_data })
       }}
       style={[
         styles.shadow,
@@ -304,7 +309,7 @@ const Restaurant = ({ item }) => {
   );
 
 
-  console.log('FavoriteList?.restaurants',FavoriteList?.restaurants);
+  
   return (
     <View style={styles.container}>
      {Platform.OS === 'ios' ? (

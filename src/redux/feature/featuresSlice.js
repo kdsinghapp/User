@@ -32,7 +32,7 @@ const initialState = {
 export const Food_categories = createAsyncThunk(
   'Food_categories',
   async (params, thunkApi) => {
-    console.log('=============Food_categories=======================',params);
+
     try {
 
       
@@ -60,7 +60,7 @@ export const Food_categories = createAsyncThunk(
       // Parse response as JSON
       const responseData = await response.json();
 
-      console.log('Response restaurant/get-restaurant-categories=>>>>>>>>>>>>> :', responseData.success);
+
 
       // Handle successful response
       if (responseData.success) {
@@ -189,7 +189,7 @@ export const get_terms_conditions = createAsyncThunk(
 export const get_Profile = createAsyncThunk(
   'get-profile',
   async (params, thunkApi) => {
-    console.log(params);
+
     try {
       const response = await API.post('/auth/get-profile', null, {
         headers: {
@@ -370,7 +370,7 @@ export const get_coupon_list = createAsyncThunk(
     try {
       // Create form data with identity and otp
 
-      console.log('get_coupon_list=>>>>', );
+
 
 
       // Configure request headers
@@ -388,7 +388,7 @@ export const get_coupon_list = createAsyncThunk(
 
       // Make POST request to verify OTP
       const response = await fetch(
-        `${base_url.url}/user/get-coupon-list`,
+        `${base_url.url}/user/get-coupon-list?res_id=${params.res_id}`,
         requestOptions,
       );
 
@@ -604,7 +604,7 @@ export const add_cart = createAsyncThunk(
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log(response.message);
+   
           if (response.success) {
 
             successToast(response.message)
@@ -707,8 +707,7 @@ export const add_address = createAsyncThunk(
 
             successToast(response.message)
             // params.navigation.goBack()
-            console.log('=>>>>>>>update cart ', response.message);
-
+ 
             return response.data;
           } else {
             errorToast(response.message);
@@ -750,8 +749,8 @@ export const create_order = createAsyncThunk(
         .then(response => response.text())
         .then(res => {
           const response = JSON.parse(res);
-          console.log('/user/order/create-restaurant-order===============create_order=====================', response);
-          if (response.success) {
+        
+          if (response.success == '1') {
 
             successToast("Your Order Successfuly Create")
             params.navigation.navigate(ScreenNameEnum.BOOKING_SCREEN)
@@ -808,7 +807,7 @@ export const update_address = createAsyncThunk(
             }
 
             // params.navigation.goBack()
-            console.log('=>>>>>>>update_address cart ', response);
+
 
             return response.data;
           } else {
@@ -993,7 +992,7 @@ export const get_order_data_by_id = createAsyncThunk(
 export const get_category_dish = createAsyncThunk(
   'get_category_dish',
   async (params, thunkApi) => {
-    console.log('================get_category_dish=APi===================', params);
+   
     try {
       // Create form data with identity and otp
     

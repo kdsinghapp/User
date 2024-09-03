@@ -22,8 +22,7 @@ export default function RestaurantReview({ restaurant }) {
 
     const submitReview = async() => {
 
-        console.log('Rating:', rating);
-        console.log('Comment:', comment);
+  
         const params = {
             resrev_restaurants_id: restaurant?.res_id,
             resrev_rating: rating,

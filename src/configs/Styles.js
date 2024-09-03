@@ -2,7 +2,8 @@ import { StyleSheet } from "react-native";
 
 
 export const styles = StyleSheet.create({
-
+  line:{
+    textDecorationLine:'line-through',},
     txtHeading:{
 fontWeight:'700',
 fontSize:24,

@@ -157,7 +157,7 @@ if(user?.guest && success){
   const isToday = today.getFullYear() === date.getFullYear() &&
                   today.getMonth() === date.getMonth() &&
                   today.getDate() === date.getDate();
-                  console.log('new Date() === date',isToday);
+            
   const formate = (dateString)=>{
     const dateObj = new Date(dateString);
 

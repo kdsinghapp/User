@@ -39,7 +39,7 @@ const UpdateAddressModal = ({ visible, onClose, data }) => {
 
     const [Location, setLocation] = useState(null)
 
-console.log(data?.address_id);
+
 
 
     useEffect(() => {
@@ -136,7 +136,7 @@ console.log(data?.address_id);
     
     
           const formattedAddress = formatAddress(details);
-          console.log('details=>>>>>>>>>>>>>>>>>>>>>', formattedAddress);
+      
           setStreet(formattedAddress)
         },
         [visible]

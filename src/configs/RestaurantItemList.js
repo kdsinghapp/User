@@ -33,7 +33,11 @@ export default function RestaurantItemList({ ...props }) {
   useEffect(() => {
     dispatch(get_RestauRantDetails(params));
   }, [isFocuss, props.data]);
-
+  function calculateDiscount(originalPrice, discountPercent) {
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    const finalPrice = originalPrice - discountAmount;
+    return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+  }
   const add_favrate = (id) => {
     try {
       const params = {
@@ -75,7 +79,7 @@ export default function RestaurantItemList({ ...props }) {
         </View>
         <FlatList
           data={itemsToShow}
-      
+
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
@@ -94,20 +98,92 @@ export default function RestaurantItemList({ ...props }) {
                   <Text style={styles.itemName}>{item.restaurant_dish_name}</Text>
                   <TouchableOpacity
                     disabled={item?.fav}
+
+
                     onPress={() => {
                       add_favrate(item.restaurant_dish_id);
                     }}
                   >
-                    {item?.fav ? <FavAdd height={20} width={20} /> : <Fav height={20} width={20} />}
+
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.itemDescription}>{item.restaurant_dish_description?.substring(0,60)}...</Text>
+                <Text style={styles.itemDescription}>{item.restaurant_dish_description?.substring(0, 60)}...</Text>
                 <View style={styles.itemFooter}>
-                  <TouchableOpacity>
-                    <Text style={styles.itemPrice}>£{item.restaurant_dish_price}</Text>
-                  </TouchableOpacity>
+                  <View style={{}}>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+                      <Text
+                        style={{
+                          fontSize: 12,
+
+                          fontWeight: '700',
+                          lineHeight: 18,
+                          color: '#000',
+                        }}>
+                        Price: </Text>
+                      <Text
+                        style={[item?.restaurant_dish_offer > 0 && styles.line, {
+                          fontSize: 12,
+
+                          fontWeight: '700',
+                          lineHeight: 18,
+                          color: item?.restaurant_dish_offer > 0 ? '#8c8d8f' : '#E79B3F',
+
+                        }]}>
+                        £{item.restaurant_dish_price}
+                      </Text>
+
+                    </View>
+                    {item?.restaurant_dish_offer > 0 &&
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+                        <Text
+                          style={{
+                            fontSize: 12,
+
+                            fontWeight: '700',
+                            lineHeight: 18,
+                            color: '#000',
+                          }}>
+                          Offer price: </Text>
+
+
+                        <Text
+                          style={{
+                            fontSize: 12,
+
+                            fontWeight: '700',
+                            lineHeight: 18,
+                            color: '#E79B3F',
+                          }}>
+                          £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)}
+                        </Text>
+                      </View>
+                    }
+                    {props.showPlusIcon && <Plus height={20} width={20} />}
+                  </View>
                 </View>
               </View>
+              <TouchableOpacity
+                disabled={item?.fav}
+
+                style={{ position: 'absolute', bottom: 7, right: 7 }}
+                onPress={() => {
+                  add_favrate(item.restaurant_dish_id);
+                }}
+              >
+                {item?.fav ? <FavAdd height={20} width={20} /> : <Fav height={20} width={20} />}
+              </TouchableOpacity>
+
+              {item?.restaurant_dish_offer > 0 &&
+        <View style={{ position: 'absolute', top:-7, right:-7 }}>
+          <Image source={require('../assets/croping/redo.png')} style={{ height: 60, width: 60 }} />
+        </View>
+
+      }
             </TouchableOpacity>
           )}
         />
@@ -132,6 +208,9 @@ export default function RestaurantItemList({ ...props }) {
 }
 
 const styles = StyleSheet.create({
+  line: {
+    textDecorationLine: 'line-through',
+  },
   categoryHeader: {
     marginTop: 15,
     flexDirection: 'row',
@@ -148,8 +227,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#101010',
-    lineHeight:18,
-    marginLeft:10
+    lineHeight: 18,
+    marginLeft: 10
   },
   categoryItemsCount: {
     color: '#9E9E9E',
@@ -159,7 +238,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   seeAllButton: {
-paddingHorizontal:5,
+    paddingHorizontal: 5,
 
   },
   seeAllText: {
@@ -176,7 +255,7 @@ paddingHorizontal:5,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    
+
     elevation: 5,
   },
   itemContainer: {

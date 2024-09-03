@@ -26,6 +26,8 @@ import Loading from '../../configs/Loader';
 import RestaurantTime from './RestaurantTime';
 import RestaurantReview from './Review';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import ProfileHeader from './ProfileHeader';
+import useBackHandler from '../../configs/useBackHandler';
 export default function RestaurantDetails({ route }) {
   const [showData, setShowData] = useState('Products');
   const { res_id } = route.params;
@@ -35,7 +37,7 @@ export default function RestaurantDetails({ route }) {
   const user = useSelector(state => state.auth.userData);
   const dispatch = useDispatch();
   const isFocuss = useIsFocused();
-
+  useBackHandler(navigation,'Details');
 
   const params = {
     data: {
@@ -125,25 +127,16 @@ export default function RestaurantDetails({ route }) {
       {isLoading ? <Loading /> : null}
 
       <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ width: '90%' }}>
+                        <ProfileHeader name={'Restaurant Details'}  />
+                    </View>
+                </View>
+
         <ImageBackground
           source={{ uri: RestauRantDetails?.restaurant?.res_image }}
           style={{ height: hp(28) }}>
-          <View
-            style={{
-              height: hp(8),
-              justifyContent: 'center',
-              paddingHorizontal:10,
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={require('../../assets/croping/Back-Navs2x.png')}
-                style={{ height: 32, width: 32 }}
-              />
-            </TouchableOpacity>
-          </View>
+     
         </ImageBackground>
 
 
@@ -236,14 +229,15 @@ export default function RestaurantDetails({ route }) {
               showsHorizontalScrollIndicator={false} // Optional: hide horizontal scroll indicator
             />
           </View>
+          <View style={{flex:1}}>
           {showData == 'Products' && (
-            <>
+            <View style={{flex:1}}>
               <View
                 style={{
                   marginTop: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+               
+paddingHorizontal:10,
+                  
                 }}>
                 <Text
                   style={{
@@ -267,7 +261,8 @@ export default function RestaurantDetails({ route }) {
                     </Text>
                   </TouchableOpacity> */}
               </View>
-              <View style={{ marginTop: 10 }}>
+              <View
+          style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
                 {RestauRantDetails?.popular_items && <PopularDishList data={res_id} home={false} />}
               </View>
 
@@ -277,7 +272,7 @@ export default function RestaurantDetails({ route }) {
                 />
 
               </View>
-            </>
+            </View>
           )}
 
 
@@ -507,7 +502,7 @@ export default function RestaurantDetails({ route }) {
               }
             </>
           )}
-
+</View>
 
         </View>
         <View style={{ height: hp(5), backgroundColor: '#fff' }} />

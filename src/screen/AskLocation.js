@@ -54,7 +54,7 @@ export default function AskLocation() {
   const getToken = async () => {
     try {
       const token = await messaging().getToken();
-      console.log('FCM token:', token);
+   
       send_token(token)
     } catch (error) {
       console.error('Error getting FCM token:', error);

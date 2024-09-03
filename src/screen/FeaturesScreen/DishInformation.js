@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { add_cart } from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
+import ProfileHeader from './ProfileHeader';
 
 export default function DishInformation() {
   const route = useRoute();
@@ -55,27 +56,31 @@ export default function DishInformation() {
   const goToCart = () => {
     navigation.navigate(ScreenNameEnum.CART_STACK);
   };
-
+  function calculateDiscount(originalPrice, discountPercent) {
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    const finalPrice = originalPrice - discountAmount;
+    return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+  }
   return (
     <View style={styles.container}>
       {isLoading ? <Loading /> : null}
       {Platform.OS === 'ios' ? (
           <View style={{height:40}} />
         ) : (
-          <View style={{height: 10}} />
+          <View style={{height:0}} />
         )}
+
+<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ width: '90%' }}>
+                        <ProfileHeader name={'Dish Details'}  />
+                    </View>
+                </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
           source={{ uri: item.restaurant_dish_image }}
+          resizeMode='contain'
           style={{ height: hp(30) }}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Image
-                source={require('../../assets/croping/Back-Navs2x.png')}
-                style={styles.backIcon}
-              />
-            </TouchableOpacity>
-          </View>
+       
          
         </ImageBackground>
         <View style={styles.headerContent}>
@@ -98,7 +103,56 @@ export default function DishInformation() {
           </View>
         <View style={styles.contentContainer}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>£{item.restaurant_dish_price}</Text>
+      <View style={{justifyContent:'center',}}>
+      <View style={{flexDirection:'row',alignItems:'center'}}>
+
+
+<Text
+  style={{
+    fontSize:18,
+   
+    fontWeight: '700',
+
+    color: '#000',
+  }}>
+  Price: </Text>
+<Text
+  style={[item?.restaurant_dish_offer > 0 && styles.line ,{
+    fontSize: 18,
+   
+    fontWeight: '700',
+  
+    color:item?.restaurant_dish_offer > 0? '#8c8d8f':'#E79B3F',
+  }]}>
+   £{item.restaurant_dish_price} 
+</Text>
+
+</View>
+{item?.restaurant_dish_offer > 0  &&
+<View style={{flexDirection:'row',alignItems:'center'}}>
+
+
+<Text
+  style={{
+    fontSize:18,
+   
+    fontWeight: '700',
+   
+    color: '#000',
+  }}>
+  Offer price: </Text>
+
+<Text
+  style={{
+    fontSize: 18,
+    
+    fontWeight: '700',
+  
+    color: '#E79B3F'
+  }}> £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)} 
+</Text>
+</View>}
+      </View>
             <View style={styles.quantityContainer}>
               <TouchableOpacity onPress={decreaseQuantity}>
                 <Image
@@ -170,6 +224,8 @@ export default function DishInformation() {
 
 
 const styles = StyleSheet.create({
+  line:{
+    textDecorationLine:'line-through',},
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -230,10 +286,11 @@ paddingHorizontal:10
     alignItems: 'center',
   },
   price: {
-    fontSize: 32,
+    fontSize:24,
     lineHeight: 48,
     fontWeight: '700',
     color: '#E79B3F',
+   
   },
   quantityContainer: {
     flexDirection: 'row',

@@ -81,7 +81,7 @@ const SelectLocation = () => {
     const handleSaveAddress = useCallback(
         async (address) => {
 
-            console.log('handle save address',address);
+        
             if(address?.geometry?.location?.lng &&  address?.geometry?.lng){
 
                 handleSave(address?.geometry?.location?.lng,
@@ -130,8 +130,6 @@ const SelectLocation = () => {
     const handleSave = (latitude,
         longitude,) => {
 
-console.log('call ','handleSave',latitude,
-longitude,);
 
         const formData = new FormData();
 

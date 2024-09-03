@@ -111,7 +111,7 @@ export default function Address() {
     if (locPermissionDenied == 'granted') {
       try {
         const { latitude, longitude } = await getCurrentLocation();
-        console.log(latitude, longitude);
+       
         setCurrentLocation({
           latitude,
           longitude,

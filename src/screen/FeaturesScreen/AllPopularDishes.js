@@ -20,6 +20,7 @@ import ProfileHeader from './ProfileHeader';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import Searchbar from '../../configs/Searchbar';
+import useBackHandler from '../../configs/useBackHandler';
 
 export default function AllPopularDishes() {
 
@@ -30,14 +31,17 @@ export default function AllPopularDishes() {
     const PopularDish = useSelector(state => state.feature.PopularDish) || [];
     const user = useSelector(state => state.auth.userData);
     const [loading, setLoading] = useState(true);
-    const [filteredCategories, setFilteredCategories] = useState(PopularDish);
-
+    const [filteredCategories, setFilteredCategories] = useState([]);
+    useBackHandler(navigation,'PopularDishes');
     const dispatch = useDispatch()
 
 
-    useEffect(() => {
-        setFilteredCategories(PopularDish);
-    }, [PopularDish]);
+
+    function calculateDiscount(originalPrice, discountPercent) {
+        const discountAmount = (originalPrice * discountPercent) / 100;
+        const finalPrice = originalPrice - discountAmount;
+        return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+      }
 
     useEffect(() => {
         get_Mydishes();
@@ -45,18 +49,19 @@ export default function AllPopularDishes() {
 
     const get_Mydishes = async () => {
         try {
-
-
             const params = {
-                
                 token: user?.token
             };
-            await dispatch(get_popular_dish(params));
+            
+            await dispatch(get_popular_dish(params)).then(res => {
+                // Set the filtered categories after 3 seconds
+               
+            });
         } catch (err) {
             console.log(err);
         }
     };
-
+    
 
 
     const renderDish = ({ item }) => (
@@ -93,8 +98,9 @@ export default function AllPopularDishes() {
                 )}
                 <Image
                     source={{ uri: item.restaurant_dish_image }}
-                    style={{ height: 120, width: 150, borderRadius: 5 }}
+                    style={{ height: 150, width: 150, borderRadius: 5 }}
                     onLoad={() => setLoading(false)}
+                    resizeMode='contain'
                 />
             </View>
             <View style={{ marginTop: 10 }}>
@@ -105,31 +111,67 @@ export default function AllPopularDishes() {
                         fontWeight: '700',
                         lineHeight: 28,
                     }}>
-                    {item.restaurant_dish_name}
+                    {item.restaurant_dish_name?.substring(0,15)}...
                 </Text>
             </View>
-            <View style={{ marginTop: 5 }}>
-                <Text
-                    style={{
-                        color: '#E79B3F',
-                        fontSize: 12,
-                        fontWeight: '700',
-                        lineHeight: 24,
-                    }}>
-                    <Text
-                        style={{
-                            color: '#000',
-                            fontSize: 12,
-                            fontWeight: '700',
-                            lineHeight: 20,
-                        }}>
-                        {' '}
-                        Price:-
-                    </Text>{' '}
-                    £{item.restaurant_dish_price}
-                </Text>
-            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
+
+<Text
+  style={{
+    fontSize: 12,
+
+    fontWeight: '700',
+    lineHeight: 18,
+    color: '#000',
+  }}>
+  Price: </Text>
+<Text
+  style={[item?.restaurant_dish_offer > 0 && styles.line ,{
+    fontSize: 12,
+
+    fontWeight: '700',
+    lineHeight: 18,
+    color:item?.restaurant_dish_offer > 0? '#8c8d8f':'#000',
+  
+  }]}>
+  £{item.restaurant_dish_price}
+</Text>
+
+</View>
+            {item?.restaurant_dish_offer > 0 &&
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+            <Text
+              style={{
+                fontSize: 12,
+
+                fontWeight: '700',
+                lineHeight: 18,
+                color: '#000',
+              }}>
+              Offer price: </Text>
+
+         
+              <Text
+                style={{
+                  fontSize: 12,
+
+                  fontWeight: '700',
+                  lineHeight: 18,
+                  color: '#000',
+                }}> 
+                £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)}
+              </Text>
+          </View>
+              }
+            {item?.restaurant_dish_offer > 0 &&
+        <View style={{ position: 'absolute', top:-7, right: -7 }}>
+          <Image source={require('../../assets/croping/redo.png')} style={{ height: 60, width: 60 }} />
+        </View>
+
+      }
           
         </TouchableOpacity>
     );
@@ -152,8 +194,9 @@ export default function AllPopularDishes() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 10 }}>
+             {isLoading ? <Loading /> : null}
             <ScrollView showsVerticalScrollIndicator={false}>
-                {isLoading ? <Loading /> : null}
+              
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ width: '90%' }}>
                         <ProfileHeader name={'Popular Dish'} />
@@ -169,9 +212,9 @@ export default function AllPopularDishes() {
                     />
                 </View>
                 <View style={{ marginTop: hp(3), flex: 1 }}>
-                    {filteredCategories.length > 0 ? (
+                    {filteredCategories.length > 0 || PopularDish?.length > 0 ? (
                         <FlatList
-                            data={filteredCategories}
+                            data={filteredCategories?.length !== 0?filteredCategories:PopularDish}
                             numColumns={2}
                             renderItem={renderDish}
 
@@ -191,6 +234,8 @@ export default function AllPopularDishes() {
 
 
 const styles = StyleSheet.create({
+    line:{
+        textDecorationLine:'line-through',},
     shadow: {
         shadowColor: "#000",
         shadowOffset: {

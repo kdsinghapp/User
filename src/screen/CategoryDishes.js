@@ -19,6 +19,7 @@ import ProfileHeader from './FeaturesScreen/ProfileHeader';
 import Loading from '../configs/Loader';
 import { get_category_dish } from '../redux/feature/featuresSlice';
 import ScreenNameEnum from '../routes/screenName.enum';
+import useBackHandler from '../configs/useBackHandler';
 
 export default function CategoryDishes() {
     const route = useRoute();
@@ -29,9 +30,13 @@ export default function CategoryDishes() {
     const CategoryDish = useSelector(state => state.feature.CategoryDish) || [];
     const user = useSelector(state => state.auth.userData);
     const [loading, setLoading] = useState(true);
-
+    useBackHandler(navigation,'AllDishCategory');
     const dispatch = useDispatch()
-
+    function calculateDiscount(originalPrice, discountPercent) {
+        const discountAmount = (originalPrice * discountPercent) / 100;
+        const finalPrice = originalPrice - discountAmount;
+        return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+      }
 
     useEffect(() => {
         get_Mydishes();
@@ -85,10 +90,16 @@ export default function CategoryDishes() {
                         }}
                     />
                 )}
-                <Image
+                {/* <Image
                     source={{ uri: item.restaurant_dish_image }}
                     style={{ height: 120, width: 150, borderRadius: 5 }}
                     onLoad={() => setLoading(false)}
+                /> */}
+                 <Image
+                    source={{ uri: item.restaurant_dish_image }}
+                    style={{ height: 150, width: 150, borderRadius: 5 }}
+                    onLoad={() => setLoading(false)}
+                    resizeMode='contain'
                 />
                 <Text
                     style={{
@@ -99,26 +110,66 @@ export default function CategoryDishes() {
                     }}>
                     {item.restaurant_dish_name}
                 </Text>
-                <Text
-                    style={{
-                        color: '#E79B3F',
-                        fontSize: 14,
-                        fontWeight: '700',
-                        lineHeight: 24,
-                    }}>
-                    <Text
-                        style={{
-                            color: '#000',
-                            fontSize: 12,
-                            fontWeight: '700',
-                            lineHeight: 20,
-                        }}>
-                        {' '}
-                        Price:-
-                    </Text>{' '}
-                    £{item.restaurant_dish_price}
-                </Text>
+           
             </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+<Text
+  style={{
+    fontSize: 12,
+
+    fontWeight: '700',
+    lineHeight: 18,
+    color: '#000',
+  }}>
+  Price: </Text>
+<Text
+  style={[item?.restaurant_dish_offer > 0 && styles.line ,{
+    fontSize: 12,
+
+    fontWeight: '700',
+    lineHeight: 18,
+    color:item?.restaurant_dish_offer > 0? '#8c8d8f':'#E79B3F',
+  
+  }]}>
+  £{item.restaurant_dish_price}
+</Text>
+
+</View>
+            {item?.restaurant_dish_offer > 0 &&
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+            <Text
+              style={{
+                fontSize: 12,
+
+                fontWeight: '700',
+                lineHeight: 18,
+                color: '#000',
+              }}>
+              Offer price: </Text>
+
+         
+              <Text
+                style={{
+                  fontSize: 12,
+
+                  fontWeight: '700',
+                  lineHeight: 18,
+                  color: '#E79B3F',
+                }}> 
+                £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)}
+              </Text>
+          </View>
+              }
+            {item?.restaurant_dish_offer > 0 &&
+        <View style={{ position: 'absolute', top:-7, right: -7 }}>
+          <Image source={require('../assets/croping/redo.png')} style={{ height: 60, width: 60 }} />
+        </View>
+
+      }
             <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
                 <Image
 
@@ -154,8 +205,8 @@ export default function CategoryDishes() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 10 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
                 {isLoading ? <Loading /> : null}
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ width: '90%' }}>
                         <ProfileHeader name={'All Dishes'} />
@@ -185,6 +236,8 @@ export default function CategoryDishes() {
 
 
 const styles = StyleSheet.create({
+    line:{
+        textDecorationLine:'line-through',},
     shadow: {
         shadowColor: "#000",
         shadowOffset: {

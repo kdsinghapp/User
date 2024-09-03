@@ -24,7 +24,7 @@ import Door from '../../assets/sgv/door.svg';
 import AddPlus from '../../assets/sgv/AddPlus.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { Payment_api, addres_list, apply_coupon, create_order, general_setting, get_Profile, get_coupon_list, get_order_data_by_id } from '../../redux/feature/featuresSlice';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import { errorToast } from '../../configs/customToast';
 import { current } from '@reduxjs/toolkit';
@@ -32,6 +32,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Loading from '../../configs/Loader';
 import { WebView } from 'react-native-webview';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
+import ProfileHeader from './ProfileHeader';
 
 export default function Payment() {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
@@ -56,11 +57,19 @@ export default function Payment() {
   const [checkoutUrl, setCheckoutUrl] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+const route = useRoute()
+ 
+
+
+
+const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
+
 
 
   useEffect(() => {
     const params = {
       token: user.token,
+      res_id:res_id
     };
     dispatch(get_Profile(params));
     dispatch(general_setting(params));
@@ -72,13 +81,20 @@ export default function Payment() {
 
     let total = 0;
     cartItem?.forEach(item => {
-      total += item.dish_data.restaurant_dish_price * item.quantity;
+      total += Number(calculateDiscount(item.dish_data?.restaurant_dish_price,item.dish_data?.restaurant_dish_offer)) * Number(item.quantity);
     });
     setTotalBill(total);
   }, [cartItem,]);
 
+
+
+  function calculateDiscount(originalPrice, discountPercent) {
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    const finalPrice = originalPrice - discountAmount;
+    return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+  }
   const Apply_Coupon = () => {
-    console.log(Camount < totalBill);
+
     if (CouponCode == '') return errorToast('Please enter Coupon Code')
     if (totalBill < Camount) {
       return errorToast(`Minimum order ${Camount} required to use this coupon`);
@@ -87,7 +103,8 @@ export default function Payment() {
 
     const params = {
       coupon_code: CouponCode,
-      token: user?.token
+      token: user?.token,
+  
     }
 
     dispatch(apply_coupon(params)).then(res => {
@@ -131,7 +148,7 @@ export default function Payment() {
 
                 borderColor: '#7756FC',
               }}
-             
+
             />
           </View>
 
@@ -158,7 +175,7 @@ export default function Payment() {
                 lineHeight: 15,
                 fontWeight: '400',
               }}>
-              {item.dish_data.restaurant_dish_description?.substring(0,30)}
+              {item.dish_data.restaurant_dish_description?.substring(0, 30)}
             </Text>
             <Text
               style={{
@@ -176,9 +193,9 @@ export default function Payment() {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-             paddingHorizontal:5,
-              right:0,bottom:5,
-              position:'absolute',
+              paddingHorizontal: 5,
+              right: 0, bottom: 5,
+              position: 'absolute',
               alignItems: 'center',
             }}>
 
@@ -189,7 +206,7 @@ export default function Payment() {
                 lineHeight: 16,
                 fontWeight: '700',
               }}>
-              Total £{(item.dish_data.restaurant_dish_price * item.quantity)}
+              Total £{( Number(calculateDiscount(item.dish_data?.restaurant_dish_price,item.dish_data?.restaurant_dish_offer)*Number(item.quantity)))}
             </Text>
 
           </View>
@@ -225,7 +242,7 @@ export default function Payment() {
         style={{ height: 30, width: 30 }}
         source={require('../../assets/croping/discount.png')}
       />
-      <View style={{ marginLeft: 10 ,width:'60%'}}>
+      <View style={{ marginLeft: 10, width: '60%' }}>
         <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>
 
           {item.description} ₹{item.min_order_amount}
@@ -235,14 +252,14 @@ export default function Payment() {
         </Text>
       </View>
       {CouponCode == item.coupon_code &&
-        <Text style={{color: '#777777', fontWeight: '700' }}>Coupon Apply</Text>
+        <Text style={{ color: '#777777', fontWeight: '700' }}>Coupon Apply</Text>
 
       }
     </TouchableOpacity>
   )
 
 
-  
+
   const get_order = async sts => {
     try {
       const params = {
@@ -306,36 +323,40 @@ export default function Payment() {
   const handleNavigationStateChange = async (navState) => {
 
 
-    if (navState.url.includes('success-stripe')) {
-      setCheckoutUrl(false);  
-      // Alert.alert('Payment Success', 'Your payment was successful!');
+
+    
+    if (navState.url?.includes('success-stripe')) {
+      setCheckoutUrl(false);
+
+
       setPaymentStatus('paid')
 
       const response = await fetch(navState.url);
       const result = await response.json();
 
 
-
-      if (PaymentStatus == "paid" && checkoutUrl) {
+      if (PaymentStatus == "paid" && result?.data?.payment_intent) {
         book_order(result?.data?.payment_intent);
       }
       else {
-        console.log('Error', 'result?.data?.payment_intent',PaymentStatus , checkoutUrl);
+   
+   
+        setCheckoutUrl(false);
+        errorToast('Payment Error')
       }
 
 
 
     } else if (navState.url.includes('cancel-stripe')) {
 
-      setCheckoutUrl(false);  
+      setCheckoutUrl(false);
+      errorToast('Payment Error')
       setPaymentStatus('unpaid')
     }
   };
 
 
 
-
-const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
   const handleError = (error) => {
     console.error('WebView Error:', error);
@@ -348,9 +369,9 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
   const book_order = async (payment_intent) => {
 
-if(!getProfile?.address_data){
-  errorToast('Please select delivery address')
-}
+    if (!getProfile?.address_data) {
+      errorToast('Please select delivery address')
+    }
 
     let Total = (Number(totalBill) + Number(generalInfo?.service_charge) + Number(generalInfo?.delivery_charge)) - (Number(CouponCodeData?.coupon_discount) || 0);
 
@@ -407,18 +428,22 @@ if(!getProfile?.address_data){
     }
   };
 
-console.log('PayMentStatus?.url',PayMentStatus);
+
 
   return (
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
-
+{!checkoutUrl &&   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ width: '90%' }}>
+                        <ProfileHeader name={'Payment'} />
+                    </View>
+                </View>}
       {isLoading2 ? <Loading /> : null}
       {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
-      {checkoutUrl && PayMentStatus?.url  ? (
+        <View style={{ height: 40 }} />
+      ) : (
+        <View style={{ height: 10 }} />
+      )}
+      {checkoutUrl && PayMentStatus?.url ? (
         <WebView
           source={{ uri: PayMentStatus?.url }}
           onNavigationStateChange={handleNavigationStateChange}
@@ -492,18 +517,20 @@ console.log('PayMentStatus?.url',PayMentStatus);
               </View>
             </View>
           </View>
-          <Text style={{ fontSize: 16, marginLeft: 15, fontWeight: '500', color: '#ff969f' }}>Available Coupons</Text>
-          {coupon_list && <FlatList
+          {coupon_list?.length > 0 && <Text style={{ fontSize: 16, marginLeft: 15, fontWeight: '500', color: '#ff969f' }}>Available Coupons</Text> }
+          {coupon_list?.length > 0 ? <FlatList
             data={coupon_list}
             horizontal
             showsHorizontalScrollIndicator={false}
 
             renderItem={renderItemCoupon}
             contentContainerStyle={styles.flatlistContent}
-          />}
+          />: 
+          <Text style={{ fontSize: 16, marginLeft: 15, fontWeight: '500', color: '#ff969f',marginVertical:10 }}>No Coupons Available</Text>
+          }
           <View style={{
             flexDirection: 'row',
-            backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:2,
+            backgroundColor: '#f0f0f0', borderRadius: 10, paddingVertical: 2,
             justifyContent: 'space-between',
             alignItems: 'center', paddingHorizontal: 15
           }}>
@@ -643,8 +670,8 @@ console.log('PayMentStatus?.url',PayMentStatus);
           </View>
           <View style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',backgroundColor:'#f0f0f0',borderRadius:10,paddingVertical:0,
-            alignItems: 'center', paddingHorizontal: 15,marginTop:10
+            justifyContent: 'space-between', backgroundColor: '#f0f0f0', borderRadius: 10, paddingVertical: 0,
+            alignItems: 'center', paddingHorizontal: 15, marginTop: 10
           }}>
             <View>
               <Image
@@ -657,8 +684,8 @@ console.log('PayMentStatus?.url',PayMentStatus);
             <View style={{ marginLeft: 10, width: '90%', }}>
               <TextInput
                 placeholder='Enter delivery instructions '
-placeholderTextColor={'#7756FC'}
-style={{color:'#000'}}
+                placeholderTextColor={'#7756FC'}
+                style={{ color: '#000' }}
                 value={instruction}
                 onChangeText={(txt) => setInstruction(txt)}
               />
@@ -738,14 +765,18 @@ style={{color:'#000'}}
                     </View>
                     <View
                       style={{ justifyContent: 'center', alignItems: 'center', }}>
-                   <View    style={{height:25,width:25,borderRadius:12.5,
-                    alignItems:'center',justifyContent:'center',borderColor:item.name == selectedPayment?'#000':'#f0f0f0',
-                    borderWidth:item.name == selectedPayment?0:3,backgroundColor:'#fff'}}>
-                      <View    style={{height:16,width:16,borderRadius:8,
+                      <View style={{
+                        height: 25, width: 25, borderRadius: 12.5,
+                        alignItems: 'center', justifyContent: 'center', borderColor: item.name == selectedPayment ? '#000' : '#f0f0f0',
+                        borderWidth: item.name == selectedPayment ? 0 : 3, backgroundColor: '#fff'
+                      }}>
+                        <View style={{
+                          height: 16, width: 16, borderRadius: 8,
 
-                      
-                        backgroundColor:item.name ==selectedPayment?'#063970':'#fff'}}/>
-                        </View>
+
+                          backgroundColor: item.name == selectedPayment ? '#063970' : '#fff'
+                        }} />
+                      </View>
                     </View>
                   </TouchableOpacity>
                 )}
@@ -816,7 +847,7 @@ const Styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#000',
-    lineHeight:15,
+    lineHeight: 15,
   },
   total: {
     fontSize: 16,

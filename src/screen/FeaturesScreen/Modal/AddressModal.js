@@ -78,7 +78,7 @@ const AddressModal = ({ visible, onClose, }) => {
         // data.append('landmark', landmark);
         // data.append('state', state);
         // data.append('city', city);
-        console.log('address_data ',data);
+ 
         const params = {
             data: data,
             token: user?.token
@@ -100,7 +100,7 @@ const AddressModal = ({ visible, onClose, }) => {
     
     
           const formattedAddress = formatAddress(details);
-          console.log('details=>>>>>>>>>>>>>>>>>>>>>', formattedAddress);
+       
           setStreet(formattedAddress)
         },
         [visible]

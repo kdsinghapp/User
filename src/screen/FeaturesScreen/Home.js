@@ -11,6 +11,7 @@ import {
   Alert,
   ImageBackground,
   BackHandler,
+  RefreshControl
 } from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 
@@ -35,7 +36,7 @@ import Navigate from '../../assets/sgv/Navigate.svg';
 import Search from '../../assets/sgv/OrangeSearch.svg';
 import OrangePin from '../../assets/sgv/OrangePin.svg';
 import { SliderBox } from 'react-native-image-slider-box';
-import { Add_FavoriteList, get_HomeDashBoard, get_Profile, get_RestauRantDetails } from '../../redux/feature/featuresSlice';
+import { Add_FavoriteList, get_HomeDashBoard, get_Profile, get_RestauRantDetails, get_popular_dish, get_top_rated_restaurants } from '../../redux/feature/featuresSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../configs/Loader';
 import FavAdd from '../../assets/sgv/addFav.svg';
@@ -45,9 +46,13 @@ import Ratting from '../../configs/Ratting';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 import { notificationListener, requestUserPermission } from './NotificationComponent';
 import { useLocation } from '../../configs/LocationContext';
+import FastImage from 'react-native-fast-image'
+import useBackHandler from '../../configs/useBackHandler';
 
 
 export default function Home() {
+  const [refreshing, setRefreshing] = useState(false);
+
   const [ShowSearch, setShowSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const isLoading = useSelector(state => state.feature.isLoading);
@@ -55,36 +60,11 @@ export default function Home() {
   const UserData = useSelector(state => state.feature?.getProfile);
   const user = useSelector(state => state.auth.userData);
   const { locationName, setLocationName } = useLocation(); // Get locationName and setLocationName from context
+  const navigation = useNavigation();
+  const PopularDish = useSelector(state => state.feature.PopularDish) || [];
+  const getTopRated_restaurants = useSelector(state => state.feature.getTopRated_restaurants) || [];
 
-
-  const backAction = () => {
-    // Get the current route index using getState
-    const currentRouteIndex = navigation.getState().index;
-
-    if (currentRouteIndex === 0) {
-      // If the user is on the home screen, exit the app
-      Alert.alert("Exit App", "Do you want to exit?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel"
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() }
-      ]);
-      return true; // This prevents the default back behavior
-    } else {
-      // Navigate back if not on the home screen
-      navigation.goBack();
-      return true; // This prevents the default back behavior
-    }
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
+  useBackHandler(navigation,'Home');
  
   useEffect(() => {
     const params = {
@@ -122,6 +102,14 @@ export default function Home() {
     }
 
   }
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Simulate a network request or any async task
+    setTimeout(() => {
+      setRefreshing(false);
+      // You can update your data here after refresh
+    }, 2000); // 2 seconds delay for demonstration
+  };
 
 
 
@@ -132,14 +120,14 @@ export default function Home() {
       if (locPermissionDenied) {
         const { latitude, longitude } = await getCurrentLocation();
 
-        console.log('latitude, longitude',latitude, longitude);
+       
         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
         try {
           const res = await fetch(url);
           const json = await res.json();
           const city = findCityName(json);
 
-          console.log('city=>>=>>>>>>>>>>>>>>>>>>>>0',city);
+  
           setLocationName(city);
         } catch (e) {
           console.log("Error fetching location:", e);
@@ -163,6 +151,26 @@ export default function Home() {
     }
     return null; // Return null if city name not found
   }
+
+  useEffect(() => {
+    get_Mydishes();
+}, [user]);
+
+const get_Mydishes = async () => {
+    try {
+        const params = {
+            token: user?.token
+        };
+        
+        await dispatch(get_popular_dish(params)).then(res => {
+            // Set the filtered categories after 3 seconds
+           
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 
 
   const toRadians = (degree) => {
@@ -188,77 +196,12 @@ export default function Home() {
     return distance;
   }
 
-  const searchDataByName = query => {
-    const lowercaseQuery = query.toLowerCase();
-    const filteredData = DashBoardData?.top_rated_restaurants.filter(item =>
-      item.res_name.toLowerCase().includes(lowercaseQuery),
-    );
-    return filteredData;
-  };
-  const LocationItem = ({ item }) => {
-    return (
-      <View
-        style={{
-          paddingVertical: 10,
-          height: hp(8),
-          marginHorizontal: 15,
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderBottomWidth: 1,
-          borderBottomColor: '#ccc',
-        }}>
-        <View>
-          <OrangePin />
-        </View>
 
-        <View style={{ width: '80%', marginLeft: 10 }}>
-          <Text
-            style={{
-              fontWeight: '500',
-              lineHeight: 15,
-              fontSize: 14,
-              color: '#777777',
-            }}>
-            {item.location}
-          </Text>
-        </View>
-      </View>
-    );
-  };
 
-  const FooterComponent = () => {
-    return (
-      <View
-        style={{
-          paddingVertical: 10,
-          marginHorizontal: 15,
-          marginTop: hp(3),
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderBottomWidth: 1,
-          borderBottomColor: '#ccc',
-        }}>
-        <View>
-          <Search />
-        </View>
-        <View style={{ width: '80%', marginLeft: 10 }}>
-          <Text
-            style={{
-              fontWeight: '500',
-              lineHeight: 15,
-              fontSize: 14,
-              color: '#777777',
-            }}>
-            Nearby
-          </Text>
-        </View>
-      </View>
-    );
-  };
   const setSearch = () => {
     setShowSearch(true);
   };
-  const navigation = useNavigation();
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
 
@@ -279,15 +222,23 @@ export default function Home() {
 
         },
       ]}>
-      <Image
-        source={{ uri: item.rescat_image }}
+    
+<FastImage
         style={{
           height: 70,
           width: 90,
           borderRadius: 10,
 
         }}
-      />
+        source={{
+            uri: item.rescat_image,
+         
+            priority: FastImage.priority.high,
+        }}
+        resizeMode={FastImage.resizeMode.cover}
+    />
+
+
       <Text
         style={{
           fontSize: 10,
@@ -342,15 +293,21 @@ export default function Home() {
           marginTop: 5,
           width: '100%',
         }}>
-        <Image
-          source={{ uri: item.res_image }}
-          style={{
-            height: '100%',
-            width: '100%',
-            borderRadius: 5,
-          }}
-          resizeMode='cover'
-        />
+       
+        <FastImage
+       style={{
+        height: '100%',
+        width: '100%',
+        borderRadius: 5,
+      }}
+        source={{
+            uri: item.res_image,
+         
+            priority: FastImage.priority.high,
+        }}
+        resizeMode={FastImage.resizeMode.cover}
+    />
+
       </View>
 
       <View style={{ marginTop: 5 }}>
@@ -410,16 +367,146 @@ export default function Home() {
       </TouchableOpacity>
     </TouchableOpacity>
   )}
+  const SearchData = ({ item }) => {
+    
+    const myLocation = {
+      latitude: UserData?.lat,
+      longitude: UserData?.long
+    };
+    
+    const restaurantLocation = {
+      latitude: item?.res_latitude?item?.res_latitude:item?.res_data?.res_latitude, 
+      longitude: item?.res_longitude?item?.res_longitude:item?.res_data?.res_longitude
+    };
+    const distance = haversineDistance(myLocation, restaurantLocation);
 
-  const SearchTxt = txt => {
-    if (txt == '') {
+    return (
+    <TouchableOpacity
+      onPress={() => {
+
+        if(item.res_id){
+
+          navigation.navigate(ScreenNameEnum.RESTAURANT_DETAILS, { res_id: item.res_id });
+        }else{
+          navigation.navigate(ScreenNameEnum.DISH_INFORMATION, { item: item })
+        }
+      }}
+      style={[
+        styles.shadow,
+        {
+          paddingHorizontal: 5,
+          marginHorizontal: 5,
+          borderRadius: 10,
+          backgroundColor: '#FFFFFF',
+          width: wp(45),
+          paddingVertical: 10,
+          paddingBottom: 30,
+          marginVertical: 10,
+  height:hp(32)
+        },
+      ]}>
+
+      <View
+        style={{
+          height: '50%',
+          marginTop: 5,
+          width: '100%',
+        }}>
+       
+        <FastImage
+       style={{
+        height: '100%',
+        width: '100%',
+        borderRadius: 5,
+      }}
+        source={{
+            uri:item?.restaurant_dish_name?item.restaurant_dish_image:item.res_image,
+         
+            priority: FastImage.priority.high,
+        }}
+        resizeMode={FastImage.resizeMode.cover}
+    />
+
+      </View>
+
+      <View style={{ marginTop: 5 }}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: '700',
+            lineHeight: 21,
+            color: '#000000',
+          }}>
+          {item?.restaurant_dish_name?item.restaurant_dish_name:item.res_name?.substring(0, 30)}
+        </Text>
+        <Text
+          style={{
+            color: '#9DB2BF',
+            fontSize: 10,
+            lineHeight: 18,
+            fontWeight: '400',
+          }}>
+          {item.res_description?item.res_description?.substring(0, 20):item.restaurant_dish_description?.substring(0, 20)}
+        </Text>
+        
+        <View style={{
+          flexDirection: 'row',
+
+          marginVertical: 5, alignItems: 'center',
+        }}>
+
+          <Ratting Ratting={item.res_average_rating?item.res_average_rating:item.restaurant_dish_rating} />
+          <Text style={{ fontSize: 10, fontWeight: '600', color: '#000', marginLeft: 5 }}>{item.res_average_rating} ({item.res_rating_count} )</Text>
+        </View>
+
+
+
+        <View
+          style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
+          <Clock height={20} width={20} />
+          <Text
+            style={{
+              color: '#9DB2BF',
+              marginLeft: 5,
+              fontSize: 12,
+              lineHeight: 18,
+              fontWeight: '400',
+            }}>
+      {distance.toFixed(2)} miles.
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity
+        disabled={item.fav}
+        onPress={() => {
+          add_favrate(item.res_id)
+        }}
+        style={{ alignSelf: 'flex-end', marginTop: 10, position: 'absolute', bottom: 10, right: 10 }}>
+        {item.fav ? <FavAdd /> : <Fav />}
+      </TouchableOpacity>
+    </TouchableOpacity>
+  )}
+
+  const SearchTxt = (txt) => {
+
+    // PopularDish
+    // getTopRated_restaurants
+    if (txt === '') {
       setSearchResults(DashBoardData?.top_rated_restaurants);
       setShowSearch(false);
     } else {
-      const results = searchDataByName(txt);
-      setSearchResults(results);
+      const dishResults = searchDataByName(txt,  PopularDish, 'restaurant_dish_name');
+      const restaurantResults = searchDataByName(txt, getTopRated_restaurants, 'res_name');
+      const combinedResults = [...dishResults, ...restaurantResults];
+  
+      setSearchResults(combinedResults);
       setShowSearch(true);
     }
+  };
+  
+  const searchDataByName = (txt, data, key) => {
+    if (!data) return [];
+    return data.filter(item => item[key].toLowerCase().includes(txt.toLowerCase()));
   };
 
 
@@ -441,15 +528,43 @@ export default function Home() {
     }
     return color;
   };
+
+
+  useEffect(() => {
+    get_MyRestaurant();
+  }, [user]);
+
+
+
+
+
+  const get_MyRestaurant = async () => {
+    try {
+
+
+      const params = {
+
+        token: user?.token
+      };
+      await dispatch(get_top_rated_restaurants(params)).then(res => {
+
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
-      {isLoading ? <Loading /> : null}
+      {/* {isLoading ? <Loading /> : null} */}
       {Platform.OS === 'ios' ? (
         <View style={{ height: 10 }} />
       ) : (
         <View style={{ height: 0 }} />
       )}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}    refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
         {!ShowSearch && (
           <>
             <View
@@ -543,7 +658,7 @@ export default function Home() {
         </View>
         {!ShowSearch && (
           <View style={{ flex: 1 }}>
-            {/* <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 20 }}>
               {images && <SliderBox
             
      
@@ -568,7 +683,7 @@ export default function Home() {
                 autoplayInterval={3000}
               />
               }
-            </View> */}
+            </View>
 
             <View
               style={{
@@ -798,7 +913,7 @@ style={{height:45,width:45,borderRadius:22.5,}}
                 </View>
 
                 <View style={{ marginTop: 20, flex: 1 }}>
-                  <View
+                  {/* <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -810,16 +925,16 @@ style={{height:45,width:45,borderRadius:22.5,}}
                     <View>
                       <Text style={Styles.smallTxt}>Clear</Text>
                     </View>
-                  </View>
+                  </View> */}
 
-                  <View style={{ marginTop: 20, height: hp(60) }}>
+                  {/* <View style={{ marginTop: 20, height: hp(60) }}>
                     <FlatList
                       data={LocationData}
                       renderItem={LocationItem}
                       keyExtractor={item => item.id}
                       ListFooterComponent={FooterComponent}
                     />
-                  </View>
+                  </View> */}
                 </View>
               </>
             )}
@@ -829,7 +944,7 @@ style={{height:45,width:45,borderRadius:22.5,}}
                 <FlatList
                   data={searchResults}
                   numColumns={2}
-                  renderItem={TopRateRestaurant}
+                  renderItem={SearchData}
                   keyExtractor={item => item.id}
                   showsHorizontalScrollIndicator={false} // Optional: hide horizontal scroll indicator
                 />

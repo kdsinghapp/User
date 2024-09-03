@@ -26,6 +26,7 @@ import {
 } from '../../redux/feature/featuresSlice';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import { errorToast } from '../../configs/customToast';
+import useBackHandler from '../../configs/useBackHandler';
 
 
 export default function Cart() {
@@ -38,7 +39,7 @@ export default function Cart() {
   const isLoading = useSelector(state => state.feature.isLoading);
   const cartItem = useSelector(state => state.feature.cartItem);
   const generalInfo = useSelector(state => state.feature.generalInfo);
-  console.log(cartItem);
+  useBackHandler(navigation,'Cart');
   useEffect(() => {
     const params = {
       token: user.token,
@@ -62,11 +63,15 @@ export default function Cart() {
     dispatch(get_cart(params));
   };
 
-
+  function calculateDiscount(originalPrice, discountPercent) {
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    const finalPrice = originalPrice - discountAmount;
+    return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
+  }
   const calculateTotal = () => {
     let total = 0;
     cartItem?.forEach(item => {
-      total += item.quantity * item.dish_data?.restaurant_dish_price;
+      total += Number(item.quantity) * Number(calculateDiscount(item.dish_data?.restaurant_dish_price,item.dish_data?.restaurant_dish_offer));
     });
     return total.toFixed(2);
   };
@@ -116,7 +121,7 @@ export default function Cart() {
     if (!allSameRestaurant) {
       return errorToast('All items must be from the same restaurant.');
     }else{
-      navigation.navigate(ScreenNameEnum.PAYMENT_SCREEN);
+      navigation.navigate(ScreenNameEnum.PAYMENT_SCREEN,{res_id:cartItem[0].restaurant_data?.res_id});
     }
 
   }
@@ -147,6 +152,7 @@ export default function Cart() {
         user_id: user.user_data.id,
       },
       token: user?.token,
+    
     };
 
     dispatch(remove_cart(params)).then(() => {
@@ -170,9 +176,50 @@ export default function Cart() {
           <Text style={styles.dishDescription}>
             {item.dish_data?.restaurant_dish_description?.substring(0,25)}..
           </Text>
-          <Text style={styles.dishPrice}>
-          £{item.dish_data?.restaurant_dish_price*item.quantity}
-          </Text>
+        
+          <View style={{marginTop:5}}>
+
+<View style={{flexDirection:'row',alignItems:'center'}}>
+
+
+<Text
+  style={{
+    fontSize: 12,
+   
+    fontWeight: '700',
+    lineHeight: 18,
+    color: '#000',
+  }}>
+  Price: </Text>
+    <Text style={[styles.dishPrice,item?.dish_data.restaurant_dish_offer > 0 && styles.line ,]}>
+   £{Number(item.dish_data?.restaurant_dish_price)*Number(item.quantity)} 
+</Text>
+
+</View>
+{item?.dish_data.restaurant_dish_offer > 0 && 
+<View style={{flexDirection:'row',alignItems:'center'}}>
+
+
+<Text
+  style={{
+    fontSize: 12,
+   
+    fontWeight: '700',
+    lineHeight: 18,
+    color: '#000',
+  }}>Offer price: </Text>
+
+<Text
+  style={{
+    fontSize: 12,
+    
+    fontWeight: '700',
+    lineHeight: 18,
+    color: '#E79B3F',
+  }}> £{Number(calculateDiscount(item.dish_data?.restaurant_dish_price, item.dish_data?.restaurant_dish_offer))*Number(item.quantity)} 
+</Text>
+</View>}
+          </View>
         </View>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => handleDecrementQuantity(item)}>
@@ -269,11 +316,11 @@ export default function Cart() {
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
             <Text style={styles.totalLabel}>Delivery fee</Text>
-                <Text style={styles.totalAmount}>£{generalInfo?.delivery_charge}</Text>
+                <Text style={styles.totalAmount}>£ {generalInfo?.delivery_charge}</Text>
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
             <Text style={styles.totalLabel}>Service charge </Text>
-                <Text style={styles.totalAmount}>£{generalInfo?.service_charge}</Text>
+                <Text style={styles.totalAmount}>£ {generalInfo?.service_charge}</Text>
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
             <Text style={styles.totalLabel}>Total</Text>
@@ -307,6 +354,8 @@ export default function Cart() {
 }
 
 const styles = StyleSheet.create({
+  line:{
+    textDecorationLine:'line-through',},
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -404,7 +453,7 @@ elevation: 5,
   footer: {
     backgroundColor: '#352C48',
     paddingTop:5,
-    height: hp(25),
+    height: hp(27),
     width: '100%',
     bottom: 0,
     borderTopRightRadius:30,
