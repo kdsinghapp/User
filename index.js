@@ -37,8 +37,8 @@ const showLocalNotification = (value) => {
 
   PushNotification.localNotification({
     channelId: 'Love.eats.channel',
-    title: value.title || 'Default Title',
-    message: value.body || 'Default Message',
+    title: value.title ,
+    message: value.body ,
     playSound: true,
     soundName: 'default',
     priority: 'high',

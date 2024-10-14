@@ -113,7 +113,7 @@ export default function PasswordRest() {
           </Text>
         </View>
       </View>
-      <View
+      {/* <View
         style={styles.tab}>
         <View style={{width:'25%',padding:5}}>
           <Image
@@ -175,7 +175,7 @@ placeholderTextColor={'#000'}
               },
             }}
           />
-      </View>
+      </View> */}
       <View
         style={styles.tab}>
     
@@ -234,7 +234,7 @@ style={{
           height:60,
           borderRadius:60,
        
-     
+     marginTop:40,
           width: '100%',
         
           alignSelf: 'center',

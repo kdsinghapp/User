@@ -82,7 +82,7 @@ export default function Favorites() {
   }
 
 
-  console.log('FavoriteList?.dishes',FavoriteList?.dishes);
+
 const Restaurant = ({ item }) => {
     const myLocation = {
       latitude: UserData?.lat,
@@ -289,7 +289,7 @@ const Restaurant = ({ item }) => {
                 lineHeight: 18,
                 color: '#000',
               }}>
-              Price: £{item.dish_data.restaurant_dish_price}
+              Price: £{Number(item.dish_data.restaurant_dish_price)?.toFixed(2)}
             </Text>
            
           </View>

@@ -9,6 +9,7 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -208,13 +209,34 @@ export default function Address() {
           </Text>
           <Text style={styles.addressLine}>mobile {item.mobile_number}</Text>
         </View>
-        <RadioButton
+        {/* <RadioButton
           value={item.id}
           status={item.is_selected == 1 ? 'checked' : 'unchecked'}
           onPress={() => {
             selected_Address(item)
           }}
-        />
+        /> */}
+  <Pressable
+                onPress={() => {
+                  selected_Address(item)
+                }}      style={{ justifyContent: 'center', alignItems: 'center', }}>
+                      <View style={{
+                        height:25, width: 25, borderRadius: 12.5,
+                        alignItems: 'center', justifyContent: 'center',
+                         borderColor: item.is_selected == 1 ? '#000' : '#f0f0f0',
+                        borderWidth: item.is_selected == 1 ? 1  : 3, backgroundColor: '#fff'
+                      }}>
+                        <View style={{
+                          height:20, width: 20, borderRadius: 10,
+
+
+                          backgroundColor: item.is_selected == 1 ? '#063970' : '#fff'
+                        }} />
+                      </View>
+                    </Pressable>
+
+
+
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity

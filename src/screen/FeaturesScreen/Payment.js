@@ -11,6 +11,7 @@ import {
   PermissionsAndroid,
   ActivityIndicator,
   Platform,
+  Keyboard,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -33,6 +34,7 @@ import Loading from '../../configs/Loader';
 import { WebView } from 'react-native-webview';
 import { getCurrentLocation, locationPermission } from '../../configs/helperFunction';
 import ProfileHeader from './ProfileHeader';
+import ExitConfirmationModal from './Modal/ExitConfirmationModal';
 
 export default function Payment() {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
@@ -56,7 +58,8 @@ export default function Payment() {
   const isFocuse = useIsFocused()
   const [checkoutUrl, setCheckoutUrl] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 const route = useRoute()
  
 
@@ -289,7 +292,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
     }
     else {
       let data = new FormData();
-      data.append('price', Total);
+      data.append('price',Number(Total)?.toFixed(2));
       data.append('email', user.user_data?.email);
       const params = {
         data: data
@@ -312,7 +315,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
     const delivery = Number(deliveryCharge) || 0;
     const taxAmount = Number(tax) || 0;
     const couponDiscount = Number(discount) || 0;
-    return (bill + delivery + taxAmount - couponDiscount).toFixed(2);
+    return (bill + delivery + taxAmount - couponDiscount)?.toFixed(2);
   };
   const totalAmount = calculateTotal(
     totalBill,
@@ -325,7 +328,8 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
 
     
-    if (navState.url?.includes('success-stripe')) {
+  
+   if (navState.url?.includes('success-stripe')) {
       setCheckoutUrl(false);
 
 
@@ -338,24 +342,37 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
       if (PaymentStatus == "paid" && result?.data?.payment_intent) {
         book_order(result?.data?.payment_intent);
       }
-      else {
-   
-   
-        setCheckoutUrl(false);
-        errorToast('Payment Error')
-      }
-
-
-
-    } else if (navState.url.includes('cancel-stripe')) {
+    }
+  
+    else if (navState.url.includes('cancel-stripe')) {
 
       setCheckoutUrl(false);
-      errorToast('Payment Error')
+      errorToast('Cancel Payment')
       setPaymentStatus('unpaid')
     }
   };
 
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // Keyboard is open
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // Keyboard is closed
+      }
+    );
+
+    // Clean up listeners on component unmount
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
 
   const handleError = (error) => {
@@ -479,7 +496,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Sub Total</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>£{totalBill}</Text>
+                <Text style={Styles.txt}>£{Number(totalBill)?.toFixed(2)}</Text>
               </View>
             </View>
             <View style={Styles.bill}>
@@ -487,7 +504,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Service charge</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>£{generalInfo?.service_charge}</Text>
+                <Text style={Styles.txt}>£{Number(generalInfo?.service_charge)?.toFixed(2)}</Text>
               </View>
             </View>
             <View style={Styles.bill}>
@@ -495,7 +512,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Delivery Fees</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>£{generalInfo?.delivery_charge}</Text>
+                <Text style={Styles.txt}>£{Number(generalInfo?.delivery_charge)?.toFixed(2)}</Text>
               </View>
             </View>
             {CouponCodeData && <View style={Styles.bill}>
@@ -503,7 +520,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.txt}>Coupon offer ({CouponCodeData?.coupon_code})</Text>
               </View>
               <View style={{}}>
-                <Text style={Styles.txt}>- {CouponCodeData?.coupon_discount}</Text>
+                <Text style={Styles.txt}>- {CouponCodeData?.coupon_discount?.toFixed(2)}</Text>
               </View>
             </View>}
 
@@ -513,7 +530,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 <Text style={Styles.total}>Total</Text>
               </View>
               <View style={Styles.total}>
-                <Text style={Styles.total}>£{totalAmount}</Text>
+                <Text style={Styles.total}>£{Number(totalAmount)?.toFixed(2)}</Text>
               </View>
             </View>
           </View>
@@ -532,7 +549,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
             flexDirection: 'row',
             backgroundColor: '#f0f0f0', borderRadius: 10, paddingVertical: 2,
             justifyContent: 'space-between',
-            alignItems: 'center', paddingHorizontal: 15
+            alignItems: 'center', paddingHorizontal: 15,maxHeight:60,minHeight:45
           }}>
             <View >
               <Image
@@ -623,7 +640,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
                 style={{
                   fontSize: 12,
                   borderBottomWidth: 0.5,
-                  width: '28%',
+                  width: '35%',
                   borderColor: '#7756FC',
                   fontWeight: '400',
                   color: '#000',
@@ -671,7 +688,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
           <View style={{
             flexDirection: 'row',
             justifyContent: 'space-between', backgroundColor: '#f0f0f0', borderRadius: 10, paddingVertical: 0,
-            alignItems: 'center', paddingHorizontal: 15, marginTop: 10
+            alignItems: 'center', paddingHorizontal: 15, marginTop: 10,maxHeight:60,minHeight:45
           }}>
             <View>
               <Image
@@ -681,7 +698,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
               />
 
             </View>
-            <View style={{ marginLeft: 10, width: '90%', }}>
+            <View style={{ marginLeft: 10, width: '90%',}}>
               <TextInput
                 placeholder='Enter delivery instructions '
                 placeholderTextColor={'#7756FC'}
@@ -797,12 +814,17 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
             }}>
             <Text style={{ fontSize: 17, fontWeight: '600', lineHeight: 25.5, color: '#FFF', }}>Finish Check Out</Text>
           </TouchableOpacity>
-          <View style={{ height: hp(2) }} />
+
+          <View style={{ height:isKeyboardVisible?hp(23):23 }} />
         </ScrollView>
 
 
       }
 
+<ExitConfirmationModal 
+        modalVisible={modalVisible} 
+        setModalVisible={setModalVisible} 
+      />
     </View>
   );
 }

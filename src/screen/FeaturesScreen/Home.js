@@ -697,7 +697,7 @@ const get_Mydishes = async () => {
         </View>
         {!ShowSearch && (
           <View style={{ flex: 1 }}>
-            <View style={{ marginTop: 20 }}>
+            {/* <View style={{ marginTop: 20 }}>
               {images && <SliderBox
             
      
@@ -722,7 +722,7 @@ const get_Mydishes = async () => {
                 autoplayInterval={3000}
               />
               }
-            </View>
+            </View> */}
 
             <View
               style={{

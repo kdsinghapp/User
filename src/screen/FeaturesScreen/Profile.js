@@ -18,6 +18,7 @@ import ScreenNameEnum from '../../routes/screenName.enum';
 import { useDispatch, useSelector } from 'react-redux';
 import { delete_acc, logout } from '../../redux/feature/authSlice';
 import useBackHandler from '../../configs/useBackHandler';
+import ChatBot from '../../configs/ChatBot';
 
 
 

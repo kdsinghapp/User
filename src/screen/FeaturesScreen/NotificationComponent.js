@@ -22,6 +22,8 @@ try {
   return false;
 }
 }
+
+
 export const notificationListener = async () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     let parsedMain = remoteMessage?.data

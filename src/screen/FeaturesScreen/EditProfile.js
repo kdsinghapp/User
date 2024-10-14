@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Platform, Keyboard } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Edit from '../../assets/sgv/Edit.svg';
@@ -24,7 +24,27 @@ export default function EditProfile() {
   const [profile, setProfile] = useState('');
   const [imageUrl, setimageUrl] = useState('');
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // Keyboard is open
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // Keyboard is closed
+      }
+    );
 
+    // Clean up listeners on component unmount
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   useEffect(() => {
     const params = {
       token: user.token,
@@ -225,6 +245,7 @@ marginTop:10,
           Save
         </Text>
       </TouchableOpacity>
+      <View style={{ height:isKeyboardVisible?hp(23):23 }} />
       </ScrollView>
       <DatePicker
         modal

@@ -279,7 +279,7 @@ export default function MyOrders() {
               style={{
                 color: statusColor,
                 marginLeft: 10,
-                fontSize: 12,
+                fontSize: 11.5,
                 lineHeight: 15,
                 fontWeight: '500',
                 marginRight: item.status === 'Accepted' ? 5 : 0
@@ -355,7 +355,7 @@ export default function MyOrders() {
                 style={{
                   color: statusColor,
                   marginLeft: 10,
-                  fontSize: 12,
+                  fontSize: 11.5,
                   lineHeight: 15,
                   fontWeight: '500',
                   marginRight: item.status === 'Accepted' ? 5 : 0

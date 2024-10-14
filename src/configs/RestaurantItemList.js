@@ -132,7 +132,7 @@ export default function RestaurantItemList({ ...props }) {
                           color: item?.restaurant_dish_offer > 0 ? '#8c8d8f' : '#E79B3F',
 
                         }]}>
-                        £{item.restaurant_dish_price}
+                        £{Number(item.restaurant_dish_price)?.toFixed(2)}
                       </Text>
 
                     </View>
@@ -159,7 +159,7 @@ export default function RestaurantItemList({ ...props }) {
                             lineHeight: 18,
                             color: '#E79B3F',
                           }}>
-                          £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)}
+                          £{Number(calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer))?.toFixed(2)}
                         </Text>
                       </View>
                     }

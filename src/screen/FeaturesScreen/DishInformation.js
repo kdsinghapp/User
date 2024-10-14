@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  Keyboard,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Star from '../../assets/sgv/star.svg';
@@ -18,6 +19,7 @@ import { add_cart } from '../../redux/feature/featuresSlice';
 import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import ProfileHeader from './ProfileHeader';
+import { hoverGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/hoverGesture';
 
 export default function DishInformation() {
   const route = useRoute();
@@ -27,13 +29,13 @@ export default function DishInformation() {
   const [addedToCart, setAddedToCart] = useState(false); // State to track if item is added to cart
   const dispatch = useDispatch();
   const increaseQuantity = () => setQuantity(quantity + 1);
+
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
   const user = useSelector(state => state.auth.userData);
   const isLoading = useSelector(state => state.feature.isLoading);
-
 
 
   const add_To_cart = async () => {
@@ -65,7 +67,7 @@ export default function DishInformation() {
     <View style={styles.container}>
       {isLoading ? <Loading /> : null}
       {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
+          <View style={{height:10}} />
         ) : (
           <View style={{height:0}} />
         )}
@@ -124,7 +126,7 @@ export default function DishInformation() {
   
     color:item?.restaurant_dish_offer > 0? '#8c8d8f':'#E79B3F',
   }]}>
-   £{item.restaurant_dish_price} 
+   £{Number(item.restaurant_dish_price)?.toFixed(2)} 
 </Text>
 
 </View>
@@ -149,7 +151,7 @@ export default function DishInformation() {
     fontWeight: '700',
   
     color: '#E79B3F'
-  }}> £{calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer)} 
+  }}> £{Number(calculateDiscount(item.restaurant_dish_price, item.restaurant_dish_offer))?.toFixed(2)} 
 </Text>
 </View>}
       </View>
@@ -207,6 +209,7 @@ export default function DishInformation() {
             }
           </View>
         </View>
+       
       </ScrollView>
       <TouchableOpacity onPress={add_To_cart} style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Add To Cart</Text>
@@ -328,7 +331,7 @@ paddingHorizontal:10
     marginTop: hp(11),
     width: '90%',
     position: 'absolute',
-    bottom:20,
+    bottom:30,
     alignSelf: 'center',
     backgroundColor: '#7756FC',
     borderRadius: 30,
@@ -340,7 +343,7 @@ paddingHorizontal:10
     marginTop: hp(17),
     width: '90%',
     position: 'absolute',
-    bottom:20,
+    bottom:30,
     alignSelf: 'center',
     backgroundColor: '#352C48',
     borderRadius: 30,

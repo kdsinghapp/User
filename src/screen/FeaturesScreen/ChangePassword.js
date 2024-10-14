@@ -85,7 +85,7 @@ export default function ChangePassword() {
         />
       </View>
       <TouchableOpacity
-        style={[styles.tabBtn, { position: 'absolute', bottom: 10 }]}
+        style={[styles.tabBtn, { position: 'absolute', bottom: 30 }]}
         onPress={handleSave}
       >
         <Text

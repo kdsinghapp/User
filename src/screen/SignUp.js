@@ -212,12 +212,12 @@ return formattedDate
            <TouchableOpacity 
           onPress={() => setOpen(true)}
            style={{flexDirection:'row',
-           paddingVertical:15,borderRadius:20,paddingHorizontal:10,
+           paddingVertical:15,borderRadius:30,paddingHorizontal:10,
            alignItems:'center',backgroundColor:'#F7F8F8'}}>
 <Image   source={require('../assets/croping/Dob.png')} 
 
 
-style={{height:25,width:25}}/>
+style={{height:25,width:25,tintColor:'grey'}}/>
 <Text style={{marginLeft:10,color:"#ADA4A5",     fontWeight: '700',}}>{isToday?'DOB':formate(date)}</Text>
            </TouchableOpacity>
       
