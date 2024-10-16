@@ -37,7 +37,7 @@ export default function RestaurantDetails({ route }) {
   const user = useSelector(state => state.auth.userData);
   const dispatch = useDispatch();
   const isFocuss = useIsFocused();
-  useBackHandler(navigation,'Details');
+  useBackHandler(navigation, 'Details');
 
   const params = {
     data: {
@@ -122,21 +122,22 @@ export default function RestaurantDetails({ route }) {
     </View>
   );
 
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       {isLoading ? <Loading /> : null}
-
-      <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ width: '90%' }}>
-                        <ProfileHeader name={'Restaurant Details'}  />
-                    </View>
-                </View>
+        <View style={{ width: '90%' }}>
+          <ProfileHeader name={'Restaurant Details'} />
+        </View>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+
 
         <ImageBackground
           source={{ uri: RestauRantDetails?.restaurant?.res_image }}
           style={{ height: hp(28) }}>
-     
+
         </ImageBackground>
 
 
@@ -193,7 +194,7 @@ export default function RestaurantDetails({ route }) {
               data={StarData}
               renderItem={({ item, index }) => (
                 <>
-                  {index + 1 < RestauRantDetails?.restaurant?.res_average_rating ? (
+                  {index  < Number(RestauRantDetails?.restaurant?.res_average_rating) ? (
                     <Star height={20} width={20} marginLeft={5} />
                   ) : (
                     <BStar height={20} width={20} marginLeft={5} />
@@ -207,11 +208,11 @@ export default function RestaurantDetails({ route }) {
             style={{
               fontSize: 12,
               lineHeight: 14,
-           marginLeft:5,
+              marginLeft: 5,
               fontWeight: '700',
               color: '#000',
             }}>
-            {RestauRantDetails?.restaurant?.res_average_rating}
+            {RestauRantDetails?.restaurant?.res_average_rating?.toFixed(1)}
           </Text>
         </View>
 
@@ -229,27 +230,27 @@ export default function RestaurantDetails({ route }) {
               showsHorizontalScrollIndicator={false} // Optional: hide horizontal scroll indicator
             />
           </View>
-          <View style={{flex:1}}>
-          {showData == 'Products' && (
-            <View style={{flex:1}}>
-              <View
-                style={{
-                  marginTop: 10,
-               
-paddingHorizontal:10,
-                  
-                }}>
-                <Text
+          <View style={{ flex: 1 }}>
+            {showData == 'Products' && (
+              <View style={{ flex: 1 }}>
+                <View
                   style={{
-                    fontSize: 18,
-                    fontWeight: '700',
-                    color: '#101010',
-                    lineHeight: 27,
-                  }}>
-                  Popular Dishes
-                </Text>
+                    marginTop: 10,
 
-                {/* <TouchableOpacity style={{width: '15%'}}>
+                    paddingHorizontal: 10,
+
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '700',
+                      color: '#101010',
+                      lineHeight: 27,
+                    }}>
+                    Popular Dishes
+                  </Text>
+
+                  {/* <TouchableOpacity style={{width: '15%'}}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -260,249 +261,262 @@ paddingHorizontal:10,
                       See all
                     </Text>
                   </TouchableOpacity> */}
+                </View>
+                <View
+                  style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
+                  {RestauRantDetails?.popular_items && <PopularDishList data={res_id} home={false} />}
+                </View>
+
+                <View style={{ marginTop: 10 }}>
+                  <RestaurantItemList
+                    data={res_id}
+                  />
+
+                </View>
               </View>
-              <View
-          style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
-                {RestauRantDetails?.popular_items && <PopularDishList data={res_id} home={false} />}
-              </View>
-
-              <View style={{ marginTop: 10 }}>
-                <RestaurantItemList
-                  data={res_id}
-                />
-
-              </View>
-            </View>
-          )}
+            )}
 
 
 
-          {showData == 'Review' && (
+            {showData == 'Review' && (
 
-            <>
-              <View
-                style={{
-                  marginTop: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: 5,
-                }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '700',
-                      color: '#101010',
-                      lineHeight: 27,
-                    }}>
-                    Review
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginLeft: 10,
-
-                      width: '45%',
-                    }}>
-                    <FlatList
-                      horizontal={true}
-                      data={StarData}
-                      showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => (
-                        <>
-                          {index + 1 <
-                            RestauRantDetails?.restaurant
-                              .res_average_rating ? (
-                            <Star height={20} width={20} marginLeft={5} />
-                          ) : (
-                            <BStar
-                              height={20}
-                              width={20}
-                              marginLeft={5}
-                            />
-                          )}
-                        </>
-                      )}
-                    />
-
-                  </View>
-                  <View style={{ justifyContent: 'center', marginLeft: 10 }}>
+              <>
+                <View
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 5,
+                  }}>
+                  <View style={{ flexDirection: 'row' }}>
                     <Text
                       style={{
-                        fontSize: 12,
-                        lineHeight: 18,
-                        marginLeft: 10,
+                        fontSize: 18,
                         fontWeight: '700',
-                        color: '#000',
+                        color: '#101010',
+                        lineHeight: 27,
                       }}>
-                      {`(${RestauRantDetails?.review.length})`}
+                      Review
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginLeft: 10,
+
+                        width: '45%',
+                      }}>
+                      <FlatList
+                        horizontal={true}
+                        data={StarData}
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({ item, index }) => (
+                          <>
+                            {index  <
+                              RestauRantDetails?.restaurant
+                                .res_average_rating ? (
+                              <Star height={20} width={20} marginLeft={5} />
+                            ) : (
+                              <BStar
+                                height={20}
+                                width={20}
+                                marginLeft={5}
+                              />
+                            )}
+                          </>
+                        )}
+                      />
+
+                    </View>
+                    <View style={{ justifyContent: 'center', marginLeft: 10,flexDirection:'row',alignItems:'center' }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 18,
+                          marginLeft: 10,
+                          fontWeight: '700',
+                          color: '#000',
+                        }}>
+                        { RestauRantDetails?.restaurant
+                                .res_average_rating?.toFixed(1)}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 18,
+                          marginLeft: 10,
+                          fontWeight: '700',
+                          color: '#000',
+                        }}>
+                        {`(${RestauRantDetails?.review.length})`}
+                      </Text>
+                    </View>
+                  </View>
+
+                </View>
+
+                <View
+                  style={{ marginTop: 10, paddingVertical: 10, padding: 5 }}>
+                  <ReviewList data={RestauRantDetails?.review} />
+                </View>
+                <View
+                  style={{ alignItems: 'center', paddingVertical: hp(2) }}>
+                  <View style={{ alignSelf: 'center' }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        lineHeight: 21,
+                        fontWeight: '400',
+                        color: '#677294',
+                      }}>
+                      Click on the stars to leave your rating. The more
                     </Text>
                   </View>
+                  <View style={{ alignSelf: 'center' }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        lineHeight: 21,
+                        fontWeight: '400',
+                        color: '#677294',
+                      }}>
+                      stars, the better the experience.
+                    </Text>
+                  </View>
+
                 </View>
-
-              </View>
-
-              <View
-                style={{ marginTop: 10, paddingVertical: 10, padding: 5 }}>
-                <ReviewList data={RestauRantDetails?.review} />
-              </View>
-              <View
-                style={{ alignItems: 'center', paddingVertical: hp(2) }}>
-                <View style={{ alignSelf: 'center' }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      lineHeight: 21,
-                      fontWeight: '400',
-                      color: '#677294',
-                    }}>
-                    Click on the stars to leave your rating. The more
-                  </Text>
-                </View>
-                <View style={{ alignSelf: 'center' }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      lineHeight: 21,
-                      fontWeight: '400',
-                      color: '#677294',
-                    }}>
-                    stars, the better the experience.
-                  </Text>
-                </View>
-
-              </View>
-              <RestaurantReview restaurant={RestauRantDetails?.restaurant} />
+                <RestaurantReview restaurant={RestauRantDetails?.restaurant} />
 
 
 
-              <View style={{ height: hp(40) }} />
-            </>
-          )}
+                <View style={{ height: hp(40) }} />
+              </>
+            )}
 
 
 
-          {showData == 'Information' && (
-            <>
-              <View
-                style={{
-                  paddingHorizontal: 15,
-                  paddingVertical: 5,
-
-                  height: hp(10)
-                }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 30,
-                    fontWeight: '700',
-                    color: '#000',
-                  }}>
-                  {RestauRantDetails?.restaurant.res_name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 18,
-                    fontWeight: '400',
-                    color: '#6A6A6A',
-                  }}>
-                  {RestauRantDetails?.restaurant.res_description}
-                </Text>
-              </View>
-         
-
-              <View
-                style={{
-                  justifyContent: 'center',
-                  paddingHorizontal: 15,
-
-                }}>
-                         <Text style={styles.closedDay}>Closed on: {RestauRantDetails?.restaurant.res_weekly_closed}</Text>
-
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 30,
-                    fontWeight: '800',
-                    color: '#000',
-                  }}>
-                  Restaurant timing
-                </Text>
-              </View>
-              <RestaurantTime restaurant={RestauRantDetails?.restaurant} />
-              <View
-                style={{
-                  marginVertical: 10,
-                  marginTop: 10,
-                  justifyContent: 'center',
-                  paddingHorizontal: 15,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 30,
-                    fontWeight: '800',
-                    color: '#000',
-                  }}>
-                  Contact Details
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 15,
-                  marginVertical: 10,
-                  padding: 5,
-                }}>
-                <FlatList
-                  data={ContactDetails}
-                  renderItem={RenderContactDetails}
-                  // keyExtractor={item => item.id}
-                  showsVerticalScrollIndicator={false}
-                />
-              </View>
-              {location?.lat && location?.lon && <>
+            {showData == 'Information' && (
+              <>
                 <View
                   style={{
                     paddingHorizontal: 15,
-                    marginVertical: 15,
-                    flexDirection: 'row',
+                    paddingVertical: 5,
+
+                    height: hp(10)
                   }}>
-                  <BlackPin />
                   <Text
                     style={{
-                      fontSize: 14,
-                      lineHeight: 21,
-                      fontWeight: '600',
+                      fontSize: 20,
+                      lineHeight: 30,
+                      fontWeight: '700',
                       color: '#000',
-                      marginLeft: 10,
                     }}>
-                    Location
+                    {RestauRantDetails?.restaurant.res_name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      lineHeight: 18,
+                      fontWeight: '400',
+                      color: '#6A6A6A',
+                    }}>
+                    {RestauRantDetails?.restaurant.res_description}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate(ScreenNameEnum.MAP_SCREEN, { item: { ...location, address: RestauRantDetails?.restaurant?.res_address, name: RestauRantDetails?.restaurant?.res_name } })
-                  }}
-                  style={{ height: hp(15), paddingHorizontal: 20 }}>
-                  <Image
-                    source={require('../../assets/croping/Map3x.png')}
-                    resizeMode="cover"
+
+
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    paddingHorizontal: 15,
+                    marginTop: 20
+
+                  }}>
+                  <Text style={styles.closedDay}>Closed on: {RestauRantDetails?.restaurant.res_weekly_closed}</Text>
+
+                  <Text
                     style={{
-                      height: '100%',
-                      width: '100%',
-                      borderRadius: 10,
-                    }}
+                      fontSize: 20,
+                      lineHeight: 30,
+                      fontWeight: '800',
+                      color: '#000',
+                    }}>
+                    Restaurant timing
+                  </Text>
+                </View>
+                <RestaurantTime restaurant={RestauRantDetails?.restaurant} />
+                <View
+                  style={{
+                    marginVertical: 10,
+                    marginTop: 10,
+                    justifyContent: 'center',
+                    paddingHorizontal: 15,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      lineHeight: 30,
+                      fontWeight: '800',
+                      color: '#000',
+                    }}>
+                    Contact Details
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    paddingHorizontal: 15,
+                    marginVertical: 10,
+                    padding: 5,
+                  }}>
+                  <FlatList
+                    data={ContactDetails}
+                    renderItem={RenderContactDetails}
+                    // keyExtractor={item => item.id}
+                    showsVerticalScrollIndicator={false}
                   />
-                </TouchableOpacity>
+                </View>
+                {location?.lat && location?.lon && <>
+                  <View
+                    style={{
+                      paddingHorizontal: 15,
+                      marginVertical: 15,
+                      flexDirection: 'row',
+                    }}>
+                    <BlackPin />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        lineHeight: 21,
+                        fontWeight: '600',
+                        color: '#000',
+                        marginLeft: 10,
+                      }}>
+                      Location
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate(ScreenNameEnum.MAP_SCREEN, { item: { ...location, address: RestauRantDetails?.restaurant?.res_address, name: RestauRantDetails?.restaurant?.res_name } })
+                    }}
+                    style={{ height: hp(15), paddingHorizontal: 20 }}>
+                    <Image
+                      source={require('../../assets/croping/Map3x.png')}
+                      resizeMode="cover"
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        borderRadius: 10,
+                      }}
+                    />
+                    <Text style={{ color: '#7756fc', fontWeight: '600', position: 'absolute', alignSelf: 'center', top: '45%', backgroundColor: '#f0f0f0', padding: 8, borderRadius: 10, paddingHorizontal: 15 }}>Open</Text>
+                  </TouchableOpacity>
+                </>
+                }
               </>
-              }
-            </>
-          )}
-</View>
+            )}
+          </View>
 
         </View>
         <View style={{ height: hp(5), backgroundColor: '#fff' }} />
@@ -517,7 +531,7 @@ const styles = StyleSheet.create({
   closedDay: {
     fontSize: 16,
     color: '#E74C3C',
-    marginVertical:10,
+    marginVertical: 10,
 
   },
 })

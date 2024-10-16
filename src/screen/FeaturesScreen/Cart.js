@@ -8,7 +8,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -39,6 +39,18 @@ export default function Cart() {
   const isLoading = useSelector(state => state.feature.isLoading);
   const cartItem = useSelector(state => state.feature.cartItem);
   const generalInfo = useSelector(state => state.feature.generalInfo);
+
+  const [showFooter, setShowFooter] = useState(false);
+
+  useEffect(() => {
+    // Set a timer to show the footer after 2 seconds
+    const timer = setTimeout(() => {
+      setShowFooter(true);
+    }, 2000);
+
+    // Cleanup the timer if the component is unmounted before the timer completes
+    return () => clearTimeout(timer);
+  }, []);
   useBackHandler(navigation,'Cart');
   useEffect(() => {
     const params = {
@@ -289,6 +301,7 @@ export default function Cart() {
   );
   
   return (
+    
     <View style={styles.container}>
        {Platform.OS === 'ios' ? (
           <View style={{height:40}} />
@@ -299,7 +312,7 @@ export default function Cart() {
       <View style={styles.header}>
         <Text style={styles.headerText}>Cart</Text>
       </View>
-      {cartItem?.length != 0 && (
+      {cartItem?.length != 0  && (
         <>
           <View style={styles.cartListContainer}>
             <FlatList
@@ -309,7 +322,7 @@ export default function Cart() {
               ListFooterComponent={FooterComponent}
             />
           </View>
-          <View style={styles.footer}>
+        {cartItem?.length != 0 && showFooter && <View style={styles.footer}>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginHorizontal:20}}>
             <Text style={styles.totalLabel}>Subtotal</Text>
                 <Text style={styles.totalAmount}>£ {calculateTotal()}</Text>
@@ -337,7 +350,7 @@ export default function Cart() {
                 <Text style={styles.checkoutButtonText}>Check Out ( £{totalAmount})</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View>}
         </>
       )}
 

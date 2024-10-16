@@ -9,17 +9,16 @@ import {
     StyleSheet,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
 import ProfileHeader from './FeaturesScreen/ProfileHeader';
 import Loading from '../configs/Loader';
 import { get_category_dish } from '../redux/feature/featuresSlice';
 import ScreenNameEnum from '../routes/screenName.enum';
 import useBackHandler from '../configs/useBackHandler';
+import FastImage from 'react-native-fast-image';
 
 export default function CategoryDishes() {
     const route = useRoute();
@@ -95,12 +94,26 @@ export default function CategoryDishes() {
                     style={{ height: 120, width: 150, borderRadius: 5 }}
                     onLoad={() => setLoading(false)}
                 /> */}
-                 <Image
+                 {/* <Image
                     source={{ uri: item.restaurant_dish_image }}
                     style={{ height: 150, width: 150, borderRadius: 5 }}
                     onLoad={() => setLoading(false)}
                     resizeMode='contain'
-                />
+                /> */}
+                  <FastImage
+          style={{
+            height: hp(15),
+            width: wp(38),
+            borderRadius: 15,
+            borderColor: '#7756FC',
+          }}
+          source={{
+            uri: item.restaurant_dish_image,
+
+            priority: FastImage.priority.high,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
                 <Text
                     style={{
                         color: '#352C48',
@@ -173,7 +186,7 @@ export default function CategoryDishes() {
             <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
                 <Image
 
-                    style={{ height: 40, width: 40, borderRadius: 20 }}
+                    style={{ height: 40, width: 40, borderRadius: 20,backgroundColor:'grey' }}
                     source={{ uri: item.restaurant_data?.res_image }} />
                 <View style={{marginLeft:5}}>
                     <Text

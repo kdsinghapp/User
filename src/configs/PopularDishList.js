@@ -100,11 +100,11 @@ export default function PopularDishList({ ...props }) {
         marginTop: 5, paddingBottom: 10,
 
       }}>
-        <Image
+        {/* <Image
           resizeMode='cover'
           source={{ uri: item.restaurant_dish_image }}
 
-        />
+        /> */}
 
 
         <FastImage

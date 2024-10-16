@@ -20,6 +20,7 @@ import Loading from '../../configs/Loader';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import ProfileHeader from './ProfileHeader';
 import { hoverGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/hoverGesture';
+import Rating from '../../configs/Ratting';
 
 export default function DishInformation() {
   const route = useRoute();
@@ -93,11 +94,7 @@ export default function DishInformation() {
               </Text>
            
             <View style={styles.ratingContainer}>
-              <Star height={15} width={15} marginLeft={5} />
-              <Star height={15} width={15} marginLeft={5} />
-              <Star height={15} width={15} marginLeft={5} />
-              <Star height={15} width={15} marginLeft={5} />
-              <Star height={15} width={15} marginLeft={5} />
+            <Rating  rating={item.restaurant_dish_rating}  />
               <Text style={styles.ratingText}>
                 {item.restaurant_dish_rating}
               </Text>
@@ -183,7 +180,7 @@ export default function DishInformation() {
                paddingVertical:5,alignItems: 'center' }}>
                <Image
 
-                   style={{ height: 40, width: 40, borderRadius: 20 }}
+                   style={{ height: 40, width: 40, borderRadius: 20,backgroundColor:'grey' }}
                    source={{ uri: item.restaurant_data?.res_image }} />
                <View style={{marginLeft:5,width:'80%'}}>
                    <Text
