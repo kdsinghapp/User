@@ -77,6 +77,7 @@ export default function TextInputField({...props}) {
                 fontWeight: '700',
                 fontSize: 14,
                 lineHeight: 18,
+                width:'80%'
               }}
               onChangeText={onChangeText}
               value={text}

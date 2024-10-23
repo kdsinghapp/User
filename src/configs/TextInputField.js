@@ -70,6 +70,8 @@ export default function TextInputField({...props}) {
                 color: '#000000',
                 fontWeight: '500',
                 fontSize: 14,
+               
+                width:'70%'
               }}
               onChangeText={onChangeText}
               value={text}

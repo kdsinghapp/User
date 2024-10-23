@@ -46,7 +46,7 @@ import { useLocation } from '../../configs/LocationContext';
 import FastImage from 'react-native-fast-image'
 import useBackHandler from '../../configs/useBackHandler';
 const { width } = Dimensions.get('window'); // Get the screen width
-
+ import {SliderBox}  from 'react-native-image-slider-box'
 
 export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
@@ -700,7 +700,7 @@ export default function Home() {
         </View>
         {!ShowSearch && (
           <View style={{ flex: 1 }}>
-            {/* <View style={{ marginTop: 20, marginLeft: 7 }}>
+            <View style={{ marginTop: 20, marginLeft: 7 }}>
               {images && <SliderBox
 
                 resizeMode="cover"
@@ -728,7 +728,7 @@ export default function Home() {
                 autoplayInterval={5000}
               />
               }
-            </View> */}
+            </View>
 
             <View
               style={{
