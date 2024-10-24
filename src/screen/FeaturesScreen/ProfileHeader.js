@@ -9,14 +9,10 @@ export default function ProfileHeader({name,Dwidth}) {
 
   return (
     <View >
-         {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
+       
         <View
           style={{
-            height: hp(7),
+           paddingBottom:hp(3),
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'space-between',

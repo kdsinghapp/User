@@ -8,6 +8,8 @@ import {
     TextInput,
     StyleSheet,
     FlatList,
+    SafeAreaView,
+    StatusBar,
   } from 'react-native';
   import React from 'react';
 
@@ -34,20 +36,20 @@ import ScreenNameEnum from '../../routes/screenName.enum';
 
      
     return (
+      <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+      <StatusBar backgroundColor={'#fff'} />
       <View style={{flex: 1, paddingHorizontal: 10, backgroundColor: '#fff'}}>
         {isLoading ? <Loading /> : null}
-        {Platform.OS === 'ios' ? (
-          <View style={{height: 68}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
+       
         <ScrollView showsVerticalScrollIndicator={false}>
      
     
     
          
         </ScrollView>
-      </View>
+        </View>
+      </SafeAreaView>
+    
     );
   }
   

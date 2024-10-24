@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -301,13 +303,11 @@ export default function Cart() {
   );
   
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     
     <View style={styles.container}>
-       {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
+      
       {isLoading && <Loading />}
       <View style={styles.header}>
         <Text style={styles.headerText}>Cart</Text>
@@ -363,6 +363,7 @@ export default function Cart() {
      
       )}
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    marginTop: 20,
+  
     paddingHorizontal: 15,
   },
   headerText: {

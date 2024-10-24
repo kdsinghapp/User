@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Switch, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Switch, FlatList, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -140,6 +140,8 @@ const Notification: React.FC = () => {
   );
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
       <ProfileHeader Dwidth={'35%'} name={'Notification'} />
      
@@ -153,6 +155,7 @@ const Notification: React.FC = () => {
       </View> 
      
     </View>
+    </SafeAreaView>
   );
 };
 

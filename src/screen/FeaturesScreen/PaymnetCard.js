@@ -25,6 +25,8 @@ export default function PaymnetCard() {
 
     const navigation = useNavigation()
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex:1,backgroundColor:'#FFF',paddingHorizontal:15}}>
      <View>
         <ProfileHeader  name={'Payment Card'}  Dwidth={'40%'}/>
@@ -66,5 +68,6 @@ export default function PaymnetCard() {
         </TouchableOpacity>
      </View>
     </View>
+    </SafeAreaView>
   )
 }

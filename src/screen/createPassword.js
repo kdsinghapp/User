@@ -1,4 +1,4 @@
-import {View, Text, Image, TextInput, TouchableOpacity, Alert, ScrollView} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity, Alert, ScrollView, SafeAreaView, StatusBar} from 'react-native';
 import React, { useState } from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {
@@ -74,15 +74,13 @@ if(validatePassword(password)){
   }
   }
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex: 1, backgroundColor: '#fff', paddingHorizontal: 10}}>
      
      {isLoading ? <Loading /> : null}
      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{flex:1}}>
-      {Platform.OS === 'ios' ? (
-        <View style={{height: 68}} />
-      ) : (
-        <View style={{height: 10}} />
-      )}
+     
       <TouchableOpacity
         onPress={() => {
           navigation.goBack();
@@ -152,5 +150,6 @@ if(validatePassword(password)){
       </TouchableOpacity>
 
     </View>
+    </SafeAreaView>
   );
 }

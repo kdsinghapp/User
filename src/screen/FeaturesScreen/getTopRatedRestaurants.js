@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, SafeAreaView, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -223,6 +223,8 @@ export default function getTopRatedRestaurants() {
   }
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 10 }}>
       {isLoading ? <Loading /> : null}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -258,5 +260,6 @@ export default function getTopRatedRestaurants() {
         </View>
       </ScrollView>
     </View>
+    </SafeAreaView>
   )
 }

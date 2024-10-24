@@ -5,6 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -32,6 +34,8 @@ export default function TermConditions() {
 
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex: 1, backgroundColor: '#fff', paddingHorizontal: 15}}>
       {isLoading ? <Loading /> : null}
       <ProfileHeader name={'Terms and Conditions'} Dwidth={'55%'} />
@@ -58,6 +62,7 @@ export default function TermConditions() {
         </View>
         
     </View>
+    </SafeAreaView>
   );
 }
 

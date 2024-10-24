@@ -10,6 +10,8 @@ import {
   StyleSheet,
   Linking,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { heightPercentageToDP as hp, widthPercentageToDP } from 'react-native-responsive-screen';
@@ -151,6 +153,8 @@ export default function RestaurantDetails({ route }) {
 
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       {isLoading ? <Loading /> : null}
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -560,6 +564,7 @@ export default function RestaurantDetails({ route }) {
       </ScrollView>
 
     </View>
+    </SafeAreaView>
   );
 }
 

@@ -5,6 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Star from '../../assets/sgv/star.svg';
@@ -179,6 +181,8 @@ export default function MyOrder() {
     </View>
   );
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{paddingHorizontal:15,backgroundColor:'#FFF'}}>
       <ScrollView showsVerticalScrollIndicator={false} >
      <View>
@@ -255,6 +259,7 @@ export default function MyOrder() {
         </View>
         </ScrollView>
     </View>
+    </SafeAreaView>
   )
 }
 

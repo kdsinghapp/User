@@ -10,6 +10,7 @@ import {
     ActivityIndicator,
     Platform,
     Image,
+    StatusBar,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -184,8 +185,9 @@ const SelectLocation = () => {
     }, [currentCoords]);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={{ marginTop: Platform.OS === 'ios' ? -50 : 0 ,marginHorizontal:0}}>
+        <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+        <StatusBar backgroundColor={'#fff'} />
+            <View style={{marginHorizontal:0}}>
             <ProfileHeader name={'Location'} Dwidth={'22%'} />
             </View>
             <View style={{ width: '100%', marginTop: 10 }}>

@@ -10,6 +10,8 @@ import {
   Alert,
   Platform,
   Keyboard,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Star from '../../assets/sgv/star.svg';
@@ -65,6 +67,8 @@ export default function DishInformation() {
     return finalPrice.toFixed(2); // To keep the final price with 2 decimal places
   }
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
       {isLoading ? <Loading /> : null}
       {Platform.OS === 'ios' ? (
@@ -218,6 +222,7 @@ export default function DishInformation() {
         </TouchableOpacity>
       )}
     </View>
+    </SafeAreaView>
   );
 }
 

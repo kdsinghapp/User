@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -70,6 +70,8 @@ const AddressPicker = ({ onSave }) => {
     };
 
     return (
+        <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+        <StatusBar backgroundColor={'#fff'} />
         <View style={styles.container}>
             <GooglePlacesAutocomplete
                 placeholder="Search for a location"
@@ -104,6 +106,7 @@ const AddressPicker = ({ onSave }) => {
             <Text style={styles.addressText}>Selected Address: {address}</Text>
             <Button title="Save Address" onPress={() => onSave(address, selectedPosition)} />
         </View>
+        </SafeAreaView>
     );
 };
 

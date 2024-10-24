@@ -2,6 +2,8 @@ import {
   View,
   Text,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useState } from 'react';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -45,6 +47,8 @@ export default function ChangePassword() {
   };
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 15 }}>
       {isLoading ?<Loading />:null}
       <ProfileHeader name={'Change Password'} Dwidth={'40%'} />
@@ -101,5 +105,6 @@ export default function ChangePassword() {
         </Text>
       </TouchableOpacity>
     </View>
+    </SafeAreaView>
   );
 }

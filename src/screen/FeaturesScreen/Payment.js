@@ -12,6 +12,8 @@ import {
   ActivityIndicator,
   Platform,
   Keyboard,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -448,6 +450,8 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
 
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ paddingHorizontal: 10, backgroundColor: '#FFF', flex: 1 }}>
 {!checkoutUrl &&   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ width: '90%' }}>
@@ -826,6 +830,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
         setModalVisible={setModalVisible} 
       />
     </View>
+    </SafeAreaView>
   );
 }
 

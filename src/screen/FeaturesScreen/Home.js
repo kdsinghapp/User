@@ -13,7 +13,8 @@ import {
   BackHandler,
   RefreshControl,
   Dimensions,
-  Pressable
+  Pressable,
+  SafeAreaView
 } from 'react-native';
 
 
@@ -597,13 +598,10 @@ export default function Home() {
   };
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 10 }}>
-      {/* {isLoading ? <Loading /> : null} */}
-      {Platform.OS === 'ios' ? (
-        <View style={{ height: 10 }} />
-      ) : (
-        <View style={{ height: 0 }} />
-      )}
+  
       <ScrollView showsVerticalScrollIndicator={false} refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
@@ -611,10 +609,11 @@ export default function Home() {
           <>
             <View
               style={{
-                height: hp(12),
+               paddingVertical:10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+               
               }}>
               <TouchableOpacity
                 onPress={() => {
@@ -674,11 +673,7 @@ export default function Home() {
         )}
         {ShowSearch && (
           <View style={{ paddingHorizontal: 10 }}>
-            {Platform.OS === 'ios' ? (
-              <View style={{ height: 40 }} />
-            ) : (
-              <View style={{ height: 10 }} />
-            )}
+          
             <Text
               style={{
                 fontWeight: '700',
@@ -1042,6 +1037,7 @@ export default function Home() {
 
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 

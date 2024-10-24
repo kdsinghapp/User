@@ -10,6 +10,8 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -496,15 +498,13 @@ export default function MyOrders() {
 
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ paddingHorizontal: 15, flex: 1, backgroundColor: '#FFFFFF' }}>
-      {Platform.OS === 'ios' ? (
-        <View style={{ height: 40 }} />
-      ) : (
-        <View style={{ height: 10 }} />
-      )}
+     
       {isLoading && <Loading />}
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ marginTop: 20 }}>
+        <View style={{  }}>
           <Text
             style={{
               fontWeight: '700',
@@ -602,6 +602,7 @@ export default function MyOrders() {
         </View>
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 

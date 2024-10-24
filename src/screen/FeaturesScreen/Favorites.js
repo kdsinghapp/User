@@ -7,6 +7,8 @@ import {
   FlatList,
   StyleSheet,
   Platform,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Star from '../../assets/sgv/star.svg';
@@ -311,12 +313,10 @@ const Restaurant = ({ item }) => {
 
   
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
-     {Platform.OS === 'ios' ? (
-          <View style={{height:40}} />
-        ) : (
-          <View style={{height: 10}} />
-        )}
+    
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Favorites</Text>
         </View>
@@ -374,6 +374,7 @@ const Restaurant = ({ item }) => {
         </View>
    
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   headerContainer: {
-    marginTop: 20,
+
   },
   headerText: {
     fontWeight: '700',

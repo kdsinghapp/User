@@ -7,6 +7,8 @@ import {
   FlatList,
   StyleSheet,
   TextInput,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Address from '../../assets/sgv/Address.svg';
@@ -22,6 +24,8 @@ import ProfileHeader from './ProfileHeader';
 
 export default function AddNewCard() {
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex:1,backgroundColor:'#FFF',paddingHorizontal:10}}>
       <ScrollView showsVerticalScrollIndicator={false} >
     <View>
@@ -216,5 +220,6 @@ style={[styles.tabBtn,{position:'absolute',bottom:10}]}>
 </TouchableOpacity>
    
     </View>
+    </SafeAreaView>
   )
 }

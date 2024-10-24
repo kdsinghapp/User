@@ -9,6 +9,8 @@ import {
   Settings,
   ScrollView,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -126,16 +128,14 @@ const handleDeleteAccount =()=>{
 
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex: 1, backgroundColor: '#fff', paddingHorizontal: 20}}>
       {isLoading ? <Loading /> : null}
 
-      {Platform.OS === 'ios' ? (
-        <View style={{height: 68}} />
-      ) : (
-        <View style={{height:5}} />
-      )}
+    
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{height: hp(5),marginTop:10}}>
+      <View style={{height: hp(5),}}>
         <Text
           style={{
             fontSize: 20,
@@ -349,6 +349,7 @@ const handleDeleteAccount =()=>{
         } */}
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 

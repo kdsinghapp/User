@@ -7,6 +7,8 @@ import {
     FlatList,
     ActivityIndicator,
     StyleSheet,
+    SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -125,6 +127,8 @@ export default function AllCategories() {
     );
 
     return (
+        <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+        <StatusBar backgroundColor={'#fff'} />
         <View style={{ flex: 1, backgroundColor: '#FFF', paddingHorizontal: 10 }}>
                 {isLoading ? <Loading /> : null}
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -161,6 +165,7 @@ export default function AllCategories() {
                 </View>
             </ScrollView>
         </View>
+        </SafeAreaView>
     );
 }
 

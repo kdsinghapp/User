@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, SafeAreaView, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -28,6 +28,8 @@ export default function WELCOME_SCREEN() {
   }, [isFoucs, isLogOut]);
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View
       style={{
         flex: 1,
@@ -41,5 +43,6 @@ export default function WELCOME_SCREEN() {
         resizeMode="contain"
       />
     </View>
+    </SafeAreaView>
   );
 }

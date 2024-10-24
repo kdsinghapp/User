@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, {useState} from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -171,6 +173,8 @@ const formattedDate = `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month 
 return formattedDate
   }
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex: 1}}>
        {isLoading ? <Loading /> : null}
       <ScrollView>
@@ -212,9 +216,9 @@ return formattedDate
            <TouchableOpacity 
           onPress={() => setOpen(true)}
            style={{flexDirection:'row',
-           paddingVertical:15,borderRadius:30,paddingHorizontal:10,
+           paddingVertical:15,borderRadius:30,paddingHorizontal:16,
            alignItems:'center',backgroundColor:'#F7F8F8'}}>
-<Image   source={require('../assets/croping/Dob.png')} 
+<Image   source={require('../assets/croping/dob.png')} 
 
 
 style={{height:25,width:25,tintColor:'grey'}}/>
@@ -420,6 +424,7 @@ style={{height:25,width:25,tintColor:'grey'}}/>
         }}
       />
     </View>
+    </SafeAreaView>
   );
 }
 

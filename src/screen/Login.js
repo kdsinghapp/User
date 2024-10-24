@@ -8,6 +8,8 @@ import {
   Alert,
   ScrollView,
   BackHandler,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -174,6 +176,8 @@ export default function Login() {
     dispatch(guest_login(params))
   }
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{ flex: 1 }}>
       {isLoading ? <Loading /> : null}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -303,7 +307,7 @@ export default function Login() {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
               style={{}}
               onPress={() => {
               skip_login()
@@ -318,12 +322,13 @@ export default function Login() {
                 {' '}
            Guest Login
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
 
       </View>
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 

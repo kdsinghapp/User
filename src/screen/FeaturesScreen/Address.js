@@ -10,6 +10,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -259,6 +261,8 @@ export default function Address() {
   );
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
     {isLoading?<Loading />:null}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -300,6 +304,7 @@ export default function Address() {
         onClose={() => setUpdateVisible(false)}
       />
     </View>
+    </SafeAreaView>
   );
 }
 

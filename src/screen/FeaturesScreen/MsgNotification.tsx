@@ -8,6 +8,8 @@ import {
   FlatList,
   ScrollView,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -127,6 +129,8 @@ onPress={()=>{
   };
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {isLoading ? <Loading /> : null}
@@ -149,6 +153,7 @@ onPress={()=>{
         </View>
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 };
 

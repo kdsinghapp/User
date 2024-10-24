@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity,Platform, TextInput, Alert,ScrollView, StyleSheet} from 'react-native';
+import {View, Text, Image, TouchableOpacity,Platform, TextInput, Alert,ScrollView, StyleSheet, SafeAreaView, StatusBar} from 'react-native';
 import React, { useState } from 'react';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
@@ -72,9 +72,11 @@ export default function PasswordRest() {
     }
   };
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={{flex: 1, paddingHorizontal: 10, backgroundColor: '#fff'}}>
     {isLoading ? <Loading /> : null}
-    {Platform.OS === 'ios' ?<View style={{height: 68}} />: <View style={{height:5}} />}
+   
     <ScrollView showsVerticalScrollIndicator={false} 
     
    >
@@ -254,6 +256,7 @@ style={{
      
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 

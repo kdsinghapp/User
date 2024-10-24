@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, SafeAreaView, StatusBar } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation } from '@react-navigation/native';
@@ -49,6 +49,8 @@ const MapScreen = ({ route }) => {
     };
 
     return (
+        <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+        <StatusBar backgroundColor={'#fff'} />
         <View style={styles.container}>
        <>
                 <MapView
@@ -74,6 +76,7 @@ const MapScreen = ({ route }) => {
                     </TouchableOpacity>
                     </>
         </View>
+        </SafeAreaView>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Platform, Keyboard } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Platform, Keyboard, SafeAreaView, StatusBar } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Edit from '../../assets/sgv/Edit.svg';
@@ -121,6 +121,8 @@ export default function EditProfile() {
   };
 
   return (
+    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <StatusBar backgroundColor={'#fff'} />
     <View style={styles.container}>
       {isLoading ? <Loading /> : null}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -261,6 +263,7 @@ marginTop:10,
         }}
       />
     </View>
+    </SafeAreaView>
   );
 }
 
