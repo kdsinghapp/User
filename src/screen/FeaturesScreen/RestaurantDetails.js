@@ -8,6 +8,8 @@ import {
   TextInput,
   ImageBackground,
   StyleSheet,
+  Linking,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { heightPercentageToDP as hp, widthPercentageToDP } from 'react-native-responsive-screen';
@@ -52,6 +54,31 @@ export default function RestaurantDetails({ route }) {
 
 
   const location = RestauRantDetails?.restaurant
+  const openGoogleMaps = () => {
+    // Get the latitude and longitude
+    const lat = RestauRantDetails?.restaurant?.res_latitude;
+    const long = RestauRantDetails?.restaurant?.res_longitude;
+
+    // Check if lat and long are available
+    if (!lat || !long) {
+      Alert.alert('Error', 'Location data is not available');
+      return;
+    }
+
+    // Google Maps URL with latitude and longitude
+    const url = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+
+    // Check if the device can open Google Maps
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(url);  // Open Google Maps
+        } else {
+          Alert.alert('Error', 'Google Maps is not available');
+        }
+      })
+      .catch((err) => console.error('Error opening Google Maps:', err));
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -194,7 +221,7 @@ export default function RestaurantDetails({ route }) {
               data={StarData}
               renderItem={({ item, index }) => (
                 <>
-                  {index  < Number(RestauRantDetails?.restaurant?.res_average_rating) ? (
+                  {index < Number(RestauRantDetails?.restaurant?.res_average_rating) ? (
                     <Star height={20} width={20} marginLeft={5} />
                   ) : (
                     <BStar height={20} width={20} marginLeft={5} />
@@ -313,7 +340,7 @@ export default function RestaurantDetails({ route }) {
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item, index }) => (
                           <>
-                            {index  <
+                            {index <
                               RestauRantDetails?.restaurant
                                 .res_average_rating ? (
                               <Star height={20} width={20} marginLeft={5} />
@@ -329,7 +356,7 @@ export default function RestaurantDetails({ route }) {
                       />
 
                     </View>
-                    <View style={{ justifyContent: 'center', marginLeft: 10,flexDirection:'row',alignItems:'center' }}>
+                    <View style={{ justifyContent: 'center', marginLeft: 10, flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
                           fontSize: 12,
@@ -338,8 +365,8 @@ export default function RestaurantDetails({ route }) {
                           fontWeight: '700',
                           color: '#000',
                         }}>
-                        { RestauRantDetails?.restaurant
-                                .res_average_rating?.toFixed(1)}
+                        {RestauRantDetails?.restaurant
+                          .res_average_rating?.toFixed(1)}
                       </Text>
                       <Text
                         style={{
@@ -496,10 +523,8 @@ export default function RestaurantDetails({ route }) {
                       Location
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate(ScreenNameEnum.MAP_SCREEN, { item: { ...location, address: RestauRantDetails?.restaurant?.res_address, name: RestauRantDetails?.restaurant?.res_name } })
-                    }}
+                  <View
+
                     style={{ height: hp(15), paddingHorizontal: 20 }}>
                     <Image
                       source={require('../../assets/croping/Map3x.png')}
@@ -510,8 +535,20 @@ export default function RestaurantDetails({ route }) {
                         borderRadius: 10,
                       }}
                     />
-                    <Text style={{ color: '#7756fc', fontWeight: '600', position: 'absolute', alignSelf: 'center', top: '45%', backgroundColor: '#f0f0f0', padding: 8, borderRadius: 10, paddingHorizontal: 15 }}>Open</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute', alignSelf: 'center', top: '45%', backgroundColor: '#f0f0f0', padding: 8, borderRadius: 10, paddingHorizontal: 15
+                      }}
+                      onPress={() => {
+
+                        openGoogleMaps()
+                        // navigation.navigate(ScreenNameEnum.MAP_SCREEN, { item: { ...location, address: RestauRantDetails?.restaurant?.res_address, name: RestauRantDetails?.restaurant?.res_name } })
+                      }}
+                    >
+
+                      <Text style={{ color: '#7756fc', fontWeight: '600', fontSize: 16 }}>Open</Text>
+                    </TouchableOpacity>
+                  </View>
                 </>
                 }
               </>

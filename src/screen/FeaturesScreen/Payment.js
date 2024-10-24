@@ -438,7 +438,7 @@ const res_id = cartItem[0]?.dish_data.restaurant_dish_restaurant_id.toString()
       await dispatch(create_order(params)).then(res => {
         // Call the get_order function after order creation
         get_order();
-        navigation.goBack()
+   
       });
     } catch (err) {
       console.log(err);
